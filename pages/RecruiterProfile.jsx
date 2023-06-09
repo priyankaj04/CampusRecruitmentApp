@@ -2,16 +2,16 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator } fr
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView } from 'react-native-gesture-handler';
-import { TalentDetailsById } from '../api';
+import { RecruiterDetailsById } from '../api';
 import { Capitalize } from "../components/commonFunctions";
 
-const Profile = ({ navigation }) => {
-  const id = 'e35147fb-b336-4858-9dc1-2438a5524a7c';
+const RecruiterProfile = ({ navigation }) => {
+  const id = 'c4f6446d-e6a3-48bf-b99a-ca07e237c9cb';
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    TalentDetailsById(id).then((res) => {
+    RecruiterDetailsById(id).then((res) => {
       console.log(res);
       if (res.status) {
         setDetails(res.data[0]);
@@ -56,15 +56,13 @@ const Profile = ({ navigation }) => {
                 color: 'gray',
                 margin: 0
               }}>{details.email}</Text>
-              {details.branch &&
                 <Text style={{
                   fontWeight: 'bold',
                   color: 'gray',
                   margin: 0
-                }}>{details.branch} - {details.semester} Semester</Text>
-              }
+                }}>{details.company_name}</Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('EditProfile')}
+                onPress={() => navigation.navigate('EditRecruiterProfile', {id: id})}
                 style={{
                   backgroundColor: '#407BFF',
                   width: 100,
@@ -92,7 +90,7 @@ const Profile = ({ navigation }) => {
             flexDirection: 'row',
             borderRadius: 15,
             alignItems: 'center'
-          }} onPress={() => navigation.navigate('ChangePassword', { id: id, type: 'talent' })}>
+          }} onPress={() => navigation.navigate('ChangePassword', { id: id, type: 'recruiter'})}>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center' }}> <Icon name="key-variant" size={24} color='#407BFF' />  Change Password</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>
@@ -106,7 +104,7 @@ const Profile = ({ navigation }) => {
             flexDirection: 'row',
             borderRadius: 15,
             alignItems: 'center'
-          }} onPress={() => navigation.navigate('Contact', { id: id, type: 'talent' })}>
+          }} onPress={() => navigation.navigate('Contact', { id: id, type: 'recruiter' })}>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center' }}> <Icon name="chat-outline" size={24} color='#407BFF' />  Contact Us</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>
@@ -134,7 +132,7 @@ const Profile = ({ navigation }) => {
             flexDirection: 'row',
             borderRadius: 15,
             alignItems: 'center'
-          }} onPress={() => navigation.navigate('Login')}>
+          }} onPress={() => navigation.navigate('RecruiterLogin')}>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center', color: 'red' }}> Logout</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>
@@ -144,6 +142,6 @@ const Profile = ({ navigation }) => {
   )
 }
 
-export default Profile
+export default RecruiterProfile
 
 const styles = StyleSheet.create({})

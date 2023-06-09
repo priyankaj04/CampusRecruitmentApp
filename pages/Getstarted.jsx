@@ -35,11 +35,11 @@ const Getstarted = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
               margin:5
-          }} onPress={() => navigation.navigate("Login")}><Text style={{
+          }} onPress={() => navigation.navigate("Register")}><Text style={{
                   fontSize: 20, 
                   fontWeight: 'bold',
                 color:'#407BFF'
-          }}>Sign In</Text></TouchableOpacity>
+          }}>Join as Student</Text></TouchableOpacity>
           <TouchableOpacity style={{
               width: '90%',
               height: 50,
@@ -49,10 +49,10 @@ const Getstarted = ({navigation}) => {
               alignItems: 'center',
               margin: 5,
               justifyContent: 'center'
-          }} onPress={() => navigation.navigate("Register")}><Text style={{
+          }} onPress={() => navigation.navigate("RecruiterRegister")}><Text style={{
               fontSize: 20,
               fontWeight: 'bold',
-          }}>Sign Up</Text></TouchableOpacity>
+          }}>Join as Recruiter</Text></TouchableOpacity>
           
     </View>
   )

@@ -11,9 +11,7 @@ const Tab = createBottomTabNavigator();
 const Index = () => {
     return (
         <NavigationContainer independent={true}>
-            <Tab.Navigator
-                
-            >
+            <Tab.Navigator>
                 <Tab.Screen name="Home" component={Home} />
                 <Tab.Screen name="Profile" component={Profile} />
                 

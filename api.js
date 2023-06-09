@@ -1,4 +1,4 @@
-//talent = TalentRegister(), TalentLogin(), TalentDetailsByReg()
+//talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
 const URL = 'http://192.168.0.100:8000';
@@ -7,6 +7,26 @@ const URL = 'http://192.168.0.100:8000';
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
 export const TalentRegister = async (reqbody) => {
     const url = URL + '/api/talent/registration';
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Recruiter registration
+// reqbody = { firstname, lastname, email, password, company_name, contact_no, enable}
+export const RecruiterRegisteration = async (reqbody) => {
+    const url = URL + '/api/recruiter/registration';
     const fetchOptions = {
         method: "POST",
         headers: {
@@ -43,10 +63,48 @@ export const TalentLogin = async (reqbody) => {
         });
 }
 
-//get talent details by register number
-// reg = talent's register number
-export const TalentDetailsByReg = async (reg) => {
-    const url = URL + '/api/talent/' + reg;
+//Recruiter login
+// reqbody = { company_name, password }
+export const RecruiterLoginForm = async (reqbody) => {
+    const url = URL + '/api/recruiter/login';
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//get talent details by id
+// reg = talent's id
+export const TalentDetailsById = async (id) => {
+    const url = URL + '/api/talent/' + id;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//get recruiter details by recruiter id
+// rid = recruiter id
+export const RecruiterDetailsById = async (rid) => {
+    const url = URL + '/api/recruiter/' + rid;
     const fetchOptions = {
         method: "GET",
         headers: {
@@ -81,9 +139,48 @@ export const UpdateTalentDetailsById = async (reqbody, id) => {
         });
 }
 
+//update Recruiter details by id
+// id = recruiter_id, reqbody = {branch,fieldofinterest,semester,bio,college,contactno,whatappno,cgpa,enable,resume,cv,profile_img }
+export const UpdateRecruiterDetailsById = async (reqbody, id) => {
+    const url = URL + '/api/recruiter/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
 //Change password for talent 
 export const ChangeTalentPassword = async (reqbody, id) => {
     const url = URL + '/api/talent/checkpassword/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Change password for Recruiter 
+export const ChangeRecruiterPassword = async (reqbody, id) => {
+    const url = URL + '/api/recruiter/changepassword/' + id;
     const fetchOptions = {
         method: "PUT",
         headers: {

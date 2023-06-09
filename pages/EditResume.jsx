@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, KeyboardAvoidingV
 import React, { useState, useEffect, useRef } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/Entypo';
+import Iconz from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import { RadioButton } from 'react-native-paper';
 import { ResumeUpdation, ResumeDetailsByTalentID } from '../api';
@@ -796,937 +797,993 @@ const EditResume = ({ route, navigation }) => {
       setOldDesc(updatedData);
     };
 
-    return (
-      <View>
-        {oldDesc && oldDesc.length > 0 && oldDesc.map((item) => <TextInput
-          key={item.id}
+    const handleDelete = (id) => {
+      let val = oldDesc;
+      let reqbody = {};
+      reqbody.position_of_responsibility = val.filter((item) => item.id != id);
+
+      ResumeUpdation(talent_id, reqbody).then((res) => {
+        console.log(res);
+        setNewDesc('');
+        if (res.status) {
+          props.setFetch(!props.fetch);
+          setShowSave(false);
+        }
+      })
+    }
+  
+
+  return (
+    <View>
+      {oldDesc && oldDesc.length > 0 && oldDesc.map((item) =>
+        <View key={item.id} style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TextInput
+            multiline
+            editable
+            numberOfLines={4}
+            style={styles.multilines}
+            value={item.description}
+            onChangeText={(e) => { handleDescriptionChange(e, item.id) }}
+          />
+          <Iconz name="delete" size={22} color='red' onPress={() => handleDelete(item.id)} />
+        </View>)}
+      {showNew && <View>
+        <Text style={styles.label}>If you have been/ are an active part of societies, conducted any
+          events or led a team, add details here</Text>
+
+        <TextInput
+          multiline
+          editable
+          numberOfLines={4}
+          style={styles.multiline}
+          value={newDesc}
+          onChangeText={(e) => { setNewDesc(e) }}
+        />
+      </View>}
+      {!showSave ?
+        showNew ?
+          <TouchableOpacity style={styles.btn} onPress={() => handleSave("new")}>
+            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save</Text>
+          </TouchableOpacity> :
+          <TouchableOpacity style={styles.btn} onPress={() => setShowNew(true)}>
+            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Add new</Text>
+          </TouchableOpacity> :
+        <TouchableOpacity style={styles.btn} onPress={() => handleSave("old")}>
+          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save Changes</Text>
+        </TouchableOpacity>
+      }
+    </View>
+  )
+}
+
+const ShowInternshipCard = (props) => {
+  const [newInternship, setNewInternship] = useState({});
+  const [oldInternships, setOldInternships] = useState([]);
+  const [isChecked, setChecked] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showDatePicker1, setShowDatePicker1] = useState(false);
+  const [showDatePickerPro, setShowDatePickerPro] = useState({});
+  const [showNew, setShowNew] = useState(false);
+
+  useEffect(() => {
+    if (props.resumeDetails.internship && props.resumeDetails.internship.length > 0) {
+      console.log(props.resumeDetails.internship);
+      setOldInternships(props.resumeDetails.internship);
+    }
+  }, [props.resumeDetails])
+
+  const handleSave = (value) => {
+    let reqbody = {};
+    if (value === "new") {
+      if (props.resumeDetails.internship && props.resumeDetails.internship.length > 0) {
+        reqbody.internship = [...props.resumeDetails.internship]
+        let val = newInternship;
+        val.id = props.resumeDetails.internship.length;
+        reqbody.internship.push(val)
+      } else {
+        let val = newInternship;
+        val.id = 0;
+        reqbody.internship = [val]
+      }
+    } else {
+      //console.log("here is new idea", oldInternships);
+      reqbody.internship = oldInternships;
+    }
+    ResumeUpdation(talent_id, reqbody).then((res) => {
+      //console.log(res);
+      setNewInternship({});
+      if (res.status) {
+        props.setFetch(!props.fetch);
+        setShowNew(false);
+      }
+    })
+  }
+
+  const handleChange = (e, id, field) => {
+    const updatedData = oldInternships.map((item) => {
+      if (item.id === id) {
+        return { ...item, [field]: e };
+      }
+      return item;
+    });
+    setOldInternships(updatedData);
+  };
+
+  const handleDatePickerToggle = (id, bool) => {
+    setShowDatePickerPro((prevState) => ({
+      ...prevState,
+      [id]: bool,
+    }));
+  };
+
+  const handleDelete = (id) => {
+    let val = oldInternships;
+    let reqbody = {};
+    reqbody.internship = val.filter((item) => item.id != id);
+
+    ResumeUpdation(talent_id, reqbody).then((res) => {
+      //console.log(res);
+      setNewInternship({});
+      if (res.status) {
+        props.setFetch(!props.fetch);
+        setShowNew(false);
+      }
+    })
+  }
+
+  return (
+    <View>{
+      oldInternships && oldInternships.length > 0 && oldInternships.map((item, index) => <View key={item.id}>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Internship - {index + 1} </Text>
+        <Text style={styles.label}>Position</Text>
+        <TextInput
+          style={styles.textField}
+          value={item.position}
+          onChangeText={(e) => { handleChange(e, item.id, "position") }}
+        />
+        <Text style={styles.label}>Organization</Text>
+        <TextInput
+          style={styles.textField}
+          value={item.organization}
+          onChangeText={(e) => { handleChange(e, item.id, "organization") }}
+        />
+        <Text style={styles.label}>Location</Text>
+        <TextInput
+          style={styles.textField}
+          value={item.location}
+          onChangeText={(e) => { handleChange(e, item.id, "location") }}
+        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
+          <Checkbox
+            value={item.location === "Work from home" ? true : false}
+            onValueChange={(e) => {
+              if (item.location === "Work from home" ? true : false)
+                handleChange(e, item.id, "location")
+              else
+                handleChange("Work from home", item.id, "location")
+            }}
+            color={item.location === "Work from home" ? '#407BFF' : undefined}
+          />
+          <Text style={{ color: 'black', marginLeft: 4 }}>Work from home</Text>
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View>
+            <Text style={styles.label}>Start Date</Text>
+            <View style={{
+              backgroundColor: 'whitesmoke',
+              height: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: 10,
+              marginTop: 0,
+              padding: 5,
+              borderRadius: 25,
+            }}>
+              <TextInput
+                style={{
+                  height: 50,
+                  borderColor: 'transparent',
+                  borderWidth: 1,
+                  width: 130,
+                  padding: 10,
+                  fontSize: 16,
+                  borderRadius: 25,
+                }}
+                value={item.startDate ? item.startDate.slice(0, 10) : ''}
+                editable={false}
+              />
+              <Icon name="calendar" color="gray" size={24} onPress={() => handleDatePickerToggle(item.id, true)} />
+            </View>
+            {showDatePickerPro[item.id] && (
+              <DateTimePicker
+                value={item.startDate || new Date()}
+                mode="date"
+                display="default"
+                onChange={(e, d) => {
+                  if (d) {
+                    handleChange(d, item.id, "startDate")
+                  }
+                  handleDatePickerToggle(item.id, false);
+                }}
+              />
+            )}
+          </View>
+          <View>
+            <Text style={styles.label}>End Date</Text>
+            <View style={{
+              backgroundColor: 'whitesmoke',
+              height: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: 10,
+              marginTop: 0,
+              padding: 5,
+              borderRadius: 25,
+            }}>
+              <TextInput
+                style={{
+                  height: 50,
+                  borderColor: 'transparent',
+                  borderWidth: 1,
+                  width: 130,
+                  padding: 10,
+                  fontSize: 16,
+                  borderRadius: 25,
+                }}
+                value={item.endDate ? item.endDate.slice(0, 10) : ''}
+                editable={false}
+              />
+              <Icon name="calendar" color="gray" size={24} onPress={() => handleDatePickerToggle(item.id, true)} />
+            </View>
+            {showDatePickerPro[item.id] && (
+              <DateTimePicker
+                value={item.endDate || new Date()}
+                mode="date"
+                display="default"
+                onChange={(e, d) => {
+                  if (d) {
+                    handleChange(d, item.id, "endDate")
+                  }
+                  handleDatePickerToggle(item.id, false);
+                }}
+              />
+            )}
+          </View>
+        </View>
+        <View style={{
+          width: '95%',
+          margin: 5,
+          alignItems: 'center',
+          padding: 5,
+        }}>
+          <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
+            <Icon name="info-with-circle" size={14} color='#407BFF' style={{ marginRight: 10 }} />
+            Mention key internship responsibilites in max 3 - 4 points.
+            Use action verbs: Build, Led, Drove, Conceptualized, Learnt, etc.</Text>
+        </View>
+        <Text style={styles.label}>Work Description</Text>
+        <TextInput
           multiline
           editable
           numberOfLines={4}
           style={styles.multiline}
           value={item.description}
-          onChangeText={(e) => { handleDescriptionChange(e, item.id) }}
-        />)}
-        {showNew && <View>
-          <Text style={styles.label}>If you have been/ are an active part of societies, conducted any
-            events or led a team, add details here</Text>
-          <TextInput
-            multiline
-            editable
-            numberOfLines={4}
-            style={styles.multiline}
-            value={newDesc}
-            onChangeText={(e) => { setNewDesc(e) }}
-          />
-        </View>}
-        {!showSave ?
-          showNew ?
-            <TouchableOpacity style={styles.btn} onPress={() => handleSave("new")}>
-              <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save</Text>
-            </TouchableOpacity> :
-            <TouchableOpacity style={styles.btn} onPress={() => setShowNew(true)}>
-              <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Add new</Text>
-            </TouchableOpacity> :
-          <TouchableOpacity style={styles.btn} onPress={() => handleSave("old")}>
-            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save Changes</Text>
-          </TouchableOpacity>
-        }
-      </View>
-    )
-  }
-
-  const ShowInternshipCard = (props) => {
-    const [newInternship, setNewInternship] = useState({});
-    const [oldInternships, setOldInternships] = useState([]);
-    const [isChecked, setChecked] = useState(false);
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [showDatePicker1, setShowDatePicker1] = useState(false);
-    const [showDatePickerPro, setShowDatePickerPro] = useState({});
-    const [showNew, setShowNew] = useState(false);
-
-    useEffect(() => {
-      if (props.resumeDetails.internship && props.resumeDetails.internship.length > 0) {
-        console.log(props.resumeDetails.internship);
-        setOldInternships(props.resumeDetails.internship);
-      }
-    }, [props.resumeDetails])
-
-    const handleSave = (value) => {
-      let reqbody = {};
-      if (value === "new") {
-        if (props.resumeDetails.internship && props.resumeDetails.internship.length > 0) {
-          reqbody.internship = [...props.resumeDetails.internship]
-          let val = newInternship;
-          val.id = props.resumeDetails.internship.length;
-          reqbody.internship.push(val)
-        } else {
-          let val = newInternship;
-          val.id = 0;
-          reqbody.internship = [val]
-        }
-      } else {
-        //console.log("here is new idea", oldInternships);
-        reqbody.internship = oldInternships;
-      }
-      ResumeUpdation(talent_id, reqbody).then((res) => {
-        //console.log(res);
-        setNewInternship({});
-        if (res.status) {
-          props.setFetch(!props.fetch);
-          setShowNew(false);
-        }
-      })
-    }
-
-    const handleChange = (e, id, field) => {
-      const updatedData = oldInternships.map((item) => {
-        if (item.id === id) {
-          return { ...item, [field]: e };
-        }
-        return item;
-      });
-      setOldInternships(updatedData);
-    };
-
-    const handleDatePickerToggle = (id, bool) => {
-      setShowDatePickerPro((prevState) => ({
-        ...prevState,
-        [id]: bool,
-      }));
-    };
-
-    return (
-      <View>{
-        oldInternships && oldInternships.length > 0 && oldInternships.map((item, index) => <View key={item.id}>
-          <Text style={{textAlign:'center', fontWeight:'bold'}}>Internship - {index + 1} </Text>
-          <Text style={styles.label}>Position</Text>
-          <TextInput
-            style={styles.textField}
-            value={item.position}
-            onChangeText={(e) => { handleChange(e, item.id, "position") }}
-          />
-          <Text style={styles.label}>Organization</Text>
-          <TextInput
-            style={styles.textField}
-            value={item.organization}
-            onChangeText={(e) => { handleChange(e, item.id, "organization") }}
-          />
-          <Text style={styles.label}>Location</Text>
-          <TextInput
-            style={styles.textField}
-            value={item.location}
-            onChangeText={(e) => { handleChange(e, item.id, "location") }}
-          />
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
-            <Checkbox
-              value={item.location === "Work from home" ? true : false}
-              onValueChange={(e) => {
-                if (item.location === "Work from home" ? true : false)
-                  handleChange(e, item.id, "location")
-                else
-                  handleChange("Work from home", item.id, "location")
-              }}
-              color={item.location === "Work from home" ? '#407BFF' : undefined}
-            />
-            <Text style={{ color: 'black', marginLeft: 4 }}>Work from home</Text>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Start Date</Text>
-              <View style={{
-                backgroundColor: 'whitesmoke',
-                height: 50,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: 10,
-                marginTop: 0,
-                padding: 5,
-                borderRadius: 25,
-              }}>
-                <TextInput
-                  style={{
-                    height: 50,
-                    borderColor: 'transparent',
-                    borderWidth: 1,
-                    width: 130,
-                    padding: 10,
-                    fontSize: 16,
-                    borderRadius: 25,
-                  }}
-                  value={item.startDate ? item.startDate.slice(0, 10) : ''}
-                  editable={false}
-                />
-                <Icon name="calendar" color="gray" size={24} onPress={() => handleDatePickerToggle(item.id, true)} />
-              </View>
-              {showDatePickerPro[item.id] && (
-                <DateTimePicker
-                  value={item.startDate || new Date()}
-                  mode="date"
-                  display="default"
-                  onChange={(e, d) => {
-                    if (d) {
-                      handleChange(d, item.id, "startDate")
-                    }
-                    handleDatePickerToggle(item.id, false);
-                  }}
-                />
-              )}
-            </View>
-            <View>
-              <Text style={styles.label}>End Date</Text>
-              <View style={{
-                backgroundColor: 'whitesmoke',
-                height: 50,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: 10,
-                marginTop: 0,
-                padding: 5,
-                borderRadius: 25,
-              }}>
-                <TextInput
-                  style={{
-                    height: 50,
-                    borderColor: 'transparent',
-                    borderWidth: 1,
-                    width: 130,
-                    padding: 10,
-                    fontSize: 16,
-                    borderRadius: 25,
-                  }}
-                  value={item.endDate ? item.endDate.slice(0, 10) : ''}
-                  editable={false}
-                />
-                <Icon name="calendar" color="gray" size={24} onPress={() => handleDatePickerToggle(item.id, true)} />
-              </View>
-              {showDatePickerPro[item.id] && (
-                <DateTimePicker
-                  value={item.endDate || new Date()}
-                  mode="date"
-                  display="default"
-                  onChange={(e, d) => {
-                    if (d) {
-                      handleChange(d, item.id, "endDate")
-                    }
-                    handleDatePickerToggle(item.id, false);
-                  }}
-                />
-              )}
-            </View>
-          </View>
-          <View style={{
-            width: '95%',
-            margin: 5,
-            alignItems: 'center',
-            padding: 5,
-          }}>
-            <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
-              <Icon name="info-with-circle" size={14} color='#407BFF' style={{ marginRight: 10 }} />
-              Mention key internship responsibilites in max 3 - 4 points.
-              Use action verbs: Build, Led, Drove, Conceptualized, Learnt, etc.</Text>
-          </View>
-          <Text style={styles.label}>Work Description</Text>
-          <TextInput
-            multiline
-            editable
-            numberOfLines={4}
-            style={styles.multiline}
-            value={item.description}
-            onChangeText={(e) => { handleChange(e, item.id, "description") }}
-          />
-          <TouchableOpacity style={styles.btn} onPress={() => handleSave("old")}>
-            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save Changes</Text>
-          </TouchableOpacity>
-          <View style={styles.divider} />
-        </View>)
-      }
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: 15 }}>Add new internship </Text>
-        <Text style={styles.label}>Position</Text>
-        <TextInput
-          style={styles.textField}
-          value={newInternship.position}
-          onChangeText={(e) => { setNewInternship({ ...newInternship, position: e }) }}
+          onChangeText={(e) => { handleChange(e, item.id, "description") }}
         />
-        <Text style={styles.label}>Organization</Text>
-        <TextInput
-          style={styles.textField}
-          value={newInternship.organization}
-          onChangeText={(e) => { setNewInternship({ ...newInternship, organization: e }) }}
-        />
-        <Text style={styles.label}>Location</Text>
-        <TextInput
-          style={styles.textField}
-          value={newInternship.location}
-          onChangeText={(e) => { if (!isChecked) setNewInternship({ ...newInternship, location: e }) }}
-        />
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
-          <Checkbox
-            value={isChecked}
-            onValueChange={(e) => {
-              if (isChecked)
-                setNewInternship({ ...newInternship, location: "" })
-              else
-                setNewInternship({ ...newInternship, location: "Work from home" })
-              setChecked(!isChecked);
-            }}
-            color={isChecked ? '#407BFF' : undefined}
-          />
-          <Text style={{ color: 'black', marginLeft: 4 }}>Work from home</Text>
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View>
-            <Text style={styles.label}>Start Date</Text>
-            <View style={{
-              backgroundColor: 'whitesmoke',
-              height: 50,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 10,
-              marginTop: 0,
-              padding: 5,
-              borderRadius: 25,
-            }}>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 130,
-                  padding: 10,
-                  fontSize: 16,
-                  borderRadius: 25,
-                }}
-                value={newInternship.startDate ? newInternship.startDate.toISOString().slice(0, 10) : ''}
-                editable={false}
-              />
-              <Icon name="calendar" color="gray" size={24} onPress={() => setShowDatePicker(true)} />
-            </View>
-            {showDatePicker && (
-              <DateTimePicker
-                value={newInternship.startDate || new Date()}
-                mode="date"
-                display="default"
-                onChange={(e, d) => {
-                  if (d) {
-                    setNewInternship({ ...newInternship, startDate: d })
-                  }
-                  setShowDatePicker(false);
-                }}
-              />
-            )}
-          </View>
-          <View>
-            <Text style={styles.label}>End Date</Text>
-            <View style={{
-              backgroundColor: 'whitesmoke',
-              height: 50,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 10,
-              marginTop: 0,
-              padding: 5,
-              borderRadius: 25,
-            }}>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 130,
-                  padding: 10,
-                  fontSize: 16,
-                  borderRadius: 25,
-                }}
-                value={newInternship.endDate ? newInternship.endDate.toISOString().slice(0, 10) : ''}
-                editable={false}
-              />
-              <Icon name="calendar" color="gray" size={24} onPress={() => setShowDatePicker1(true)} />
-            </View>
-            {showDatePicker1 && (
-              <DateTimePicker
-                value={newInternship.endDate || new Date()}
-                mode="date"
-                display="default"
-                onChange={(e, d) => {
-                  if (d) {
-                    setNewInternship({ ...newInternship, endDate: d })
-                  }
-                  setShowDatePicker1(false);
-                }}
-              />
-            )}
-          </View>
-        </View>
-        <View style={{
-          width: '95%',
-          margin: 5,
-          alignItems: 'center',
-          padding: 5,
-        }}>
-          <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
-            <Icon name="info-with-circle" size={14} color='#407BFF' style={{ marginRight: 10 }} />
-            Mention key internship responsibilites in max 3 - 4 points.
-            Use action verbs: Build, Led, Drove, Conceptualized, Learnt, etc.</Text>
-        </View>
-        <Text style={styles.label}>Work Description</Text>
-        <TextInput
-          multiline
-          editable
-          numberOfLines={4}
-          style={styles.multiline}
-          value={newInternship.description}
-          onChangeText={(e) => { setNewInternship({ ...newInternship, description: e }) }}
-        />
-        <TouchableOpacity style={styles.btn} onPress={() => handleSave("new")}>
-          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save</Text>
+        <TouchableOpacity style={styles.btn} onPress={() => handleSave("old")}>
+          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save Changes</Text>
         </TouchableOpacity>
-      </View>
-    )
-  }
-
-  const ShowJobCard = (props) => {
-    const [newInternship, setNewInternship] = useState({});
-    const [oldInternships, setOldInternships] = useState([]);
-    const [isChecked, setChecked] = useState(false);
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [showDatePicker1, setShowDatePicker1] = useState(false);
-    const [showDatePickerPro, setShowDatePickerPro] = useState({});
-    const [showNew, setShowNew] = useState(false);
-
-    useEffect(() => {
-      if (props.resumeDetails.job && props.resumeDetails.job.length > 0) {
-        console.log(props.resumeDetails.job);
-        setOldInternships(props.resumeDetails.job);
-      }
-    }, [props.resumeDetails])
-
-    const handleSave = (value) => {
-      let reqbody = {};
-      if (value === "new") {
-        if (props.resumeDetails.job && props.resumeDetails.job.length > 0) {
-          reqbody.job = [...props.resumeDetails.job]
-          let val = newInternship;
-          val.id = props.resumeDetails.job.length;
-          reqbody.job.push(val)
-        } else {
-          let val = newInternship;
-          val.id = 0;
-          reqbody.job = [val]
-        }
-      } else {
-        //console.log("here is new idea", oldInternships);
-        reqbody.job = oldInternships;
-      }
-      ResumeUpdation(talent_id, reqbody).then((res) => {
-        //console.log(res);
-        setNewInternship({});
-        if (res.status) {
-          props.setFetch(!props.fetch);
-          setShowNew(false);
-        }
-      })
-    }
-
-    const handleChange = (e, id, field) => {
-      const updatedData = oldInternships.map((item) => {
-        if (item.id === id) {
-          return { ...item, [field]: e };
-        }
-        return item;
-      });
-      setOldInternships(updatedData);
-    };
-
-    const handleDatePickerToggle = (id, bool) => {
-      setShowDatePickerPro((prevState) => ({
-        ...prevState,
-        [id]: bool,
-      }));
-    };
-
-    return (
-      <View>{
-        oldInternships && oldInternships.length > 0 && oldInternships.map((item, index) => <View key={item.id}>
-          <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Job - {index + 1} </Text>
-          <Text style={styles.label}>Position</Text>
-          <TextInput
-            style={styles.textField}
-            value={item.position}
-            onChangeText={(e) => { handleChange(e, item.id, "position") }}
-          />
-          <Text style={styles.label}>Organization</Text>
-          <TextInput
-            style={styles.textField}
-            value={item.organization}
-            onChangeText={(e) => { handleChange(e, item.id, "organization") }}
-          />
-          <Text style={styles.label}>Location</Text>
-          <TextInput
-            style={styles.textField}
-            value={item.location}
-            onChangeText={(e) => { handleChange(e, item.id, "location") }}
-          />
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
-            <Checkbox
-              value={item.location === "Work from home" ? true : false}
-              onValueChange={(e) => {
-                if (item.location === "Work from home" ? true : false)
-                  handleChange(e, item.id, "location")
-                else
-                  handleChange("Work from home", item.id, "location")
-              }}
-              color={item.location === "Work from home" ? '#407BFF' : undefined}
-            />
-            <Text style={{ color: 'black', marginLeft: 4 }}>Work from home</Text>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Start Date</Text>
-              <View style={{
-                backgroundColor: 'whitesmoke',
-                height: 50,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: 10,
-                marginTop: 0,
-                padding: 5,
-                borderRadius: 25,
-              }}>
-                <TextInput
-                  style={{
-                    height: 50,
-                    borderColor: 'transparent',
-                    borderWidth: 1,
-                    width: 130,
-                    padding: 10,
-                    fontSize: 16,
-                    borderRadius: 25,
-                  }}
-                  value={item.startDate ? item.startDate.slice(0, 10) : ''}
-                  editable={false}
-                />
-                <Icon name="calendar" color="gray" size={24} onPress={() => handleDatePickerToggle(item.id, true)} />
-              </View>
-              {showDatePickerPro[item.id] && (
-                <DateTimePicker
-                  value={item.startDate || new Date()}
-                  mode="date"
-                  display="default"
-                  onChange={(e, d) => {
-                    if (d) {
-                      handleChange(d, item.id, "startDate")
-                    }
-                    handleDatePickerToggle(item.id, false);
-                  }}
-                />
-              )}
-            </View>
-            <View>
-              <Text style={styles.label}>End Date</Text>
-              <View style={{
-                backgroundColor: 'whitesmoke',
-                height: 50,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: 10,
-                marginTop: 0,
-                padding: 5,
-                borderRadius: 25,
-              }}>
-                <TextInput
-                  style={{
-                    height: 50,
-                    borderColor: 'transparent',
-                    borderWidth: 1,
-                    width: 130,
-                    padding: 10,
-                    fontSize: 16,
-                    borderRadius: 25,
-                  }}
-                  value={item.endDate ? item.endDate.slice(0, 10) : ''}
-                  editable={false}
-                />
-                <Icon name="calendar" color="gray" size={24} onPress={() => handleDatePickerToggle(item.id, true)} />
-              </View>
-              {showDatePickerPro[item.id] && (
-                <DateTimePicker
-                  value={item.endDate || new Date()}
-                  mode="date"
-                  display="default"
-                  onChange={(e, d) => {
-                    if (d) {
-                      handleChange(d, item.id, "endDate")
-                    }
-                    handleDatePickerToggle(item.id, false);
-                  }}
-                />
-              )}
-            </View>
-          </View>
-          <View style={{
-            width: '95%',
-            margin: 5,
-            alignItems: 'center',
-            padding: 5,
-          }}>
-            <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
-              <Icon name="info-with-circle" size={14} color='#407BFF' style={{ marginRight: 10 }} />
-              Mention key internship responsibilites in max 3 - 4 points.
-              Use action verbs: Build, Led, Drove, Conceptualized, Learnt, etc.</Text>
-          </View>
-          <Text style={styles.label}>Work Description</Text>
-          <TextInput
-            multiline
-            editable
-            numberOfLines={4}
-            style={styles.multiline}
-            value={item.description}
-            onChangeText={(e) => { handleChange(e, item.id, "description") }}
-          />
-          <TouchableOpacity style={styles.btn} onPress={() => handleSave("old")}>
-            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save Changes</Text>
-          </TouchableOpacity>
-          <View style={styles.divider} />
-        </View>)
-      }
-        <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: 15 }}>Add new Job </Text>
-        <Text style={styles.label}>Position</Text>
-        <TextInput
-          style={styles.textField}
-          value={newInternship.position}
-          onChangeText={(e) => { setNewInternship({ ...newInternship, position: e }) }}
-        />
-        <Text style={styles.label}>Organization</Text>
-        <TextInput
-          style={styles.textField}
-          value={newInternship.organization}
-          onChangeText={(e) => { setNewInternship({ ...newInternship, organization: e }) }}
-        />
-        <Text style={styles.label}>Location</Text>
-        <TextInput
-          style={styles.textField}
-          value={newInternship.location}
-          onChangeText={(e) => { if (!isChecked) setNewInternship({ ...newInternship, location: e }) }}
-        />
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
-          <Checkbox
-            value={isChecked}
-            onValueChange={(e) => {
-              if (isChecked)
-                setNewInternship({ ...newInternship, location: "" })
-              else
-                setNewInternship({ ...newInternship, location: "Work from home" })
-              setChecked(!isChecked);
-            }}
-            color={isChecked ? '#407BFF' : undefined}
-          />
-          <Text style={{ color: 'black', marginLeft: 4 }}>Work from home</Text>
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View>
-            <Text style={styles.label}>Start Date</Text>
-            <View style={{
-              backgroundColor: 'whitesmoke',
-              height: 50,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 10,
-              marginTop: 0,
-              padding: 5,
-              borderRadius: 25,
-            }}>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 130,
-                  padding: 10,
-                  fontSize: 16,
-                  borderRadius: 25,
-                }}
-                value={newInternship.startDate ? newInternship.startDate.toISOString().slice(0, 10) : ''}
-                editable={false}
-              />
-              <Icon name="calendar" color="gray" size={24} onPress={() => setShowDatePicker(true)} />
-            </View>
-            {showDatePicker && (
-              <DateTimePicker
-                value={newInternship.startDate || new Date()}
-                mode="date"
-                display="default"
-                onChange={(e, d) => {
-                  if (d) {
-                    setNewInternship({ ...newInternship, startDate: d })
-                  }
-                  setShowDatePicker(false);
-                }}
-              />
-            )}
-          </View>
-          <View>
-            <Text style={styles.label}>End Date</Text>
-            <View style={{
-              backgroundColor: 'whitesmoke',
-              height: 50,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 10,
-              marginTop: 0,
-              padding: 5,
-              borderRadius: 25,
-            }}>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 130,
-                  padding: 10,
-                  fontSize: 16,
-                  borderRadius: 25,
-                }}
-                value={newInternship.endDate ? newInternship.endDate.toISOString().slice(0, 10) : ''}
-                editable={false}
-              />
-              <Icon name="calendar" color="gray" size={24} onPress={() => setShowDatePicker1(true)} />
-            </View>
-            {showDatePicker1 && (
-              <DateTimePicker
-                value={newInternship.endDate || new Date()}
-                mode="date"
-                display="default"
-                onChange={(e, d) => {
-                  if (d) {
-                    setNewInternship({ ...newInternship, endDate: d })
-                  }
-                  setShowDatePicker1(false);
-                }}
-              />
-            )}
-          </View>
-        </View>
-        <View style={{
-          width: '95%',
-          margin: 5,
-          alignItems: 'center',
-          padding: 5,
-        }}>
-          <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
-            <Icon name="info-with-circle" size={14} color='#407BFF' style={{ marginRight: 10 }} />
-            Mention key internship responsibilites in max 3 - 4 points.
-            Use action verbs: Build, Led, Drove, Conceptualized, Learnt, etc.</Text>
-        </View>
-        <Text style={styles.label}>Work Description</Text>
-        <TextInput
-          multiline
-          editable
-          numberOfLines={4}
-          style={styles.multiline}
-          value={newInternship.description}
-          onChangeText={(e) => { setNewInternship({ ...newInternship, description: e }) }}
-        />
-        <TouchableOpacity style={styles.btn} onPress={() => handleSave("new")}>
-          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save</Text>
+        <TouchableOpacity onPress={() => handleDelete(item.id)}>
+          <Text style={{ color: 'red', fontSize: 14, textAlign: 'center', fontWeight: 'bold' }}>Erase Data</Text>
         </TouchableOpacity>
+        <View style={styles.divider} />
+      </View>)
+    }
+      <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: 15 }}>Add new internship </Text>
+      <Text style={styles.label}>Position</Text>
+      <TextInput
+        style={styles.textField}
+        value={newInternship.position}
+        onChangeText={(e) => { setNewInternship({ ...newInternship, position: e }) }}
+      />
+      <Text style={styles.label}>Organization</Text>
+      <TextInput
+        style={styles.textField}
+        value={newInternship.organization}
+        onChangeText={(e) => { setNewInternship({ ...newInternship, organization: e }) }}
+      />
+      <Text style={styles.label}>Location</Text>
+      <TextInput
+        style={styles.textField}
+        value={newInternship.location}
+        onChangeText={(e) => { if (!isChecked) setNewInternship({ ...newInternship, location: e }) }}
+      />
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
+        <Checkbox
+          value={isChecked}
+          onValueChange={(e) => {
+            if (isChecked)
+              setNewInternship({ ...newInternship, location: "" })
+            else
+              setNewInternship({ ...newInternship, location: "Work from home" })
+            setChecked(!isChecked);
+          }}
+          color={isChecked ? '#407BFF' : undefined}
+        />
+        <Text style={{ color: 'black', marginLeft: 4 }}>Work from home</Text>
       </View>
-    )
-  }
-
-  const ShowProjectCard = (props) => {
-    return (
-      <View>
-        <Text>Its Project</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View>
+          <Text style={styles.label}>Start Date</Text>
+          <View style={{
+            backgroundColor: 'whitesmoke',
+            height: 50,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 10,
+            marginTop: 0,
+            padding: 5,
+            borderRadius: 25,
+          }}>
+            <TextInput
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 130,
+                padding: 10,
+                fontSize: 16,
+                borderRadius: 25,
+              }}
+              value={newInternship.startDate ? newInternship.startDate.toISOString().slice(0, 10) : ''}
+              editable={false}
+            />
+            <Icon name="calendar" color="gray" size={24} onPress={() => setShowDatePicker(true)} />
+          </View>
+          {showDatePicker && (
+            <DateTimePicker
+              value={newInternship.startDate || new Date()}
+              mode="date"
+              display="default"
+              onChange={(e, d) => {
+                if (d) {
+                  setNewInternship({ ...newInternship, startDate: d })
+                }
+                setShowDatePicker(false);
+              }}
+            />
+          )}
+        </View>
+        <View>
+          <Text style={styles.label}>End Date</Text>
+          <View style={{
+            backgroundColor: 'whitesmoke',
+            height: 50,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 10,
+            marginTop: 0,
+            padding: 5,
+            borderRadius: 25,
+          }}>
+            <TextInput
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 130,
+                padding: 10,
+                fontSize: 16,
+                borderRadius: 25,
+              }}
+              value={newInternship.endDate ? newInternship.endDate.toISOString().slice(0, 10) : ''}
+              editable={false}
+            />
+            <Icon name="calendar" color="gray" size={24} onPress={() => setShowDatePicker1(true)} />
+          </View>
+          {showDatePicker1 && (
+            <DateTimePicker
+              value={newInternship.endDate || new Date()}
+              mode="date"
+              display="default"
+              onChange={(e, d) => {
+                if (d) {
+                  setNewInternship({ ...newInternship, endDate: d })
+                }
+                setShowDatePicker1(false);
+              }}
+            />
+          )}
+        </View>
       </View>
-    )
-  }
-
-  const ShowSkillsCard = (props) => {
-    return (
-      <View>
-        <Text>Its Skills</Text>
-      </View>
-    )
-  }
-
-  const ShowAccomplishmentCard = (props) => {
-    return (
-      <View>
-        <Text>Its Accomplishment</Text>
-      </View>
-    )
-  }
-
-  return (
-    <ScrollView>
       <View style={{
         width: '95%',
-        margin: 10,
+        margin: 5,
         alignItems: 'center',
         padding: 5,
       }}>
         <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
-          <Icon name="info-with-circle" size={12} color='#407BFF' style={{ marginRight: 10 }} />
-          Whenever you apply to an internship or job, this is the resume that the employer will see,
-          always make sure it is up to date.</Text>
+          <Icon name="info-with-circle" size={14} color='#407BFF' style={{ marginRight: 10 }} />
+          Mention key internship responsibilites in max 3 - 4 points.
+          Use action verbs: Build, Led, Drove, Conceptualized, Learnt, etc.</Text>
       </View>
-      <View style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 10,
-        minHeight: 50,
-        padding: 10,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-          <Text style={styles.header}>Education</Text>
-          {showEducation ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowEducation(false) }}>
-            <Icon name="minus" size={28} color='#407BFF' />
-          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowEducation(true) }}>
-            <Icon name="plus" size={28} color='#407BFF' />
-          </TouchableOpacity>}
-        </View>
-        {showEducation && <ShowEducationCard setShowEducation={setShowEducation} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
-      </View>
-
-      <View style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 10,
-        minHeight: 50,
-        padding: 10,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-          <Text style={styles.header}>Position of Responsibility</Text>
-          {showPosition ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowPosition(false) }}>
-            <Icon name="minus" size={28} color='#407BFF' />
-          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowPosition(true) }}>
-            <Icon name="plus" size={28} color='#407BFF' />
-          </TouchableOpacity>}
-        </View>
-        {showPosition && <ShowPositionCard setShowPosition={setShowPosition} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
-      </View>
-
-      <View style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 10,
-        minHeight: 50,
-        padding: 10,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-          <Text style={styles.header}>Internships</Text>
-          {showInternship ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowInternship(false) }}>
-            <Icon name="minus" size={28} color='#407BFF' />
-          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowInternship(true) }}>
-            <Icon name="plus" size={28} color='#407BFF' />
-          </TouchableOpacity>}
-        </View>
-        {showInternship && <ShowInternshipCard setShowInternship={setShowInternship} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
-      </View>
-
-      <View style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 10,
-        minHeight: 50,
-        padding: 10,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-          <Text style={styles.header}>Jobs</Text>
-          {showJob ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowJob(false) }}>
-            <Icon name="minus" size={28} color='#407BFF' />
-          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowJob(true) }}>
-            <Icon name="plus" size={28} color='#407BFF' />
-          </TouchableOpacity>}
-        </View>
-        {showJob && <ShowJobCard setShowJob={setShowJob} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
-      </View>
-
-      <View style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 10,
-        minHeight: 50,
-        padding: 10,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-          <Text style={styles.header}>Projects</Text>
-          {showProject ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowProject(false) }}>
-            <Icon name="minus" size={28} color='#407BFF' />
-          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowProject(true) }}>
-            <Icon name="plus" size={28} color='#407BFF' />
-          </TouchableOpacity>}
-        </View>
-        {showProject && <ShowProjectCard setShowProject={setShowProject} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
-      </View>
-
-      <View style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 10,
-        minHeight: 50,
-        padding: 10,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-          <Text style={styles.header}>Skills</Text>
-          {showSkills ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowSkills(false) }}>
-            <Icon name="minus" size={28} color='#407BFF' />
-          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowSkills(true) }}>
-            <Icon name="plus" size={28} color='#407BFF' />
-          </TouchableOpacity>}
-        </View>
-        {showSkills && <ShowSkillsCard setShowSkills={setShowSkills} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
-      </View>
-
-      <View style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 10,
-        minHeight: 50,
-        padding: 10,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-          <Text style={styles.header}>Accomplishments</Text>
-          {showAccomplishment ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowAccomplishment(false) }}>
-            <Icon name="minus" size={28} color='#407BFF' />
-          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowAccomplishment(true) }}>
-            <Icon name="plus" size={28} color='#407BFF' />
-          </TouchableOpacity>}
-        </View>
-        {showAccomplishment && <ShowAccomplishmentCard setShowAccomplishment={setShowAccomplishment} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
-      </View>
-
-    </ScrollView>
+      <Text style={styles.label}>Work Description</Text>
+      <TextInput
+        multiline
+        editable
+        numberOfLines={4}
+        style={styles.multiline}
+        value={newInternship.description}
+        onChangeText={(e) => { setNewInternship({ ...newInternship, description: e }) }}
+      />
+      <TouchableOpacity style={styles.btn} onPress={() => handleSave("new")}>
+        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save</Text>
+      </TouchableOpacity>
+    </View>
   )
+}
+
+const ShowJobCard = (props) => {
+  const [newInternship, setNewInternship] = useState({});
+  const [oldInternships, setOldInternships] = useState([]);
+  const [isChecked, setChecked] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showDatePicker1, setShowDatePicker1] = useState(false);
+  const [showDatePickerPro, setShowDatePickerPro] = useState({});
+  const [showNew, setShowNew] = useState(false);
+
+  useEffect(() => {
+    if (props.resumeDetails.job && props.resumeDetails.job.length > 0) {
+      console.log(props.resumeDetails.job);
+      setOldInternships(props.resumeDetails.job);
+    }
+  }, [props.resumeDetails])
+
+  const handleSave = (value) => {
+    let reqbody = {};
+    if (value === "new") {
+      if (props.resumeDetails.job && props.resumeDetails.job.length > 0) {
+        reqbody.job = [...props.resumeDetails.job]
+        let val = newInternship;
+        val.id = props.resumeDetails.job.length;
+        reqbody.job.push(val)
+      } else {
+        let val = newInternship;
+        val.id = 0;
+        reqbody.job = [val]
+      }
+    } else {
+      //console.log("here is new idea", oldInternships);
+      reqbody.job = oldInternships;
+    }
+    ResumeUpdation(talent_id, reqbody).then((res) => {
+      //console.log(res);
+      setNewInternship({});
+      if (res.status) {
+        props.setFetch(!props.fetch);
+        setShowNew(false);
+      }
+    })
+  }
+
+  const handleChange = (e, id, field) => {
+    const updatedData = oldInternships.map((item) => {
+      if (item.id === id) {
+        return { ...item, [field]: e };
+      }
+      return item;
+    });
+    setOldInternships(updatedData);
+  };
+
+  const handleDatePickerToggle = (id, bool) => {
+    setShowDatePickerPro((prevState) => ({
+      ...prevState,
+      [id]: bool,
+    }));
+  };
+
+  const handleDelete = (id) => {
+    let val = oldInternships;
+    let reqbody = {};
+    reqbody.job = val.filter((item) => item.id != id);
+
+    ResumeUpdation(talent_id, reqbody).then((res) => {
+      //console.log(res);
+      setNewInternship({});
+      if (res.status) {
+        props.setFetch(!props.fetch);
+        setShowNew(false);
+      }
+    })
+  }
+
+  return (
+    <View>{
+      oldInternships && oldInternships.length > 0 && oldInternships.map((item, index) => <View key={item.id}>
+        <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Job - {index + 1} </Text>
+        <Text style={styles.label}>Position</Text>
+        <TextInput
+          style={styles.textField}
+          value={item.position}
+          onChangeText={(e) => { handleChange(e, item.id, "position") }}
+        />
+        <Text style={styles.label}>Organization</Text>
+        <TextInput
+          style={styles.textField}
+          value={item.organization}
+          onChangeText={(e) => { handleChange(e, item.id, "organization") }}
+        />
+        <Text style={styles.label}>Location</Text>
+        <TextInput
+          style={styles.textField}
+          value={item.location}
+          onChangeText={(e) => { handleChange(e, item.id, "location") }}
+        />
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
+          <Checkbox
+            value={item.location === "Work from home" ? true : false}
+            onValueChange={(e) => {
+              if (item.location === "Work from home" ? true : false)
+                handleChange(e, item.id, "location")
+              else
+                handleChange("Work from home", item.id, "location")
+            }}
+            color={item.location === "Work from home" ? '#407BFF' : undefined}
+          />
+          <Text style={{ color: 'black', marginLeft: 4 }}>Work from home</Text>
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View>
+            <Text style={styles.label}>Start Date</Text>
+            <View style={{
+              backgroundColor: 'whitesmoke',
+              height: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: 10,
+              marginTop: 0,
+              padding: 5,
+              borderRadius: 25,
+            }}>
+              <TextInput
+                style={{
+                  height: 50,
+                  borderColor: 'transparent',
+                  borderWidth: 1,
+                  width: 130,
+                  padding: 10,
+                  fontSize: 16,
+                  borderRadius: 25,
+                }}
+                value={item.startDate ? item.startDate.slice(0, 10) : ''}
+                editable={false}
+              />
+              <Icon name="calendar" color="gray" size={24} onPress={() => handleDatePickerToggle(item.id, true)} />
+            </View>
+            {showDatePickerPro[item.id] && (
+              <DateTimePicker
+                value={item.startDate || new Date()}
+                mode="date"
+                display="default"
+                onChange={(e, d) => {
+                  if (d) {
+                    handleChange(d, item.id, "startDate")
+                  }
+                  handleDatePickerToggle(item.id, false);
+                }}
+              />
+            )}
+          </View>
+          <View>
+            <Text style={styles.label}>End Date</Text>
+            <View style={{
+              backgroundColor: 'whitesmoke',
+              height: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: 10,
+              marginTop: 0,
+              padding: 5,
+              borderRadius: 25,
+            }}>
+              <TextInput
+                style={{
+                  height: 50,
+                  borderColor: 'transparent',
+                  borderWidth: 1,
+                  width: 130,
+                  padding: 10,
+                  fontSize: 16,
+                  borderRadius: 25,
+                }}
+                value={item.endDate ? item.endDate.slice(0, 10) : ''}
+                editable={false}
+              />
+              <Icon name="calendar" color="gray" size={24} onPress={() => handleDatePickerToggle(item.id, true)} />
+            </View>
+            {showDatePickerPro[item.id] && (
+              <DateTimePicker
+                value={item.endDate || new Date()}
+                mode="date"
+                display="default"
+                onChange={(e, d) => {
+                  if (d) {
+                    handleChange(d, item.id, "endDate")
+                  }
+                  handleDatePickerToggle(item.id, false);
+                }}
+              />
+            )}
+          </View>
+        </View>
+        <View style={{
+          width: '95%',
+          margin: 5,
+          alignItems: 'center',
+          padding: 5,
+        }}>
+          <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
+            <Icon name="info-with-circle" size={14} color='#407BFF' style={{ marginRight: 10 }} />
+            Mention key internship responsibilites in max 3 - 4 points.
+            Use action verbs: Build, Led, Drove, Conceptualized, Learnt, etc.</Text>
+        </View>
+        <Text style={styles.label}>Work Description</Text>
+        <TextInput
+          multiline
+          editable
+          numberOfLines={4}
+          style={styles.multiline}
+          value={item.description}
+          onChangeText={(e) => { handleChange(e, item.id, "description") }}
+        />
+        <TouchableOpacity style={styles.btn} onPress={() => handleSave("old")}>
+          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save Changes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleDelete(item.id)}>
+          <Text style={{ color: 'red', fontSize: 14, textAlign: 'center', fontWeight: 'bold' }}>Erase Data</Text>
+        </TouchableOpacity>
+        <View style={styles.divider} />
+      </View>)
+    }
+      <Text style={{ textAlign: 'center', fontWeight: 'bold', marginTop: 15 }}>Add new Job </Text>
+      <Text style={styles.label}>Position</Text>
+      <TextInput
+        style={styles.textField}
+        value={newInternship.position}
+        onChangeText={(e) => { setNewInternship({ ...newInternship, position: e }) }}
+      />
+      <Text style={styles.label}>Organization</Text>
+      <TextInput
+        style={styles.textField}
+        value={newInternship.organization}
+        onChangeText={(e) => { setNewInternship({ ...newInternship, organization: e }) }}
+      />
+      <Text style={styles.label}>Location</Text>
+      <TextInput
+        style={styles.textField}
+        value={newInternship.location}
+        onChangeText={(e) => { if (!isChecked) setNewInternship({ ...newInternship, location: e }) }}
+      />
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
+        <Checkbox
+          value={isChecked}
+          onValueChange={(e) => {
+            if (isChecked)
+              setNewInternship({ ...newInternship, location: "" })
+            else
+              setNewInternship({ ...newInternship, location: "Work from home" })
+            setChecked(!isChecked);
+          }}
+          color={isChecked ? '#407BFF' : undefined}
+        />
+        <Text style={{ color: 'black', marginLeft: 4 }}>Work from home</Text>
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View>
+          <Text style={styles.label}>Start Date</Text>
+          <View style={{
+            backgroundColor: 'whitesmoke',
+            height: 50,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 10,
+            marginTop: 0,
+            padding: 5,
+            borderRadius: 25,
+          }}>
+            <TextInput
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 130,
+                padding: 10,
+                fontSize: 16,
+                borderRadius: 25,
+              }}
+              value={newInternship.startDate ? newInternship.startDate.toISOString().slice(0, 10) : ''}
+              editable={false}
+            />
+            <Icon name="calendar" color="gray" size={24} onPress={() => setShowDatePicker(true)} />
+          </View>
+          {showDatePicker && (
+            <DateTimePicker
+              value={newInternship.startDate || new Date()}
+              mode="date"
+              display="default"
+              onChange={(e, d) => {
+                if (d) {
+                  setNewInternship({ ...newInternship, startDate: d })
+                }
+                setShowDatePicker(false);
+              }}
+            />
+          )}
+        </View>
+        <View>
+          <Text style={styles.label}>End Date</Text>
+          <View style={{
+            backgroundColor: 'whitesmoke',
+            height: 50,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: 10,
+            marginTop: 0,
+            padding: 5,
+            borderRadius: 25,
+          }}>
+            <TextInput
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 130,
+                padding: 10,
+                fontSize: 16,
+                borderRadius: 25,
+              }}
+              value={newInternship.endDate ? newInternship.endDate.toISOString().slice(0, 10) : ''}
+              editable={false}
+            />
+            <Icon name="calendar" color="gray" size={24} onPress={() => setShowDatePicker1(true)} />
+          </View>
+          {showDatePicker1 && (
+            <DateTimePicker
+              value={newInternship.endDate || new Date()}
+              mode="date"
+              display="default"
+              onChange={(e, d) => {
+                if (d) {
+                  setNewInternship({ ...newInternship, endDate: d })
+                }
+                setShowDatePicker1(false);
+              }}
+            />
+          )}
+        </View>
+      </View>
+      <View style={{
+        width: '95%',
+        margin: 5,
+        alignItems: 'center',
+        padding: 5,
+      }}>
+        <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
+          <Icon name="info-with-circle" size={14} color='#407BFF' style={{ marginRight: 10 }} />
+          Mention key internship responsibilites in max 3 - 4 points.
+          Use action verbs: Build, Led, Drove, Conceptualized, Learnt, etc.</Text>
+      </View>
+      <Text style={styles.label}>Work Description</Text>
+      <TextInput
+        multiline
+        editable
+        numberOfLines={4}
+        style={styles.multiline}
+        value={newInternship.description}
+        onChangeText={(e) => { setNewInternship({ ...newInternship, description: e }) }}
+      />
+      <TouchableOpacity style={styles.btn} onPress={() => handleSave("new")}>
+        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save</Text>
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+const ShowProjectCard = (props) => {
+  return (
+    <View>
+      <Text>Its Project</Text>
+    </View>
+  )
+}
+
+const ShowSkillsCard = (props) => {
+  return (
+    <View>
+      <Text>Its Skills</Text>
+    </View>
+  )
+}
+
+const ShowAccomplishmentCard = (props) => {
+  return (
+    <View>
+      <Text>Its Accomplishment</Text>
+    </View>
+  )
+}
+
+return (
+  <ScrollView>
+    <View style={{
+      width: '95%',
+      margin: 10,
+      alignItems: 'center',
+      padding: 5,
+    }}>
+      <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
+        <Icon name="info-with-circle" size={12} color='#407BFF' style={{ marginRight: 10 }} />
+        Whenever you apply to an internship or job, this is the resume that the employer will see,
+        always make sure it is up to date.</Text>
+    </View>
+    <View style={{
+      backgroundColor: 'white',
+      borderRadius: 10,
+      margin: 10,
+      minHeight: 50,
+      padding: 10,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }}>
+        <Text style={styles.header}>Education</Text>
+        {showEducation ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowEducation(false) }}>
+          <Icon name="minus" size={28} color='#407BFF' />
+        </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowEducation(true) }}>
+          <Icon name="plus" size={28} color='#407BFF' />
+        </TouchableOpacity>}
+      </View>
+      {showEducation && <ShowEducationCard setShowEducation={setShowEducation} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
+    </View>
+
+    <View style={{
+      backgroundColor: 'white',
+      borderRadius: 10,
+      margin: 10,
+      minHeight: 50,
+      padding: 10,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }}>
+        <Text style={styles.header}>Position of Responsibility</Text>
+        {showPosition ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowPosition(false) }}>
+          <Icon name="minus" size={28} color='#407BFF' />
+        </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowPosition(true) }}>
+          <Icon name="plus" size={28} color='#407BFF' />
+        </TouchableOpacity>}
+      </View>
+      {showPosition && <ShowPositionCard setShowPosition={setShowPosition} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
+    </View>
+
+    <View style={{
+      backgroundColor: 'white',
+      borderRadius: 10,
+      margin: 10,
+      minHeight: 50,
+      padding: 10,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }}>
+        <Text style={styles.header}>Internships</Text>
+        {showInternship ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowInternship(false) }}>
+          <Icon name="minus" size={28} color='#407BFF' />
+        </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowInternship(true) }}>
+          <Icon name="plus" size={28} color='#407BFF' />
+        </TouchableOpacity>}
+      </View>
+      {showInternship && <ShowInternshipCard setShowInternship={setShowInternship} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
+    </View>
+
+    <View style={{
+      backgroundColor: 'white',
+      borderRadius: 10,
+      margin: 10,
+      minHeight: 50,
+      padding: 10,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }}>
+        <Text style={styles.header}>Jobs</Text>
+        {showJob ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowJob(false) }}>
+          <Icon name="minus" size={28} color='#407BFF' />
+        </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowJob(true) }}>
+          <Icon name="plus" size={28} color='#407BFF' />
+        </TouchableOpacity>}
+      </View>
+      {showJob && <ShowJobCard setShowJob={setShowJob} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
+    </View>
+
+    <View style={{
+      backgroundColor: 'white',
+      borderRadius: 10,
+      margin: 10,
+      minHeight: 50,
+      padding: 10,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }}>
+        <Text style={styles.header}>Projects</Text>
+        {showProject ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowProject(false) }}>
+          <Icon name="minus" size={28} color='#407BFF' />
+        </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowProject(true) }}>
+          <Icon name="plus" size={28} color='#407BFF' />
+        </TouchableOpacity>}
+      </View>
+      {showProject && <ShowProjectCard setShowProject={setShowProject} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
+    </View>
+
+    <View style={{
+      backgroundColor: 'white',
+      borderRadius: 10,
+      margin: 10,
+      minHeight: 50,
+      padding: 10,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }}>
+        <Text style={styles.header}>Skills</Text>
+        {showSkills ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowSkills(false) }}>
+          <Icon name="minus" size={28} color='#407BFF' />
+        </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowSkills(true) }}>
+          <Icon name="plus" size={28} color='#407BFF' />
+        </TouchableOpacity>}
+      </View>
+      {showSkills && <ShowSkillsCard setShowSkills={setShowSkills} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
+    </View>
+
+    <View style={{
+      backgroundColor: 'white',
+      borderRadius: 10,
+      margin: 10,
+      minHeight: 50,
+      padding: 10,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+      }}>
+        <Text style={styles.header}>Accomplishments</Text>
+        {showAccomplishment ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowAccomplishment(false) }}>
+          <Icon name="minus" size={28} color='#407BFF' />
+        </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowAccomplishment(true) }}>
+          <Icon name="plus" size={28} color='#407BFF' />
+        </TouchableOpacity>}
+      </View>
+      {showAccomplishment && <ShowAccomplishmentCard setShowAccomplishment={setShowAccomplishment} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
+    </View>
+
+  </ScrollView>
+)
 }
 
 export default EditResume
@@ -1790,5 +1847,16 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+  }, multilines: {
+    minHeight: 50,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    width: 320,
+    padding: 8,
+    backgroundColor: 'whitesmoke',
+    margin: 8,
+    fontSize: 16,
+    textAlign: 'left',
+    borderRadius: 25,
   },
 })

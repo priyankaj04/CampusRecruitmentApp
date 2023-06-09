@@ -22,6 +22,14 @@ import ChangePassword from './pages/ChangePassword';
 import ContactUs from './pages/ContactUs';
 import ViewQueries from './pages/ViewQueries';
 import EditResume from './pages/EditResume';
+import CreateApplication from './pages/CreateApplication';
+import RecruiterHome from './pages/RecruiterHome';
+import RecruiterLogin from './pages/RecruiterLogin';
+import RecruiterNotification from './pages/RecruiterNotification';
+import RecruiterRegister from './pages/RecruiterRegister';
+import RecruiterProfile from './pages/RecruiterProfile';
+import EditRecruiterProfile from './pages/EditRecruiterProfile';
+import RecruiterChangePassword from './pages/RecruiterChangePassword';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -67,13 +75,55 @@ const HomePage = ({ navigation }) => {
   );
 }
 
+const RecruiterHomes = ({ navigation }) => {
+  return (
+    <Tab.Navigator initialRouteName='RecruiterHome' screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+        if (route.name === 'RecruiterHome') {
+          iconName = "home";
+        } else if (route.name === 'RecruiterProfile') {
+          iconName = 'user';
+        } else if (route.name === 'CreateApplication') {
+          iconName = 'plus';
+        }
+
+        // You can return any component that you like here!
+        return <Icon name={iconName} size={size} color={color} />;
+      },
+      tabBarActiveTintColor: '#407BFF',
+      tabBarInactiveTintColor: 'gray',
+    })}>
+      <Tab.Screen name="RecruiterHome" component={RecruiterHome}
+        options={{
+          title: 'Home',
+          headerRight: () => (
+            <Icon
+              name="bell"
+              size={22}
+              color="black"
+              style={{ marginLeft: 5, marginRight: 15 }}
+              onPress={() => navigation.navigate('RecruiterNotification')}
+            />
+          ),
+        }} />
+      <Tab.Screen name="CreateApplication" options={{
+        title: 'Create Applicaiton',
+      }} component={CreateApplication} />
+      <Tab.Screen name="RecruiterProfile" options={{
+        title: 'Profile',
+      }} component={RecruiterProfile} />
+    </Tab.Navigator>
+  );
+}
+
 export default function App() {
   const navigationRef = useNavigationContainerRef();
 
   return (
     <NavigationContainer ref={navigationRef} independent={true} >
       <StatusBar hidden />
-      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="EditProfile">
+      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="SplashScreen">
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
@@ -104,6 +154,15 @@ export default function App() {
           }}
         />
         <Stack.Screen
+          name="IndexRecruiter"
+          component={RecruiterHomes}
+          options={{
+            headerShown: false,
+            title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
           name="Login"
           component={Login}
           options={{
@@ -115,6 +174,24 @@ export default function App() {
         <Stack.Screen
           name="Register"
           component={Register}
+          options={{
+            headerShown: false,
+            title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
+          name="RecruiterLogin"
+          component={RecruiterLogin}
+          options={{
+            headerShown: false,
+            title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
+          name="RecruiterRegister"
+          component={RecruiterRegister}
           options={{
             headerShown: false,
             title: '',
@@ -137,6 +214,23 @@ export default function App() {
             ),
           }}
         />
+        <Stack.Screen
+          name="EditRecruiterProfile"
+          component={EditRecruiterProfile}
+          options={{
+            title: "Edit information",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.navigate('RecruiterProfile')}
+              />
+            ),
+          }}
+        />
+
         <Stack.Screen
           name="EditResume"
           component={EditResume}
@@ -164,7 +258,23 @@ export default function App() {
                 size={30}
                 color="black"
                 style={{ marginLeft: 5, marginRight: 10 }}
-                onPress={() => navigationRef.navigate('Index')}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="RecruiterChangePassword"
+          component={RecruiterChangePassword}
+          options={{
+            title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.navigate('RecruiterProfile')}
               />
             ),
           }}
@@ -180,7 +290,7 @@ export default function App() {
                 size={30}
                 color="black"
                 style={{ marginLeft: 5, marginRight: 10 }}
-                onPress={() => navigationRef.navigate('Profile')}
+                onPress={() => navigationRef.goBack()}
               />
             ),
           }}
@@ -196,7 +306,7 @@ export default function App() {
                 size={30}
                 color="black"
                 style={{ marginLeft: 5, marginRight: 10 }}
-                onPress={() => navigationRef.navigate('Profile')}
+                onPress={() => navigationRef.goBack()}
               />
             ),
           }}
@@ -261,6 +371,22 @@ export default function App() {
                 color="black"
                 style={{ marginLeft: 5, marginRight: 10 }}
                 onPress={() => navigationRef.navigate('Index')}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="RecruiterNotification"
+          component={RecruiterNotification}
+          options={{
+            title: "Notification",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.navigate('RecruiterHome')}
               />
             ),
           }}

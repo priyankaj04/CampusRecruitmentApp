@@ -1,10 +1,10 @@
 import { StyleSheet, Text, View, Image, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { TalentDetailsByReg, ChangeTalentPassword } from '../api';
+import { TalentDetailsById, ChangeTalentPassword, ChangeRecruiterPassword, RecruiterDetailsById } from '../api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const ChangePassword = ({ navigation }) => {
-    const id = 'e35147fb-b336-4858-9dc1-2438a5524a7c';
+const ChangePassword = ({ route, navigation }) => {
+    const { id, type } = route.params;
     const [oldpassword, setOldpassword] = useState('');
     const [newpassword, setNewpassword] = useState('');
     const [oldpass, setOldpass] = useState('');
@@ -16,38 +16,67 @@ const ChangePassword = ({ navigation }) => {
     const [talentid, setTalentid] = useState('');
 
     useEffect(() => {
-        TalentDetailsByReg(id).then((res) => {
-            if (res.status) {
-                setTalentid(res.data[0].talent_id);
-                setOldpass(res.data[0].password);
-            }
-            setIsLoading(false);
-        })
+        if (type == "talent") {
+            TalentDetailsById(id).then((res) => {
+                if (res.status) {
+                    setTalentid(res.data[0].talent_id);
+                    setOldpass(res.data[0].password);
+                }
+                setIsLoading(false);
+            })
+        } else if (type == "recruiter") {
+            RecruiterDetailsById(id).then((res) => {
+                if (res.status) {
+                    setTalentid(res.data[0].recruiter_id);
+                    setOldpass(res.data[0].password);
+                }
+                setIsLoading(false);
+            })
+        }
     }, [])
 
     const handleClick = () => {
         if (confirm != newpassword) {
             setShowMsg(true);
             setMsg("Sorry, but the password and confirm password entries must match. Please double-check and try again.")
+        } else if (newpassword.length < 8) {
+            setShowMsg(true);
+            setMsg("Sorry, but the password should contain 8 characters. Please double-check and try again.")
+        } else if (!confirm || confirm.length == 0 || !newpassword || newpassword.length == 0 || !oldpassword || oldpassword.length == 0) {
+            setShowMsg(true);
+            setMsg("All fields are required.");
         } else {
             setShowMsg(false);
             setIsLoading(true);
             let reqbody = { password: oldpassword, newpassword: newpassword }
             //console.log(reqbody);
-            ChangeTalentPassword(reqbody, talentid).then((res) => {
-                //console.log(res);
-                if (res.status) {
-                    navigation.navigate('Profile');
+            if (type == "talent") {
+                ChangeTalentPassword(reqbody, talentid).then((res) => {
+                    //console.log(res);
+                    if (res.status) {
+                        navigation.navigate('Profile');
+                        setIsLoading(false);
+                    } else {
+                        setShowMsg(true);
+                        setMsg(res.data.message);
+                    }
                     setIsLoading(false);
-                } else {
-                    setShowMsg(true);
-                    setMsg(res.data.message);
-                }
-                setIsLoading(false);
-            })
+                })
+            } else if (type == "recruiter") {
+                ChangeRecruiterPassword(reqbody, talentid).then((res) => {
+                    if (res.status) {
+                        navigation.navigate('RecruiterProfile');
+                        setIsLoading(false);
+                    } else {
+                        setShowMsg(true);
+                        setMsg(res.data.message);
+                    }
+                    setIsLoading(false);
+                })
+            }
         }
     }
-    
+
 
     return (
         <ScrollView>

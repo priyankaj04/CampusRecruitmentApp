@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react'
 import { NewQuery } from '../api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const ContactUs = ({ navigation }) => {
-  const id = 'e35147fb-b336-4858-9dc1-2438a5524a7c';
-  const type = 'talent';
+const ContactUs = ({route, navigation }) => {
+  const id = route.params.id;
+  const type = route.params.type;
   const [query, setQuery] = useState('');
   const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
