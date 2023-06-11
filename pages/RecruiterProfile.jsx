@@ -56,13 +56,13 @@ const RecruiterProfile = ({ navigation }) => {
                 color: 'gray',
                 margin: 0
               }}>{details.email}</Text>
-                <Text style={{
-                  fontWeight: 'bold',
-                  color: 'gray',
-                  margin: 0
-                }}>{details.company_name}</Text>
+              <Text style={{
+                fontWeight: 'bold',
+                color: 'gray',
+                margin: 0
+              }}>{details.company_name}</Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('EditRecruiterProfile', {id: id})}
+                onPress={() => navigation.navigate('EditRecruiterProfile', { id: id })}
                 style={{
                   backgroundColor: '#407BFF',
                   width: 100,
@@ -90,7 +90,7 @@ const RecruiterProfile = ({ navigation }) => {
             flexDirection: 'row',
             borderRadius: 15,
             alignItems: 'center'
-          }} onPress={() => navigation.navigate('ChangePassword', { id: id, type: 'recruiter'})}>
+          }} onPress={() => navigation.navigate('ChangePassword', { id: id, type: 'recruiter' })}>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center' }}> <Icon name="key-variant" size={24} color='#407BFF' />  Change Password</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>
@@ -132,7 +132,7 @@ const RecruiterProfile = ({ navigation }) => {
             flexDirection: 'row',
             borderRadius: 15,
             alignItems: 'center'
-          }} onPress={() => navigation.navigate('RecruiterLogin')}>
+          }} onPress={() => navigation.navigate('Getstarted')}>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center', color: 'red' }}> Logout</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>

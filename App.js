@@ -77,7 +77,7 @@ const HomePage = ({ navigation }) => {
 
 const RecruiterHomes = ({ navigation }) => {
   return (
-    <Tab.Navigator initialRouteName='RecruiterHome' screenOptions={({ route }) => ({
+    <Tab.Navigator initialRouteName='CreateApplication' screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
         if (route.name === 'RecruiterHome') {
@@ -123,7 +123,7 @@ export default function App() {
   return (
     <NavigationContainer ref={navigationRef} independent={true} >
       <StatusBar hidden />
-      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="SplashScreen">
+      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="IndexRecruiter">
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}

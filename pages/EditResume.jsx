@@ -1145,7 +1145,7 @@ const ShowInternshipCard = (props) => {
           </View>
           {showDatePicker && (
             <DateTimePicker
-              value={newInternship.startDate || new Date()}
+              value={new Date(newInternship.startDate) || new Date()}
               mode="date"
               display="default"
               onChange={(e, d) => {
@@ -1187,7 +1187,7 @@ const ShowInternshipCard = (props) => {
           </View>
           {showDatePicker1 && (
             <DateTimePicker
-              value={newInternship.endDate || new Date()}
+              value={new Date(newInternship.endDate) || new Date()}
               mode="date"
               display="default"
               onChange={(e, d) => {
@@ -1368,7 +1368,7 @@ const ShowJobCard = (props) => {
             </View>
             {showDatePickerPro[item.id] && (
               <DateTimePicker
-                value={item.startDate || new Date()}
+                value={ new Date()}
                 mode="date"
                 display="default"
                 onChange={(e, d) => {
@@ -1410,7 +1410,7 @@ const ShowJobCard = (props) => {
             </View>
             {showDatePickerPro[item.id] && (
               <DateTimePicker
-                value={item.endDate || new Date()}
+                value={new Date()}
                 mode="date"
                 display="default"
                 onChange={(e, d) => {

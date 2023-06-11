@@ -164,7 +164,7 @@ const RecruiterRegister = ({ navigation }) => {
             />
             {showHelper && msg && msg.value === 'name' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
             <TextInput
-              placeholder="Email"
+              placeholder="Official Email Id"
               style={{
                 height: 50,
                 borderColor: 'transparent',

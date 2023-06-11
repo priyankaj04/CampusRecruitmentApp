@@ -134,7 +134,7 @@ const Profile = ({ navigation }) => {
             flexDirection: 'row',
             borderRadius: 15,
             alignItems: 'center'
-          }} onPress={() => navigation.navigate('Login')}>
+          }} onPress={() => navigation.navigate('Getstarted')}>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center', color: 'red' }}> Logout</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>
