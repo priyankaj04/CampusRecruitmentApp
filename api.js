@@ -1,7 +1,7 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.204.27:8000';
+const URL = 'http://192.168.0.101:8000';
 
 //student registration
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
@@ -267,6 +267,24 @@ export const ResumeDetailsByTalentID = async (id) => {
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const CreateJob = async (id, reqbody) => {
+    const url = URL + '/api/application/create/' + id;
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
     };
     //console.log("slkdfdfdjfsldf",reqbody)
     return await fetch(url, fetchOptions)

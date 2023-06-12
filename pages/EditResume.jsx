@@ -747,7 +747,7 @@ const EditResume = ({ route, navigation }) => {
 
     useEffect(() => {
       if (props.resumeDetails.position_of_responsibility && props.resumeDetails.position_of_responsibility.length > 0) {
-        console.log(props.resumeDetails.position_of_responsibility);
+        //console.log(props.resumeDetails.position_of_responsibility);
         setOldDesc(props.resumeDetails.position_of_responsibility);
       }
     }, [props.resumeDetails])
@@ -765,9 +765,9 @@ const EditResume = ({ route, navigation }) => {
             description: newDesc
           }]
         }
-        console.log(reqbody)
+        //console.log(reqbody)
         ResumeUpdation(talent_id, reqbody).then((res) => {
-          console.log(res);
+          //console.log(res);
           setNewDesc('');
           if (res.status) {
             props.setFetch(!props.fetch);
@@ -776,7 +776,7 @@ const EditResume = ({ route, navigation }) => {
       } else {
         reqbody.position_of_responsibility = oldDesc;
         ResumeUpdation(talent_id, reqbody).then((res) => {
-          console.log(res);
+          //console.log(res);
           setNewDesc('');
           if (res.status) {
             props.setFetch(!props.fetch);
@@ -803,7 +803,7 @@ const EditResume = ({ route, navigation }) => {
       reqbody.position_of_responsibility = val.filter((item) => item.id != id);
 
       ResumeUpdation(talent_id, reqbody).then((res) => {
-        console.log(res);
+        //console.log(res);
         setNewDesc('');
         if (res.status) {
           props.setFetch(!props.fetch);
@@ -867,7 +867,7 @@ const ShowInternshipCard = (props) => {
 
   useEffect(() => {
     if (props.resumeDetails.internship && props.resumeDetails.internship.length > 0) {
-      console.log(props.resumeDetails.internship);
+      //console.log(props.resumeDetails.internship);
       setOldInternships(props.resumeDetails.internship);
     }
   }, [props.resumeDetails])
