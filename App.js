@@ -30,6 +30,7 @@ import RecruiterRegister from './pages/RecruiterRegister';
 import RecruiterProfile from './pages/RecruiterProfile';
 import EditRecruiterProfile from './pages/EditRecruiterProfile';
 import RecruiterChangePassword from './pages/RecruiterChangePassword';
+import ViewResume from './pages/ViewResume';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -123,7 +124,7 @@ export default function App() {
   return (
     <NavigationContainer ref={navigationRef} independent={true} >
       <StatusBar hidden />
-      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="IndexRecruiter">
+      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="ViewResume">
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
@@ -252,6 +253,22 @@ export default function App() {
           component={ChangePassword}
           options={{
             title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="ViewResume"
+          component={ViewResume}
+          options={{
+            title: "Your Resume",
             headerLeft: () => (
               <Icon
                 name="angle-left"
