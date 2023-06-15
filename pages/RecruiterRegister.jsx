@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { RecruiterRegisteration } from '../api'
+import { RecruiterRegisteration, AdminRegisteration } from '../api'
 
 const RecruiterRegister = ({ navigation }) => {
 
@@ -15,7 +15,8 @@ const RecruiterRegister = ({ navigation }) => {
   const [showHelper, setShowHelper] = useState(false);
   const [msg, setMsg] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [confirmpass, setConfirmpass] = useState('')
+  const [confirmpass, setConfirmpass] = useState('');
+  const [code, setCode] = useState('');
 
   function hasNumbers(text) {
     const regex = /\d/;
@@ -34,60 +35,99 @@ const RecruiterRegister = ({ navigation }) => {
 
 
   const handleClick = () => {
-    if (!company_name || company_name.length === 0 || !firstname || firstname.length === 0 || !lastname
-      || lastname.length === 0 || !email || email.length === 0 || !password || password.length === 0 || !contact_no || contact_no.length === 0) {
-      setShowHelper(true);
-      setMsg({ value: 'all', msg: 'All fields are mandatory.' });
-    } else if (isInvalidEmail(email)) {
-      setShowHelper(true);
-      setMsg({ value: 'email', msg: 'Invalid Email' });
-    } else if (hasNumbers(firstname) || hasNumbers(lastname)) {
-      setShowHelper(true);
-      setMsg({ value: 'name', msg: 'Name cannot contain numbers.' });
-    } else if (password && password.length < 8) {
-      setShowHelper(true);
-      setMsg({ value: 'password', msg: 'Password should be at least 8 characters long.' });
-    } else if (password != confirmpass) {
-      setShowHelper(true);
-      setMsg({ value: 'password', msg: 'Password do not match.' });
-    } else if (contact_no.length != 10) {
-      setShowHelper(true);
-      setMsg({ value: 'contactno', msg: 'Contact No should be 10 digits only.' });
-    } else if (isInvalidContactNumber(contact_no)) {
-      setShowHelper(true);
-      setMsg({ value: 'contactno', msg: 'Contact No should only contain digits.' });
-    } else {
-      setIsLoading(true);
-      setShowHelper(false);
-      let reqbody = {
+    if (firstname === 'admin') {
+      if (!lastname || lastname.length === 0 || !email || email.length === 0 || !password || password.length === 0 || !contact_no || contact_no.length === 0) {
+        setShowHelper(true);
+        setMsg({ value: 'all', msg: 'All fields are mandatory.' });
+        return;
+      }
+      reqbody = {
+        code,
         firstname,
         lastname,
         email,
-        company_name,
-        contact_no,
-        password
+        password,
+        contactno : contact_no
       }
-      //console.log("11211",reqbody);
-      RecruiterRegisteration(reqbody).then((res) => {
+      AdminRegisteration(reqbody).then((res) => {
+        console.log(res);
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          navigation.navigate('IndexRecruiter');
+          navigation.navigate("Dashboard");
         } else {
-          setShowHelper(true);
-          //console.log("ERROR", res);
-          setMsg({ value: 'all', msg: res.message });
           setIsLoading(false);
+          setShowHelper(true);
+          setMsg({ value: 'all', msg: res.message });
         }
-        //console.log("reponsehere", res);
-        setIsLoading(false);
       })
-        .catch((err) => {
-          //console.log(err);
+    } else {
+      if (!company_name || company_name.length === 0 || !firstname || firstname.length === 0 || !lastname
+        || lastname.length === 0 || !email || email.length === 0 || !password || password.length === 0 || !contact_no || contact_no.length === 0) {
+        setShowHelper(true);
+        setMsg({ value: 'all', msg: 'All fields are mandatory.' });
+        return;
+      } else if (isInvalidEmail(email)) {
+        setShowHelper(true);
+        setMsg({ value: 'email', msg: 'Invalid Email' });
+        return;
+      } else if (hasNumbers(firstname) || hasNumbers(lastname)) {
+        setShowHelper(true);
+        setMsg({ value: 'name', msg: 'Name cannot contain numbers.' });
+        return;
+      } else if (password && password.length < 8) {
+        setShowHelper(true);
+        setMsg({ value: 'password', msg: 'Password should be at least 8 characters long.' });
+        return;
+      } else if (password != confirmpass) {
+        setShowHelper(true);
+        setMsg({ value: 'password', msg: 'Password do not match.' });
+        return;
+      } else if (contact_no.length != 10) {
+        setShowHelper(true);
+        setMsg({ value: 'contactno', msg: 'Contact No should be 10 digits only.' });
+        return;
+      } else if (isInvalidContactNumber(contact_no)) {
+        setShowHelper(true);
+        setMsg({ value: 'contactno', msg: 'Contact No should only contain digits.' });
+        return;
+      } else {
+        setIsLoading(true);
+        setShowHelper(false);
+        let reqbody = {
+          firstname,
+          lastname,
+          email,
+          company_name,
+          contact_no,
+          password
+        }
+        //console.log("11211",reqbody);
+        RecruiterRegisteration(reqbody).then((res) => {
+          if (res.status) {
+            setIsLoading(false);
+            setShowHelper(false);
+            navigation.navigate('IndexRecruiter');
+          } else {
+            setShowHelper(true);
+            //console.log("ERROR", res);
+            setMsg({ value: 'all', msg: res.message });
+            setIsLoading(false);
+          }
+          //console.log("reponsehere", res);
           setIsLoading(false);
         })
+          .catch((err) => {
+            //console.log(err);
+            setShowHelper(true);
+            setMsg({ value: 'all', msg: err });
+            setIsLoading(false);
+          })
+      }
     }
   }
+
+
   return (
     <ScrollView >
       <View style={styles.container}>
@@ -111,24 +151,6 @@ const RecruiterRegister = ({ navigation }) => {
         <KeyboardAvoidingView >
           <View style={{ alignItems: 'center' }}>
             <TextInput
-              placeholder="Company Name"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              onChangeText={(e) => setCompany(e)}
-              value={company_name}
-              keyboardType="default"
-            />
-            {showHelper && msg && msg.value === 'companyname' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            <TextInput
               placeholder="First Name"
               style={{
                 height: 50,
@@ -146,7 +168,7 @@ const RecruiterRegister = ({ navigation }) => {
               inputMode="text"
             />
             <TextInput
-              placeholder="Last Name"
+              placeholder={!firstname || firstname != "admin" ? "Last Name" : "Full Name"}
               style={{
                 height: 50,
                 borderColor: 'transparent',
@@ -163,8 +185,44 @@ const RecruiterRegister = ({ navigation }) => {
               inputMode="text"
             />
             {showHelper && msg && msg.value === 'name' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
+            {firstname && firstname == 'admin' && <TextInput
+              placeholder="Code"
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 350,
+                borderRadius: 25,
+                padding: 10,
+                backgroundColor: '#e5e5e5',
+                margin: 10,
+                fontSize: 16
+              }}
+              secureTextEntry
+              onChangeText={(e) => setCode(e)}
+              value={code}
+              inputMode="text"
+            />}
+            {!firstname || firstname != "admin" ? <TextInput
+              placeholder="Company Name"
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 350,
+                borderRadius: 25,
+                padding: 10,
+                backgroundColor: '#e5e5e5',
+                margin: 10,
+                fontSize: 16
+              }}
+              onChangeText={(e) => setCompany(e)}
+              value={company_name}
+              keyboardType="default"
+            /> : null}
+            {showHelper && msg && msg.value === 'companyname' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
             <TextInput
-              placeholder="Official Email Id"
+              placeholder={!firstname || firstname != "admin" ? "Official Email Id" : "Email Id"}
               style={{
                 height: 50,
                 borderColor: 'transparent',
@@ -182,7 +240,6 @@ const RecruiterRegister = ({ navigation }) => {
               keyboardType="email-address"
             />
             {showHelper && msg && msg.value === 'email' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            
             <TextInput
               placeholder="Contact No"
               style={{

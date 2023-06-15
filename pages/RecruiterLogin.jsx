@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { RecruiterLoginForm } from '../api';
+import { RecruiterLoginForm, AdminLoginForm } from '../api';
 
 const RecruiterLogin = ({ navigation }) => {
 
-  const [company_name, setCompany] = useState('');
+  const [email, setEmail] = useState('');
+  const [email1, setEmail1] = useState('');
   const [password, setPassword] = useState('');
   const [visible, setVisible] = useState(false);
   const [showHelper, setShowHelper] = useState(false);
@@ -13,26 +14,21 @@ const RecruiterLogin = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = () => {
-    if (!password || password.length === 0 || company_name.length === 0 || !company_name) {
-      setShowHelper(true);
-      setMsg('All fields are required');
-    } else if (password && password.length < 8) {
-      setShowHelper(true);
-      setMsg('Password must be at least 8 characters');
-    } else {
-      setShowHelper(false);
-      setIsLoading(true);
+
+    if (email == 'admin') {
+      if (!password || password.length === 0 || email1.length === 0 || !email1) {
+        setShowHelper(true);
+        setMsg('All fields are required'); return;
+      } 
       let reqbody = {
-        company_name,
+        email:email1,
         password
       }
-      //student login
-      RecruiterLoginForm(reqbody).then((res) => {
-        console.log("its response", res);
+      AdminLoginForm(reqbody).then((res) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          navigation.navigate('IndexRecruiter');
+          navigation.navigate('Dashboard');
         } else {
           setShowHelper(true);
           setMsg(res.data.message);
@@ -41,8 +37,45 @@ const RecruiterLogin = ({ navigation }) => {
       }).catch((err) => {
         console.log("it failed", err);
         setIsLoading(false);
+        setShowHelper(true);
+        setMsg(err);
       })
-      //
+    } else {
+      if (!password || password.length === 0 || email.length === 0 || !email) {
+        setShowHelper(true);
+        setMsg('All fields are required');
+        return;
+      } else if (password && password.length < 8) {
+        setShowHelper(true);
+        setMsg('Password must be at least 8 characters');
+        return;
+      } else {
+        setShowHelper(false);
+        setIsLoading(true);
+        let reqbody = {
+          email,
+          password
+        }
+        //student login
+        RecruiterLoginForm(reqbody).then((res) => {
+          console.log("its response", res);
+          if (res.status) {
+            setIsLoading(false);
+            setShowHelper(false);
+            navigation.navigate('IndexRecruiter');
+          } else {
+            setShowHelper(true);
+            setMsg(res.data.message);
+            setIsLoading(false);
+          }
+        }).catch((err) => {
+          console.log("it failed", err);
+          setIsLoading(false);
+          setShowHelper(true);
+          setMsg(err);
+        })
+        //
+      }
     }
   }
   return (
@@ -65,7 +98,7 @@ const RecruiterLogin = ({ navigation }) => {
         />
         <KeyboardAvoidingView >
           <TextInput
-            placeholder="Company Name"
+            placeholder="Email"
             style={{
               height: 50,
               borderColor: 'transparent',
@@ -77,10 +110,28 @@ const RecruiterLogin = ({ navigation }) => {
               margin: 10,
               fontSize: 16
             }}
-            onChangeText={(e) => setCompany(e)}
-            value={company_name}
+            onChangeText={(e) => setEmail(e)}
+            value={email}
             keyboardType="default"
-          />
+          />{email && email == 'admin' &&
+            <TextInput
+              placeholder="Email"
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 350,
+                borderRadius: 25,
+                padding: 10,
+                backgroundColor: '#e5e5e5',
+                margin: 10,
+                fontSize: 16
+              }}
+              onChangeText={(e) => setEmail1(e)}
+              value={email1}
+              keyboardType="default"
+            />
+          }
           <View style={{
             backgroundColor: '#e5e5e5',
             height: 50,

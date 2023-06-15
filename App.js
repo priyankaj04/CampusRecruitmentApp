@@ -33,6 +33,11 @@ import RecruiterChangePassword from './pages/RecruiterChangePassword';
 import ViewResume from './pages/ViewResume';
 import SendOTP from './pages/SendOTP';
 import ForgotPassword from './pages/ForgotPassword';
+import SmsOTP from './pages/SmsOTP';
+import Dashboard from './pages/Dashboard';
+import AdminProfile from './pages/AdminProfile';
+import AdminQueries from './pages/AdminQueries';
+import AdminChangepassword from './pages/AdminChangepassword';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -195,6 +200,51 @@ export default function App() {
         <Stack.Screen
           name="RecruiterRegister"
           component={RecruiterRegister}
+          options={{
+            headerShown: false,
+            title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
+          name="SMSOTP"
+          component={SmsOTP}
+          options={{
+            headerShown: false,
+            title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
+          name="AdminProfile"
+          component={AdminProfile}
+          options={{
+            headerShown: false,
+            title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
+          name="AdminQueries"
+          component={AdminQueries}
+          options={{
+            headerShown: false,
+            title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
+          name="AdminChangepassword"
+          component={AdminChangepassword}
+          options={{
+            headerShown: false,
+            title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
+          name="Dashboard"
+          component={Dashboard}
           options={{
             headerShown: false,
             title: '',
