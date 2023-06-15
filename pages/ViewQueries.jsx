@@ -4,7 +4,7 @@ import { AllQueryById } from '../api';
 import { calculateTimeAgo } from '../components/commonFunctions';
 
 const ViewQueries = () => {
-    const id = 'e35147fb-b336-4858-9dc1-2438a5524a7c';
+    const id = '21e3369b-f853-41e9-aa02-7a08c7531646';
     const [query, setQuery] = useState([]);
     const [loading, setLoading] = useState(false);
 

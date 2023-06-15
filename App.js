@@ -124,7 +124,7 @@ export default function App() {
   return (
     <NavigationContainer ref={navigationRef} independent={true} >
       <StatusBar hidden />
-      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="ViewResume">
+      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="Index">
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}

@@ -36,6 +36,7 @@ const EditResume = ({ route, navigation }) => {
     const [college, setCollege] = useState('');
     const [collegeD, setCollegeD] = useState('');
     const [collegeP, setCollegeP] = useState('');
+    const [tenth, setTenth] = useState('');
     const [sYear, setSYear] = useState(2023);
     const [eYear, setEYear] = useState(2023);
     const [sYearD, setSYearD] = useState(2023);
@@ -44,26 +45,33 @@ const EditResume = ({ route, navigation }) => {
     const [eYearP, setEYearP] = useState(2023);
     const [degree, setDegree] = useState('');
     const [stream, setStream] = useState('');
+    const [streamw, setStreamw] = useState('Science');
     const [streamD, setStreamD] = useState('');
     const [streamP, setStreamP] = useState('');
     const [performanceS, setPerformanceS] = useState('');
     const [performance, setPerformance] = useState('');
     const [performanceST, setPerformanceST] = useState('');
+    const [performanceSTw, setPerformanceSTw] = useState('');
     const [performanceT, setPerformanceT] = useState('');
+    const [performanceTw, setPerformanceTw] = useState('');
     const [performanceSD, setPerformanceSD] = useState('');
     const [performanceD, setPerformanceD] = useState('');
     const [performanceSP, setPerformanceSP] = useState('');
     const [performanceP, setPerformanceP] = useState('');
     const [yearofcompletion, setYearofcompletion] = useState(2023);
+    const [yearofcompletionw, setYearofcompletionw] = useState(2023);
     const [maticulationstatus, setMaticulationstatus] = useState('');
+    const [maticulationstatusw, setMaticulationstatusw] = useState('');
     const [board, setBoard] = useState('');
+    const [boardw, setBoardw] = useState('');
+    const [schoolw, setSchoolw] = useState('');
     const [school, setSchool] = useState('');
     const [save, setSave] = useState(false);
     const [savePro, setSavePro] = useState(false);
 
 
     useEffect(() => {
-      if (resumeDetails.education.length > 0) {
+      if (resumeDetails.education && resumeDetails.education.length && resumeDetails.education.length > 0) {
         resumeDetails.education.map((item) => {
           console.log(item);
           if (item.level == 'ug/pg') {
@@ -74,13 +82,21 @@ const EditResume = ({ route, navigation }) => {
             setPerformance(item.performance);
             setPerformanceS(item.performanceScale);
             setStream(item.stream);
-          } else if (item.level == '10th/12th') {
+          } else if (item.level == '10th') {
             setMaticulationstatus(item.maticulationstatus);
             setBoard(item.board);
             setSchool(item.school);
             setYearofcompletion(item.yearofcompletion);
             setPerformanceT(item.performance)
             setPerformanceST(item.performanceScale);
+          } else if (item.level == '12th') {
+            setMaticulationstatusw(item.maticulationstatus);
+            setBoardw(item.board);
+            setSchoolw(item.school);
+            setStreamw(item.stream);
+            setYearofcompletionw(item.yearofcompletion);
+            setPerformanceTw(item.performance)
+            setPerformanceSTw(item.performanceScale);
           } else if (item.level === 'diploma') {
             setCollegeD(item.college);
             setSYearD(item.startYear);
@@ -228,7 +244,7 @@ const EditResume = ({ route, navigation }) => {
     const handleClick = () => {
       let reqbody = {};
       setSave(true);
-      if (props.resumeDetails.education.length === 0 || !props.resumeDetails.education.length || !props.resumeDetails.education) {
+      if (!props.resumeDetails.education || !props.resumeDetails.education.length || props.resumeDetails.education.length === 0 ) {
         if (selectedLevel === 'ug/pg') {
           reqbody.education = [{
             level: selectedLevel,
@@ -240,7 +256,7 @@ const EditResume = ({ route, navigation }) => {
             performanceScale: performanceS,
             performance: performance
           }]
-        } else if (selectedLevel === '10th/12th') {
+        } else if (selectedLevel === '10th') {
           reqbody.education = [{
             level: selectedLevel,
             maticulationstatus,
@@ -249,6 +265,17 @@ const EditResume = ({ route, navigation }) => {
             school,
             performanceScale: performanceST,
             performance: performanceT
+          }]
+        } else if (selectedLevel === '12th') {
+          reqbody.education = [{
+            level: selectedLevel,
+            maticulationstatus: maticulationstatusw,
+            yearofCompletion: yearofcompletionw,
+            board: boardw,
+            school: schoolw,
+            performanceScale: performanceSTw,
+            performance: performanceTw,
+            stream: streamw
           }]
         } else if (selectedLevel === 'diploma') {
           reqbody.education = [{
@@ -288,7 +315,7 @@ const EditResume = ({ route, navigation }) => {
             newData[existingIndex].stream = stream
             newData[existingIndex].performanceScale = performanceS
             newData[existingIndex].performance = performance
-          } else if (selectedLevel === '10th/12th') {
+          } else if (selectedLevel === '10th') {
             newData[existingIndex].level = selectedLevel;
             newData[existingIndex].maticulationstatus = maticulationstatus
             newData[existingIndex].yearofCompletion = yearofcompletion
@@ -296,6 +323,15 @@ const EditResume = ({ route, navigation }) => {
             newData[existingIndex].school = school
             newData[existingIndex].performanceScale = performanceST
             newData[existingIndex].performance = performanceT
+          } else if (selectedLevel === '12th') {
+            newData[existingIndex].level = selectedLevel;
+            newData[existingIndex].maticulationstatus = maticulationstatusw
+            newData[existingIndex].yearofCompletion = yearofcompletionw
+            newData[existingIndex].board = boardw
+            newData[existingIndex].school = schoolw
+            newData[existingIndex].performanceScale = performanceSTw
+            newData[existingIndex].performance = performanceTw
+            newData[existingIndex].stream = streamw
           } else if (selectedLevel === 'diploma') {
             newData[existingIndex].level = selectedLevel
             newData[existingIndex].college = collegeD
@@ -327,7 +363,7 @@ const EditResume = ({ route, navigation }) => {
               performanceScale: performanceS,
               performance: performance
             })
-          } else if (selectedLevel === '10th/12th') {
+          } else if (selectedLevel === '10th') {
             newData.push({
               level: selectedLevel,
               maticulationstatus,
@@ -336,6 +372,16 @@ const EditResume = ({ route, navigation }) => {
               school,
               performanceScale: performanceST,
               performance: performanceT
+            })
+          } else if (selectedLevel === '12th') {
+            newData.push({
+              level: selectedLevel,
+              maticulationstatus: maticulationstatusw,
+              yearofCompletion: yearofcompletionw,
+              board: boardw,
+              school: schoolw,
+              performanceScale: performanceSTw,
+              performance: performanceTw
             })
           } else if (selectedLevel === 'diploma') {
             newData.push({
@@ -400,7 +446,8 @@ const EditResume = ({ route, navigation }) => {
               setSelectedLevel(itemValue)
             }>
             <Picker.Item label="Graduation/Post graduation details" value="ug/pg" />
-            <Picker.Item label="X(secondary) details" value="10th/12th" />
+            <Picker.Item label="X(secondary) details" value="10th" />
+            <Picker.Item label="XII(senior secondary) details" value="12th" />
             <Picker.Item label="Diploma details" value="diploma" />
             <Picker.Item label="PhD details" value="phd" />
           </Picker>
@@ -488,7 +535,7 @@ const EditResume = ({ route, navigation }) => {
         </View>}
 
 
-        {selectedLevel && selectedLevel === '10th/12th' && <View>
+        {selectedLevel && selectedLevel === '10th' && <View>
           <Text style={styles.label}>Matriculation Status</Text>
           <View style={{ flexDirection: 'row', marginLeft: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -564,6 +611,98 @@ const EditResume = ({ route, navigation }) => {
                 }}
                 value={performanceT}
                 onChangeText={(e) => { setPerformanceT(e) }}
+              />
+            </View></View>
+        </View>}
+        {selectedLevel && selectedLevel === '12th' && <View>
+          <Text style={styles.label}>Matriculation Status</Text>
+          <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <RadioButton
+                value="pursuing"
+                label="Pursuing"
+                status={maticulationstatusw === 'pursuing' ? 'checked' : 'unchecked'}
+                onPress={() => { setMaticulationstatusw('pursuing'); }}
+              />
+              <Text style={{ textAlign: 'center' }}>Pursuing</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <RadioButton
+                value="completed"
+                label="Completed"
+                status={maticulationstatusw === 'completed' ? 'checked' : 'unchecked'}
+                onPress={() => { setMaticulationstatusw('completed') }}
+              />
+              <Text style={{ textAlign: 'center' }}>Completed</Text>
+            </View>
+          </View>
+          {maticulationstatusw === 'completed' ? <Text style={styles.label}>Year of completion</Text> : <Text style={styles.label}>Expected year of completion</Text>}
+          <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
+            <Picker
+              //ref={sDateRef}
+              selectedValue={yearofcompletionw}
+              onValueChange={(itemValue, itemIndex) =>
+                setYearofcompletionw(itemValue)
+              }>
+              {endYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
+            </Picker>
+          </View>
+          <Text style={styles.label}>Board</Text>
+          <TextInput
+            style={styles.textField}
+            value={boardw}
+            onChangeText={(e) => { setBoardw(e) }}
+          />
+          <Text style={styles.label}>Stream</Text>
+          <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
+            <Picker
+              //ref={sDateRef}
+              selectedValue={streamw}
+              onValueChange={(itemValue, itemIndex) =>
+                setStreamw(itemValue)
+              }>
+              <Picker.Item label="Science" value="Science" />
+              <Picker.Item label="Commerce" value="Commerce" />
+              <Picker.Item label="Arts" value="Arts" />
+            </Picker>
+          </View>
+          <Text style={styles.label}>School</Text>
+          <TextInput
+            style={styles.textField}
+            value={schoolw}
+            onChangeText={(e) => { setSchoolw(e) }}
+          />
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View>
+              <Text style={styles.label}>Performance Scale</Text>
+              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
+                <Picker
+                  //ref={pScaleRef}
+                  selectedValue={performanceSTw}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setPerformanceSTw(itemValue)
+                  }>
+                  {performanceScale.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
+                </Picker>
+              </View>
+            </View>
+            <View>
+              <Text style={styles.label}>Performance</Text>
+              <TextInput
+                style={{
+                  height: 50,
+                  borderColor: 'transparent',
+                  borderWidth: 1,
+                  width: 165,
+                  padding: 8,
+                  backgroundColor: 'whitesmoke',
+                  fontSize: 16,
+                  marginTop: 0,
+                  borderRadius: 25,
+                  marginLeft: 10
+                }}
+                value={performanceTw}
+                onChangeText={(e) => { setPerformanceTw(e) }}
               />
             </View></View>
         </View>}
@@ -1114,7 +1253,7 @@ const EditResume = ({ route, navigation }) => {
                   fontSize: 16,
                   borderRadius: 25,
                 }}
-                value={newInternship.startDate ? newInternship.startDate.toISOString().slice(0, 10) : ''}
+                value={newInternship.startDate}
                 placeholder='YYYY/MM/DD'
                 onChangeText={(e) => { setNewInternship({ ...newInternship, startDate: e }) }}
               />
@@ -1144,7 +1283,7 @@ const EditResume = ({ route, navigation }) => {
                   fontSize: 16,
                   borderRadius: 25,
                 }}
-                value={newInternship.endDate ? newInternship.endDate.toISOString().slice(0, 10) : ''}
+                value={newInternship.endDate}
                 placeholder='YYYY/MM/DD'
                 onChangeText={(e) => { setNewInternship({ ...newInternship, endDate: e }) }}
               />
@@ -1437,7 +1576,7 @@ const EditResume = ({ route, navigation }) => {
                   fontSize: 16,
                   borderRadius: 25,
                 }}
-                value={newInternship.startDate ? newInternship.startDate.toISOString().slice(0, 10) : ''}
+                value={newInternship.startDate}
                 placeholder='YYYY/MM/DD'
                 onChangeText={(e) => { setNewInternship({ ...newInternship, startDate: e }) }}
               />
@@ -1467,8 +1606,8 @@ const EditResume = ({ route, navigation }) => {
                   fontSize: 16,
                   borderRadius: 25,
                 }}
-                value={newInternship.endDate ? newInternship.endDate.toISOString().slice(0, 10) : ''}
-                laceholder='YYYY/MM/DD'
+                value={newInternship.endDate}
+                placeholder='YYYY/MM/DD'
                 onChangeText={(e) => { setNewInternship({ ...newInternship, endDate: e }) }}
               />
               <Icon name="calendar" color="gray" size={24} />

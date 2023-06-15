@@ -1,4 +1,5 @@
 import moment from "moment";
+import * as MailComposer from 'expo-mail-composer';
 
 export const Capitalize = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1)

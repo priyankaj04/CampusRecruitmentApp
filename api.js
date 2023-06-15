@@ -1,7 +1,7 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.0.102:8000';
+const URL = 'http://192.168.0.101:8000';
 
 //student registration
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
@@ -293,3 +293,36 @@ export const CreateJob = async (id, reqbody) => {
             console.log(error)
         });
 }
+
+// const sendOTP = async (email, otp) => {
+//     const SENDGRID_API_KEY = 'YOUR_SENDGRID_API_KEY';
+
+//     try {
+//         const response = await axios.post(
+//             'https://api.sendgrid.com/v3/mail/send',
+//             {
+//                 personalizations: [
+//                     {
+//                         to: [{ email: email }],
+//                         dynamic_template_data: {
+//                             otp: otp,
+//                         },
+//                     },
+//                 ],
+//                 from: { email: 'YOUR_SENDER_EMAIL_ADDRESS' },
+//                 template_id: 'YOUR_SENDGRID_TEMPLATE_ID',
+//             },
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${SENDGRID_API_KEY}`,
+//                     'Content-Type': 'application/json',
+//                 },
+//             }
+//         );
+
+//         console.log('OTP email sent successfully');
+//         console.log(response.data);
+//     } catch (error) {
+//         console.error('Error sending OTP email', error);
+//     }
+// };

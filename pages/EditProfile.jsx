@@ -7,7 +7,7 @@ import * as FileSystem from 'expo-file-system';
 
 const EditProfile = ({ navigation }) => {
 
-  const id = 'e35147fb-b336-4858-9dc1-2438a5524a7c';
+  const id = '21e3369b-f853-41e9-aa02-7a08c7531646';
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -19,7 +19,7 @@ const EditProfile = ({ navigation }) => {
   const [bio, setBio] = useState('');
   const [contactno, setContactno] = useState('');
   const [whatappno, setWhatappno] = useState('');
-  const [cgpa, setCgpa] = useState('');
+  const [city, setCity] = useState('');
   const [email, setEmail] = useState('');
   const [save, setSave] = useState(false);
   const [dataUri, setDataUri] = useState(null);
@@ -42,10 +42,10 @@ const EditProfile = ({ navigation }) => {
       branch,
       fieldofexpertise,
       semester,
-      bio,
+      about: bio,
       contactno,
       whatappno,
-      cgpa
+      city
     }
     if (dataUri) {
       reqbody.profile_url = dataUri;
@@ -63,7 +63,7 @@ const EditProfile = ({ navigation }) => {
   useEffect(() => {
     TalentDetailsById(id).then((res) => {
       if (res.status) {
-        //console.log(res)
+        console.log(res)
         setDataUri(res.data[0].profile_url)
         setDetails(res.data[0]);
         setIsLoading(false);
@@ -71,12 +71,12 @@ const EditProfile = ({ navigation }) => {
         setFirstname(res.data[0].firstname);
         setLastname(res.data[0].lastname);
         setBranch(res.data[0].branch);
-        setFieldOfExpertise(res.data[0].fieldofinterest);
+        setFieldOfExpertise(res.data[0].fieldofexpertise);
         setSemester(res.data[0].semester);
-        setBio(res.data[0].bio);
+        setBio(res.data[0].about);
         setContactno(res.data[0].contactno);
         setWhatappno(res.data[0].whatappno);
-        setCgpa(res.data[0].cgpa);
+        setCity(res.data[0].city);
       }
     })
   }, []);
@@ -170,6 +170,12 @@ const EditProfile = ({ navigation }) => {
                 onChangeText={(text) => { setEmail(text) }}
                 style={styles.textField}
               />
+              <Text style={styles.label}>City</Text>
+              <TextInput
+                value={city}
+                onChangeText={(e) => setCity(e)}
+                style={styles.textField}
+              />
               <Text style={styles.label}>Bio</Text>
               <TextInput
                 editable
@@ -198,12 +204,7 @@ const EditProfile = ({ navigation }) => {
                 onChangeText={(e) => setSemester(e)}
                 style={styles.textField}
               />
-              <Text style={styles.label}>CGPA</Text>
-              <TextInput
-                value={cgpa}
-                onChangeText={(e) => setCgpa(e)}
-                style={styles.textField}
-              />
+
               <TouchableOpacity
                 onPress={() => navigation.navigate('EditResume', { resume_id: details.resume_id, talent_id: details.talent_id })}
                 style={{
