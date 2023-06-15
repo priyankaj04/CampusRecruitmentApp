@@ -43,6 +43,26 @@ export const RecruiterRegisteration = async (reqbody) => {
         });
 }
 
+//Admin registration
+// reqbody = {code, firstname, lastname, email, password, contactno}
+export const AdminRegisteration = async (reqbody) => {
+    const url = URL + '/api/admin/registration';
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
 //student login
 // reqbody = { register_no, password }
 export const TalentLogin = async (reqbody) => {
@@ -67,6 +87,26 @@ export const TalentLogin = async (reqbody) => {
 // reqbody = { company_name, password }
 export const RecruiterLoginForm = async (reqbody) => {
     const url = URL + '/api/recruiter/login';
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Admin login
+// reqbody = { email, password }
+export const AdminLoginForm = async (reqbody) => {
+    const url = URL + '/api/admin/login';
     const fetchOptions = {
         method: "POST",
         headers: {
@@ -278,6 +318,42 @@ export const ResumeDetailsByTalentID = async (id) => {
 
 export const CreateJob = async (id, reqbody) => {
     const url = URL + '/api/application/create/' + id;
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const SendOTPCode = async (reqbody, id) => {
+    const url = URL + '/api/talent/verify/' + id;
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const verifyOTP = async (reqbody, id) => {
+    const url = URL + '/api/talent/auth/' + id;
     const fetchOptions = {
         method: "POST",
         headers: {

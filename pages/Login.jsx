@@ -119,7 +119,7 @@ const Login = ({ navigation }) => {
           fontWeight: 'bold',
           fontSize: 16,
           margin: 10
-        }}>Forgot Password?</Text>
+        }} onPress={() => navigation.navigate('ForgotPassword')}>Forgot Password?</Text>
         <Text style={{
           color: 'gray',
           fontSize: 16,

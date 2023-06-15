@@ -25,14 +25,14 @@ const ViewResume = ({ route, navigation }) => {
     }
   }, [fetch])
 
-  const WebLink = ({url}) => {
+  const WebLink = ({ url }) => {
     const handleLinkPress = () => {
       // Open the web link in the default browser
       Linking.openURL(url);
     };
 
     return (
-      <Text onPress={handleLinkPress} style={{color: '#407BFF'}}>
+      <Text onPress={handleLinkPress} style={{ color: '#407BFF' }}>
         Click Here
       </Text>
     );
@@ -47,7 +47,7 @@ const ViewResume = ({ route, navigation }) => {
           </View>
           <View style={{ flexDirection: 'column' }}>
             <Text style={styles.normal}>{talentDetails.email}</Text>
-            {talentDetails.contactno && <Text style={styles.normal}>{talentDetails.contactno}</Text>}
+            {talentDetails.contactno && <Text style={styles.normal}>+91 {talentDetails.contactno}</Text>}
             {talentDetails.city && <Text style={styles.normal}>{talentDetails.city}</Text>}
           </View>
         </View>
@@ -124,25 +124,25 @@ const ViewResume = ({ route, navigation }) => {
                 }
               </View>
             </View>
-          } 
+          }
           <View style={styles.divider} />
           {
             details.internship &&
             <View>
-                <Text style={styles.header1}>Internships</Text>
-                <View>
-                  {
-                    details.internship.map((item, index) => (
-                      <View style={{ margin: 10 }} key={index}>
-                        <Text style={styles.name}> ❖ {item.position} - {item.organization}</Text>
-                        <Text style={{color:'gray'}}>{item.location}</Text>
-                        <Text >{item.startDate} - {item.endDate}</Text>
-                        <Text style={styles.description}>{item.description}</Text>
-                      </View>
-                    ))
-                  }
-                </View>
+              <Text style={styles.header1}>Internships</Text>
+              <View>
+                {
+                  details.internship.map((item, index) => (
+                    <View style={{ margin: 10 }} key={index}>
+                      <Text style={styles.name}> ❖ {item.position} - {item.organization}</Text>
+                      <Text style={{ color: 'gray' }}>{item.location}</Text>
+                      <Text >{item.startDate} - {item.endDate}</Text>
+                      <Text style={styles.description}>{item.description}</Text>
+                    </View>
+                  ))
+                }
               </View>
+            </View>
           }
           <View style={styles.divider} />
           {
@@ -170,9 +170,9 @@ const ViewResume = ({ route, navigation }) => {
               <Text style={styles.header1}>Position of Responsiibility</Text>
               <View>
                 {
-                    details.position_of_responsibility.map((item, index) => (
+                  details.position_of_responsibility.map((item, index) => (
                     <View style={{ margin: 10 }} key={index}>
-                        <Text style={styles.description}> ❖ {item.description}</Text>
+                      <Text style={styles.description}> ❖ {item.description}</Text>
                     </View>
                   ))
                 }
@@ -186,11 +186,11 @@ const ViewResume = ({ route, navigation }) => {
               <Text style={styles.header1}>Accomplishments</Text>
               <View>
                 {
-                    details.accomplishment.map((item, index) => (
-                      <View style={{ margin: 10 }} key={index}>
-                        <Text style={styles.name}> ❖ {item.title}</Text>
-                        <Text style={styles.description}>{item.description}</Text>
-                        {item.url && <WebLink url={item.url} /> }
+                  details.accomplishment.map((item, index) => (
+                    <View style={{ margin: 10 }} key={index}>
+                      <Text style={styles.name}> ❖ {item.title}</Text>
+                      <Text style={styles.description}>{item.description}</Text>
+                      {item.url && <WebLink url={item.url} />}
                     </View>
                   ))
                 }

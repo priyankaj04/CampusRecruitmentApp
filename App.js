@@ -31,6 +31,8 @@ import RecruiterProfile from './pages/RecruiterProfile';
 import EditRecruiterProfile from './pages/EditRecruiterProfile';
 import RecruiterChangePassword from './pages/RecruiterChangePassword';
 import ViewResume from './pages/ViewResume';
+import SendOTP from './pages/SendOTP';
+import ForgotPassword from './pages/ForgotPassword';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -124,7 +126,7 @@ export default function App() {
   return (
     <NavigationContainer ref={navigationRef} independent={true} >
       <StatusBar hidden />
-      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="Index">
+      <Stack.Navigator screenOptions={{ gestureEnabled: false }} initialRouteName="SplashScreen">
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
@@ -253,6 +255,38 @@ export default function App() {
           component={ChangePassword}
           options={{
             title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="SendOTP"
+          component={SendOTP}
+          options={{
+            title: "OTP Verification",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{
+            title: "Forgot Password",
             headerLeft: () => (
               <Icon
                 name="angle-left"

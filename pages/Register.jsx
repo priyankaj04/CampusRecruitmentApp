@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { TalentRegister } from '../api'
+import { TalentRegister, SendOTPCode } from '../api'
 
 const Register = ({ navigation }) => {
 
@@ -17,7 +17,7 @@ const Register = ({ navigation }) => {
   const [confirmpass, setConfirmpass] = useState('')
 
   function isGmailEmail(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@bmscw.edu.in$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@gmail.com$/;
     return regex.test(email);
   }
 
@@ -30,20 +30,20 @@ const Register = ({ navigation }) => {
     if (!registerno || registerno.length === 0 || !firstname || firstname.length === 0 || !lastname
       || lastname.length === 0 || !email || email.length === 0 || !password || password.length === 0) {
       setShowHelper(true);
-      setMsg({ value: 'all',msg: 'All fields are mandatory.'});
+      setMsg({ value: 'all', msg: 'All fields are mandatory.' });
     } else if (!isGmailEmail(email)) {
       setShowHelper(true);
-      setMsg({ value: 'email', msg: 'Use only college email, johndoe@bmscw.edu.in'});
+      setMsg({ value: 'email', msg: 'Use valid gmail address only.' });
     } else if (hasNumbers(firstname) || hasNumbers(lastname)) {
       setShowHelper(true);
-      setMsg({value:'name', msg: 'Name cannot contain numbers.'});
+      setMsg({ value: 'name', msg: 'Name cannot contain numbers.' });
     } else if (password && password.length < 8) {
       setShowHelper(true);
-      setMsg({value:'password', msg: 'Password should be at least 8 characters long.'});
+      setMsg({ value: 'password', msg: 'Password should be at least 8 characters long.' });
     } else if (password != confirmpass) {
       setShowHelper(true);
       setMsg({ value: 'password', msg: 'Password do not match.' });
-    }else {
+    } else {
       setIsLoading(true);
       setShowHelper(false);
       let reqbody = {
@@ -57,13 +57,16 @@ const Register = ({ navigation }) => {
       }
       //console.log("11211",reqbody);
       TalentRegister(reqbody).then((res) => {
-        if (res.status)
-        {
-          setIsLoading(false);
-          navigation.navigate('Index');
+        if (res.status) {
+          const reqbody = { email }
+          SendOTPCode(reqbody, res.data[0].talent_id).then((resp) => {
+            console.log("response", resp);
+            setIsLoading(false);
+            navigation.navigate('SendOTP', { talent_id: res.data[0].talent_id, email: res.data[0].email });
+          })
         } else {
           setShowHelper(true);
-          console.log("ERROR",res);
+          console.log("ERROR", res);
           setMsg({ value: 'all', msg: res.message });
           setIsLoading(false);
         }
@@ -73,7 +76,7 @@ const Register = ({ navigation }) => {
         .catch((err) => {
           console.log(err);
           setIsLoading(false);
-      })
+        })
     }
   }
   return (
@@ -151,7 +154,7 @@ const Register = ({ navigation }) => {
               inputMode="email"
               keyboardType="email-address"
             />
-            {showHelper && msg && msg.value === 'email' &&  <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
+            {showHelper && msg && msg.value === 'email' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
             <TextInput
               placeholder="Register No."
               style={{
@@ -216,15 +219,15 @@ const Register = ({ navigation }) => {
               keyboardType="default"
             />
             {showHelper && msg && msg.value === 'password' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            {showHelper && msg && msg.value === 'all' && <Text style={{ color: 'red', margin: 10, textAlign:'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
+            {showHelper && msg && msg.value === 'all' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
             <Text style={{ margin: 10, textAlign: 'center', color: 'gray' }}>By joining us you agree to our <Text onPress={() => navigation.navigate('TermsandConditions')} style={{
               color: '#407BFF',
               fontWeight: 'bold'
             }}>Terms and Condtions</Text> and <Text onPress={() => navigation.navigate('PrivatePolicy')} style={{
               color: '#407BFF',
               fontWeight: 'bold'
-              }}>Private policy</Text></Text>
-            {isLoading ?<ActivityIndicator size="small" color="#407BFF" /> :
+            }}>Private policy</Text></Text>
+            {isLoading ? <ActivityIndicator size="small" color="#407BFF" /> :
               <TouchableOpacity onPress={() => handleClick()} style={styles.btn}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Join us</Text></TouchableOpacity>
             }
           </View>
