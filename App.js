@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity, StatusBar } from 'react-nativ
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Index from './pages/Index'
 import Login from './pages/Login';
@@ -29,7 +32,6 @@ import RecruiterNotification from './pages/RecruiterNotification';
 import RecruiterRegister from './pages/RecruiterRegister';
 import RecruiterProfile from './pages/RecruiterProfile';
 import EditRecruiterProfile from './pages/EditRecruiterProfile';
-import RecruiterChangePassword from './pages/RecruiterChangePassword';
 import ViewResume from './pages/ViewResume';
 import SendOTP from './pages/SendOTP';
 import ForgotPassword from './pages/ForgotPassword';
@@ -41,6 +43,26 @@ import AdminChangepassword from './pages/AdminChangepassword';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
+const IndexDashboard = ({ navigation }) => {
+  return (
+    <Drawer.Navigator initialRouteName="Dashboard">
+      <Drawer.Screen name="Dashboard" component={Dashboard} options={{
+        title: "Home"
+      }} />
+      <Drawer.Screen name="AdminQueries" component={AdminQueries} options={{
+        title: 'Queries'
+      }} />
+      <Drawer.Screen name="AdminChangepassword" component={AdminChangepassword} options={{
+        title: 'Change Password'
+      }} />
+      <Drawer.Screen name="AdminProfile" component={AdminProfile} options={{
+        title: 'Profile'
+      }} />
+    </Drawer.Navigator>
+  );
+}
 
 const HomePage = ({ navigation }) => {
   return (
@@ -162,6 +184,11 @@ export default function App() {
           }}
         />
         <Stack.Screen
+          name="IndexDashboard"
+          component={IndexDashboard}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="IndexRecruiter"
           component={RecruiterHomes}
           options={{
@@ -215,42 +242,7 @@ export default function App() {
             headerTintColor: { color: "white" },
           }}
         />
-        <Stack.Screen
-          name="AdminProfile"
-          component={AdminProfile}
-          options={{
-            headerShown: false,
-            title: '',
-            headerTintColor: { color: "white" },
-          }}
-        />
-        <Stack.Screen
-          name="AdminQueries"
-          component={AdminQueries}
-          options={{
-            headerShown: false,
-            title: '',
-            headerTintColor: { color: "white" },
-          }}
-        />
-        <Stack.Screen
-          name="AdminChangepassword"
-          component={AdminChangepassword}
-          options={{
-            headerShown: false,
-            title: '',
-            headerTintColor: { color: "white" },
-          }}
-        />
-        <Stack.Screen
-          name="Dashboard"
-          component={Dashboard}
-          options={{
-            headerShown: false,
-            title: '',
-            headerTintColor: { color: "white" },
-          }}
-        />
+
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
@@ -360,22 +352,6 @@ export default function App() {
                 color="black"
                 style={{ marginLeft: 5, marginRight: 10 }}
                 onPress={() => navigationRef.goBack()}
-              />
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="RecruiterChangePassword"
-          component={RecruiterChangePassword}
-          options={{
-            title: "Change Password",
-            headerLeft: () => (
-              <Icon
-                name="angle-left"
-                size={30}
-                color="black"
-                style={{ marginLeft: 5, marginRight: 10 }}
-                onPress={() => navigationRef.navigate('RecruiterProfile')}
               />
             ),
           }}

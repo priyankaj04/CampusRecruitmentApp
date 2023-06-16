@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { RecruiterDetailsById } from '../api';
 import { Capitalize } from "../components/commonFunctions";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecruiterProfile = ({ navigation }) => {
   const id = 'c4f6446d-e6a3-48bf-b99a-ca07e237c9cb';

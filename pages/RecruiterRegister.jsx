@@ -54,7 +54,7 @@ const RecruiterRegister = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          navigation.navigate("Dashboard");
+          navigation.navigate("IndexDashboard", { screen: "Dashboard"});
         } else {
           setIsLoading(false);
           setShowHelper(true);

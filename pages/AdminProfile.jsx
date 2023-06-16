@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Button } from 'react-native'
 import React from 'react'
 
-const AdminProfile = () => {
+const AdminProfile = ({navigation}) => {
   return (
     <View>
       <Text>AdminProfile</Text>
+      <Button title="Open Drawer" onPress={() => navigation.openDrawer()} />
     </View>
   )
 }

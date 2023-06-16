@@ -28,7 +28,7 @@ const RecruiterLogin = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          navigation.navigate('Dashboard');
+          navigation.navigate('IndexDashboard', { screen: "Dashboard"});
         } else {
           setShowHelper(true);
           setMsg(res.data.message);

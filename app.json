@@ -25,6 +25,13 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "notification": {
+      "icon": "./assets/splash.png",
+      "color": "#000000",
+      "androidMode": "collapse",
+      "androidCollapsedTitle": "$[$projectName]: $[$message]",
+      "androidCollapsedBody": "$[$message]"
     }
   }
 }
