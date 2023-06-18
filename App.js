@@ -40,6 +40,7 @@ import Dashboard from './pages/Dashboard';
 import AdminProfile from './pages/AdminProfile';
 import AdminQueries from './pages/AdminQueries';
 import AdminChangepassword from './pages/AdminChangepassword';
+import CreateStudent from './pages/CreateStudent';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -50,6 +51,9 @@ const IndexDashboard = ({ navigation }) => {
     <Drawer.Navigator initialRouteName="Dashboard">
       <Drawer.Screen name="Dashboard" component={Dashboard} options={{
         title: "Home"
+      }} />
+      <Drawer.Screen name="CreateStudent" component={CreateStudent} options={{
+        title: 'Create Student'
       }} />
       <Drawer.Screen name="AdminQueries" component={AdminQueries} options={{
         title: 'Queries'

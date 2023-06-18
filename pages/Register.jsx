@@ -18,7 +18,7 @@ const Register = ({ navigation }) => {
   const [confirmpass, setConfirmpass] = useState('')
 
   function isGmailEmail(email) {
-    const regex = /^[a-zA-Z0-9._%+-]+@gmail.com$/;
+    const regex = /^[a-zA-Z0-9._%+-]+@bmscw.edu.in$/;
     return regex.test(email);
   }
 
