@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvo
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { TalentLogin } from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
 
@@ -28,8 +29,9 @@ const Login = ({ navigation }) => {
       }
       //student login
       TalentLogin(reqbody).then((res) => {
-        //console.log("its response", res);
+        console.log("its response", res);
         if (res.status) {
+          AsyncStorage.setItem('talent_id', res.data.talent_id);
           setIsLoading(false);
           navigation.navigate('Index');
         } else {

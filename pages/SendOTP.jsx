@@ -5,11 +5,12 @@ import { TextInput } from 'react-native-gesture-handler';
 import { verifyOTP } from '../api.js'
 import { StatusBar } from "expo-status-bar";
 import { OTPInput } from "../components/commonFunctions";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SendOTP = ({ route, navigation }) => {
 
-    const email = route.params ? route.params.email : "priyankaj200210@gmail.com"
-    const id = route.params ? route.params.talent_id : "c84403cb-968a-49be-907d-eeaa9670d51a";
+    const email = route.params.email;
+    const id = AsyncStorage.getItem("talent_id");
     const [isLoading, setIsLoading] = useState(true);
     const [showMsg, setShowMsg] = useState(false);
     const [msg, setMsg] = useState('');
@@ -31,9 +32,11 @@ const SendOTP = ({ route, navigation }) => {
             otp: pin1 + pin2 + pin3 + pin4 + pin5 + pin6
         }
         verifyOTP(reqbody, id).then((res) => {
-        navigation.navigate("Index");
+            setIsLoading(false);
+            if (res.status) {
+                navigation.navigate("Index");
+            }
         })
-
     }
 
 

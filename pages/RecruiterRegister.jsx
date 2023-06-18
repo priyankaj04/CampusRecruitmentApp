@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { RecruiterRegisteration, AdminRegisteration } from '../api'
+import { RecruiterRegisteration, AdminRegisteration } from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecruiterRegister = ({ navigation }) => {
 
@@ -54,6 +55,7 @@ const RecruiterRegister = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
+          AsyncStorage.setItem('admin_id', res.data[0].admin_id);
           navigation.navigate("IndexDashboard", { screen: "Dashboard"});
         } else {
           setIsLoading(false);
@@ -107,6 +109,7 @@ const RecruiterRegister = ({ navigation }) => {
           if (res.status) {
             setIsLoading(false);
             setShowHelper(false);
+            AsyncStorage.setItem('recruiter_id', res.data[0].recruiter_id);
             navigation.navigate('IndexRecruiter');
           } else {
             setShowHelper(true);

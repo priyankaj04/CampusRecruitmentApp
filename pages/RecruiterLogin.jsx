@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvo
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RecruiterLoginForm, AdminLoginForm } from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecruiterLogin = ({ navigation }) => {
 
@@ -28,6 +29,7 @@ const RecruiterLogin = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
+          AsyncStorage.setItem('admin_id', res.data[0].admin_id)
           navigation.navigate('IndexDashboard', { screen: "Dashboard"});
         } else {
           setShowHelper(true);
@@ -62,6 +64,7 @@ const RecruiterLogin = ({ navigation }) => {
           if (res.status) {
             setIsLoading(false);
             setShowHelper(false);
+            AsyncStorage.setItem('recruiter_id', res.data[0].recruiter_id);
             navigation.navigate('IndexRecruiter');
           } else {
             setShowHelper(true);

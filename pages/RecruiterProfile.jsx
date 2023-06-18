@@ -7,7 +7,7 @@ import { Capitalize } from "../components/commonFunctions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecruiterProfile = ({ navigation }) => {
-  const id = 'c4f6446d-e6a3-48bf-b99a-ca07e237c9cb';
+  const id = AsyncStorage.getItem('recruiter_id');
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

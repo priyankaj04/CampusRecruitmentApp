@@ -4,8 +4,8 @@ import { NewQuery } from '../api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ContactUs = ({route, navigation }) => {
-  const id = route.params.id;
-  const type = route.params.type;
+  const id = route.params.id ? route.params.id : 'c4f6446d-e6a3-48bf-b99a-ca07e237c9cb';
+  const type = route.params.type ? route.params.type: "talent"  ;
   const [query, setQuery] = useState('');
   const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');

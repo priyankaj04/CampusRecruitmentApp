@@ -4,9 +4,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ScrollView } from 'react-native-gesture-handler';
 import { TalentDetailsById } from '../api';
 import { Capitalize } from "../components/commonFunctions";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({ navigation }) => {
-  const id = '21e3369b-f853-41e9-aa02-7a08c7531646';
+  const id = AsyncStorage.getItem('talent_id');
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

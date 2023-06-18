@@ -5,10 +5,11 @@ import Checkbox from 'expo-checkbox';
 import Icon from 'react-native-vector-icons/Entypo';
 import { CreateJob } from '../api';
 import Toastable, { showToastable } from 'react-native-toastable';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateApplication = ({ navigation }) => {
   const [jobDetails, setJobdetails] = useState({});
-  const id = 'c4f6446d-e6a3-48bf-b99a-ca07e237c9cb'
+  const id = AsyncStorage.getItem('recruiter_id');
 
   const handleClick = () => {
     if (!jobDetails.opportunity_type || !jobDetails.job_title || !jobDetails.skills || !jobDetails.job_type || !jobDetails.number_of_openings || !jobDetails.job_start_date

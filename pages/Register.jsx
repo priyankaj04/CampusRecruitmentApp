@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { TalentRegister, SendOTPCode } from '../api'
+import { TalentRegister, SendOTPCode } from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Register = ({ navigation }) => {
 
@@ -62,6 +63,8 @@ const Register = ({ navigation }) => {
           SendOTPCode(reqbody, res.data[0].talent_id).then((resp) => {
             console.log("response", resp);
             setIsLoading(false);
+            AsyncStorage.setItem('talent_id', res.data[0].talent_id);
+            AsyncStorage.setItem('email', res.data[0].email);
             navigation.navigate('SendOTP', { talent_id: res.data[0].talent_id, email: res.data[0].email });
           })
         } else {

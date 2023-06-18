@@ -1,7 +1,7 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.0.101:8000';
+const URL = 'http://192.168.204.27:8000';
 
 //student registration
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}

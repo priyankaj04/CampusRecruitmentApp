@@ -4,10 +4,11 @@ import { TalentDetailsById, UpdateTalentDetailsById } from '../api';
 import { ScrollView } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditProfile = ({ navigation }) => {
 
-  const id = '21e3369b-f853-41e9-aa02-7a08c7531646';
+  const id = AsyncStorage.getItem('talent_id');
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
