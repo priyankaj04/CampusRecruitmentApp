@@ -1,11 +1,19 @@
 import { Image, StyleSheet, Text, View, TextInput, ScrollView, KeyboardAvoidingView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { NewQuery } from '../api';
+import { NewQuery, TalentDetailsById } from '../api';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ContactUs = ({route, navigation }) => {
-  const id = route.params.id ? route.params.id : 'c4f6446d-e6a3-48bf-b99a-ca07e237c9cb';
-  const type = route.params.type ? route.params.type: "talent"  ;
+const ContactUs = ({ route, navigation }) => {
+  const [id, setId] = useState(null);
+  const [type, setType] = useState(null);
+
+  const getData = async () => {
+    console.log(await AsyncStorage.getAllKeys())
+    setId(await AsyncStorage.multiGet(['talent_id', 'user_type']));
+    console.log(await AsyncStorage.multiGet(['talent_id', 'user_type']))
+  }
+
   const [query, setQuery] = useState('');
   const [fullname, setFullname] = useState('');
   const [email, setEmail] = useState('');
@@ -14,9 +22,22 @@ const ContactUs = ({route, navigation }) => {
   const [showMessage, setShowMessage] = useState(false);
   const [msg, setMsg] = useState('');
 
-  useEffect(() => {
 
-  })
+  useEffect(() => {
+    if (!id || !type) {
+      getData();
+    }
+    let value;
+    
+    if (async() => await AsyncStorage.getItem('talent_id')) {
+      console.log("how are you huh??")
+      TalentDetailsById(id).then((res) => {
+        if (res.status) {
+          setFullname(res.firstName + res.lastName);
+        }
+      })
+    }
+  }, [])
 
   const handleClick = () => {
     if (!query || query.length === 0 || !fullname || fullname.length === 0 || !email || email.length === 0 || !contact_no || contact_no.length === 0) {
@@ -64,7 +85,6 @@ const ContactUs = ({route, navigation }) => {
           <Text style={styles.label}>Full name*</Text>
           <TextInput
             value={fullname}
-            onChangeText={(text) => { setFullname(text) }}
             style={styles.textField}
           />
           <Text style={styles.label}>Email*</Text>

@@ -3,200 +3,230 @@ import React, { useState, useEffect } from 'react';
 import { RadioButton } from 'react-native-paper';
 import Checkbox from 'expo-checkbox';
 import Icon from 'react-native-vector-icons/Entypo';
-import { CreateJob } from '../api';
+import { CreateStudentAPI } from '../api';
+import { Picker } from '@react-native-picker/picker';
 import Toastable, { showToastable } from 'react-native-toastable';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const CreateStudent = () => {
     const id = AsyncStorage.getItem('admin_id');
+    const [stream, setStream] = useState('Science');
+    const [degree, setDegree] = useState('Bachelore of Computer Science');
+    const [sememster, setSemester] = useState('I');
+    const [classSection, setClassSection] = useState('');
+    const [email, setEmail] = useState('');
+    const [cgpa, setCgpa] = useState('');
+    const [blno, setBlno] = useState('');
+    const [blsub, setBlsub] = useState('');
+    const [tenth, setTenth] = useState({});
+    const [twelth, setTwelth] = useState('');
+    const [register_no, setRegisterno] = useState('');
+    const [msg, setMsg] = useState('');
+    const [showMsg, setShowMsg] = useState('');
+
+    const Streams = ['Science', 'Computer Science', 'Commerce', 'Arts'];
+    const StreamsCollege = ['Science', 'Commerce', 'Arts'];
+    const Degree = ['Bachelore of Science', 'Bachelore of Computer Science', 'Bachelore of Commerce', 'Bachelore of Arts'];
+    const Sememster = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+
+    const handleClick = () => {
+        const reqbody = {
+            stream,
+            degree,
+            sememster,
+            class: classSection,
+            CGPA: cgpa,
+            email,
+            twelth_details: twelth,
+            tenth_details: tenth,
+            backlog_number: blno,
+            backlog_subject: blsub,
+            register_no: register_no,
+            created_by: id
+        }
+
+        CreateStudentAPI(reqbody).then((res) => {
+            console.log(res);
+            if (res.status) {
+                showToastable({
+                    message: "Successful!!",
+                    duration: 3000,
+                    status: 'success'
+                })
+            } else {
+                showToastable({
+                    message: res.message,
+                    duration: 3000,
+                    status: 'info'
+                })
+            }
+        })
+    }
 
     return (
         <View>
-            <View style={{ position: 'absolute', top: 10, width: '100%', height: 70, zIndex: 9999, }}>
+            <View style={{ position: 'absolute', width: '100%', height: 100, zIndex: 9999}}>
                 <Toastable statusMap={{
                     success: 'rgba(66, 126, 255, 0.85)',
                     info: 'rgba(0, 0, 0, 0.85)'
                 }} />
             </View>
             <ScrollView>
-                <View style={{ backgroundColor: 'white', width: "95%", margin: 10, borderRadius: 10 }}>
-                    <Text style={styles.header}>Stream</Text>
+                <View style={{ backgroundColor: 'white', width: "95%", margin: 10, borderRadius: 10, paddingTop: 10 }}>
+                    <Text style={styles.header}>Degree Details</Text>
+                    <Text style={styles.label}>Stream</Text>
                     <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <RadioButton
-                                value="job"
-                                label="Job"
-                                status="checked"
-                                onPress={() => { }}
-                            />
-                            <Text style={{ textAlign: 'center' }}>Job</Text>
+                        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
+                            <Picker
+                                selectedValue={stream}
+                                onValueChange={(itemValue) => {
+                                    setStream(itemValue)
+                                }
+                                }>
+                                {Streams.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                            </Picker>
                         </View>
                     </View>
+                    <Text style={styles.label}>Degree</Text>
+                    <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
+                            <Picker
+                                selectedValue={degree}
+                                onValueChange={(itemValue) => {
+                                    setDegree(itemValue)
+                                }
+                                }>
+                                {Degree.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                            </Picker>
+                        </View>
+                    </View>
+                    <Text style={styles.label}>Semester</Text>
+                    <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
+                            <Picker
+                                selectedValue={sememster}
+                                onValueChange={(itemValue) => {
+                                    setSemester(itemValue)
+                                }
+                                }>
+                                {Sememster.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                            </Picker>
+                        </View>
+                    </View>
+                    <Text style={styles.label}>Class & Section</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={classSection}
+                        onChangeText={(e) => { setClassSection(e) }}
+                        placeholder="e.g. III BCA B"
+                    />
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={email}
+                        onChangeText={(e) => { setEmail(e) }}
+                    />
+                    <Text style={styles.label}>Register No</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={register_no}
+                        onChangeText={(e) => { setRegisterno(e) }}
+                        placeholder="e.g. R2013480"
+                    />
+                    <Text style={styles.label}>Overall CGPA</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={cgpa}
+                        onChangeText={(e) => { setCgpa(e) }}
+                        placeholder="e.g. 9.1"
+                    />
                     <View style={styles.divider} />
-                    <Text style={styles.header}>Internship details</Text>
-                    <Text style={styles.label}>Internship profile</Text>
+                    <Text style={styles.header}>Secondary Details</Text>
+                    <Text style={styles.label}>School</Text>
                     <TextInput
                         style={styles.textField}
-                        value={""}
-                        onChangeText={(e) => { }}
+                        value={tenth.email}
+                        onChangeText={(e) => { setTenth({ ...tenth, school: e }) }}
                     />
-                    <Text style={styles.label}>Skills required</Text>
+                    <Text style={styles.label}>Board</Text>
                     <TextInput
                         style={styles.textField}
-                        value={""}
-                        onChangeText={(e) => { }}
-                        placeholder='e.g. Java'
+                        value={tenth.board}
+                        onChangeText={(e) => { setTenth({ ...tenth, board: e }) }}
                     />
-                    <Text style={styles.label}>Internship type</Text>
+                    <Text style={styles.label}>Year of completion</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={tenth.yearofcompletion}
+                        onChangeText={(e) => { setTenth({ ...tenth, yearofcompletion: e }) }}
+                        placeholder='e.g. 2018'
+                    />
+                    <Text style={styles.label}>Percentage</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={tenth.percentage}
+                        onChangeText={(e) => { setTenth({ ...tenth, percentage: e }) }}
+                    />
+                    <View style={styles.divider} />
+                    <Text style={styles.header}>Senior Secondary Details</Text>
+                    <Text style={styles.label}>College</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={twelth.email}
+                        onChangeText={(e) => { setTwelth({ ...twelth, school: e }) }}
+                    />
+                    <Text style={styles.label}>Board</Text>
+                    <TextInput
+                        style={styles.textField}
+                        value={twelth.board}
+                        onChangeText={(e) => { setTwelth({ ...twelth, board: e }) }}
+                    />
+                    <Text style={styles.label}>Stream</Text>
                     <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <RadioButton
-                                value="In-office/Hybrid"
-                                label="In-office/Hybrid"
-                                status="checked"
-                                onPress={() => { }}
-                            />
-                            <Text style={{ textAlign: 'center' }}>In-office/Hybrid</Text>
+                        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
+                            <Picker
+                                selectedValue={twelth.stream}
+                                onValueChange={(itemValue) => {
+                                    setTwelth({ ...twelth, stream: itemValue })
+                                }
+                                }>
+                                {StreamsCollege.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                            </Picker>
                         </View>
                     </View>
-                    <View>
-                        <Text style={styles.label}>Location</Text>
-                        <TextInput
-                            style={styles.textField}
-                            value={""}
-                            onChangeText={(e) => { }}
-                            placeholder='e.g. Koramangala,Bengaluru'
-                        />
-                    </View>
-                    <Text style={styles.label}>Number of openings</Text>
+                    <Text style={styles.label}>Year of completion</Text>
                     <TextInput
                         style={styles.textField}
-                        value={""}
-                        onChangeText={(e) => { }}
-                        placeholder='e.g. 4'
+                        value={twelth.yearofcompletion}
+                        onChangeText={(e) => { setTwelth({ ...twelth, yearofcompletion: e }) }}
+                        placeholder='e.g. 2018'
                     />
-                    <View style={{ flexDirection: 'row', margin: 5 }}>
-                        <View>
-                            <Text style={styles.label}>Total Number of rounds</Text>
-                            <TextInput
-                                style={styles.towinonepro}
-                                value={""}
-                                onChangeText={(e) => { }}
-                                placeholder='e.g. 3'
-                            />
-                        </View>
-                        <View>
-                            <Text style={styles.label}>Current round</Text>
-                            <TextInput
-                                style={styles.towinonepro}
-                                value={""}
-                                onChangeText={(e) => { }}
-                                placeholder='e.g. 2'
-                            />
-                        </View>
-                    </View>
-                    <Text style={styles.label}>Round Name</Text>
+                    <Text style={styles.label}>Percentage</Text>
                     <TextInput
                         style={styles.textField}
-                        value={""}
-                        onChangeText={(e) => { }}
-                        placeholder='e.g. Technical Round'
+                        value={twelth.percentage}
+                        onChangeText={(e) => { setTwelth({ ...twelth, percentage: e }) }}
                     />
-                    <Text style={styles.label}>Eligibility</Text>
+                    <View style={styles.divider} />
+                    <Text style={styles.header}>Backlogs</Text>
+                    <Text style={styles.label}>Number of backlogs</Text>
                     <TextInput
                         style={styles.textField}
-                        value={""}
-                        onChangeText={(e) => { }}
-                        placeholder='e.g. Any Bachelor Degree'
+                        value={blno}
+                        onChangeText={(e) => { setBlno(e) }}
+                        placeholder='e.g. 2'
                     />
-                    {jobDetails.opportunity_type == 'internship' && <View>
-                        <Text style={styles.label}>Internship start date</Text>
-                        <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <RadioButton
-                                    value="Immediately (within next 30 days)"
-                                    label="Immediately (within next 30 days)"
-                                    status="checked"
-                                    onPress={() => { }}
-                                />
-                                <Text style={{ textAlign: 'center' }}>Immediately (within next 30 days)</Text>
-                            </View>
-                        </View>
-                    </View>
-                    }
-                    <Text style={styles.label}>Last Date to apply</Text>
-                    <View style={{
-                        backgroundColor: 'whitesmoke',
-                        height: 50,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        margin: 10,
-                        marginTop: 0,
-                        padding: 5,
-                        borderRadius: 25,
-                    }}>
-                        <TextInput
-                            style={{
-                                height: 50,
-                                borderColor: 'transparent',
-                                borderWidth: 1,
-                                width: 320,
-                                padding: 10,
-                                fontSize: 16,
-                                borderRadius: 25,
-                            }}
-                            value={""}
-                            onChangeText={(e) => { }}
-                            placeholder='format DD/MM/YYYY'
-                        />
-                        <Icon name="calendar" color="#407BFF" size={24} />
-                    </View>
-                    <View>
-                        <Text style={styles.label}>Internship duration</Text>
-                        <Text style={{ color: '#407BFF', fontStyle: 'italic', fontSize: 12, marginLeft: 25, margin: 0 }}>Shorter the duration, more the applications</Text>
-                        <Text style={styles.label}>Choose duration</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10, flex: 1, justifyContent: 'space-evenly' }}>
-                            <TextInput
-                                style={styles.towinone}
-                                value={""}
-                                onChangeText={(e) => { }}
-                                placeholder='e.g. 3'
-                            />
-                            <TextInput
-                                style={styles.towinone}
-                                value={""}
-                                onChangeText={(e) => { }}
-                                placeholder='e.g. months'
-                            />
-                        </View>
-                    </View>
-                    <Text style={styles.label}>Intern's responsibilities</Text>
-                    <Text style={{ color: '#407BFF', fontStyle: 'italic', fontSize: 12, marginLeft: 25, margin: 0 }}>Internship posts with detailed job description receive significantly more applications.</Text>
+                    <Text style={styles.label}>Backlog subjects</Text>
                     <TextInput
-                        style={styles.multiline}
-                        multiline
-                        editable
-                        numberOfLines={8}
-                        value={""}
-                        onChangeText={(e) => { }}
-                        placeholder='internship'
+                        style={styles.textField}
+                        value={blsub}
+                        onChangeText={(e) => { setBlsub(e) }}
+                        placeholder='e.g. 2'
                     />
-                    <Text style={styles.label}>Do you have any candidate preferences? (Optional)</Text>
-                    <TextInput
-                        style={styles.multiline}
-                        multiline
-                        editable
-                        numberOfLines={8}
-                        value={""}
-                        onChangeText={(e) => { }}
-                        placeholder='internship'
-                    />
-
                     <TouchableOpacity style={styles.btn} onPress={() => {
                         handleClick()
                     }}>
-                        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Post Job</Text>
+                        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Create Student</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

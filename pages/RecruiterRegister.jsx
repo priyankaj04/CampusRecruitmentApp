@@ -48,15 +48,17 @@ const RecruiterRegister = ({ navigation }) => {
         lastname,
         email,
         password,
-        contactno : contact_no
+        contactno: contact_no
       }
       AdminRegisteration(reqbody).then((res) => {
         console.log(res);
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          AsyncStorage.setItem('admin_id', res.data[0].admin_id);
-          navigation.navigate("IndexDashboard", { screen: "Dashboard"});
+          async () => {
+            AsyncStorage.multiSet(['admin_id', res.data[0].admin_id], ['user_type', 'admin']);
+          }
+          navigation.navigate("IndexDashboard", { screen: "Dashboard" });
         } else {
           setIsLoading(false);
           setShowHelper(true);
@@ -107,9 +109,11 @@ const RecruiterRegister = ({ navigation }) => {
         //console.log("11211",reqbody);
         RecruiterRegisteration(reqbody).then((res) => {
           if (res.status) {
+            async () => {
+              AsyncStorage.multiSet(['recruiter_id', res.data[0].recruiter_id], ['user_type', 'admin']);
+            }
             setIsLoading(false);
             setShowHelper(false);
-            AsyncStorage.setItem('recruiter_id', res.data[0].recruiter_id);
             navigation.navigate('IndexRecruiter');
           } else {
             setShowHelper(true);

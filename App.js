@@ -48,7 +48,7 @@ const Drawer = createDrawerNavigator();
 
 const IndexDashboard = ({ navigation }) => {
   return (
-    <Drawer.Navigator initialRouteName="Dashboard">
+    <Drawer.Navigator initialRouteName="CreateStudent">
       <Drawer.Screen name="Dashboard" component={Dashboard} options={{
         title: "Home"
       }} />

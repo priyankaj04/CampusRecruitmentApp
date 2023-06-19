@@ -8,9 +8,16 @@ import { OTPInput } from "../components/commonFunctions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SendOTP = ({ route, navigation }) => {
+    
+    const [getData, setGetdata] = useState();
 
-    const email = route.params.email;
-    const id = AsyncStorage.getItem("talent_id");
+    const getDataasync = async () => {
+        console.log(await AsyncStorage.getAllKeys())
+        let value = await AsyncStorage.multiGet(['talent_id', 'email'])
+        console.log(value[0][1])
+        setGetdata(await AsyncStorage.multiGet(['talent_id', 'email']))
+    }
+
     const [isLoading, setIsLoading] = useState(true);
     const [showMsg, setShowMsg] = useState(false);
     const [msg, setMsg] = useState('');
@@ -27,12 +34,17 @@ const SendOTP = ({ route, navigation }) => {
     const pin5Ref = useRef(null)
     const pin6Ref = useRef(null)
 
+    useEffect(() => {
+        getDataasync();
+    }, [])
+
     const handleClick = () => {
         const reqbody = {
             otp: pin1 + pin2 + pin3 + pin4 + pin5 + pin6
         }
-        verifyOTP(reqbody, id).then((res) => {
+        verifyOTP(reqbody, getData[0][1]).then((res) => {
             setIsLoading(false);
+            console.log(res);
             if (res.status) {
                 navigation.navigate("Index");
             }
@@ -59,7 +71,7 @@ const SendOTP = ({ route, navigation }) => {
                 </View>
                 <KeyboardAvoidingView>
                     <View style={{ marginTop: 20 }}>
-                        <Text style={{ textAlign: 'center' }} >OTP code sent to {email}</Text>
+                        <Text style={{ textAlign: 'center' }} >OTP code sent to {getData[1][1]}</Text>
                         <View style={{
                             flex: 1,
                             justifyContent: 'center',

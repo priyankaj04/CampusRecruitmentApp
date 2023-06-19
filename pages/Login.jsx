@@ -27,11 +27,14 @@ const Login = ({ navigation }) => {
         register_no: text,
         password: password
       }
-      //student login
+      //student loginr
+      //const value = "talent";
       TalentLogin(reqbody).then((res) => {
         console.log("its response", res);
         if (res.status) {
-          AsyncStorage.setItem('talent_id', res.data.talent_id);
+          async () => {
+            await AsyncStorage.multiSet(['user_type', 'talent'], ['talent_id', res.data.talent_id]);
+          }
           setIsLoading(false);
           navigation.navigate('Index');
         } else {
@@ -112,7 +115,7 @@ const Login = ({ navigation }) => {
             <Icon name={visible ? "eye" : "eye-slash"} color="gray" size={26} onPress={() => setVisible(!visible)} />
           </View>
           {showHelper && <Text style={{ color: 'red', margin: 10 }}><Icon name="info-circle" size={14} color='red' />  {msg}</Text>}
-          { isLoading ? <ActivityIndicator color='#407BFF' size="small" /> :
+          {isLoading ? <ActivityIndicator color='#407BFF' size="small" /> :
             <TouchableOpacity style={styles.btn} onPress={() => handleClick()}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Log In</Text></TouchableOpacity>
           }
         </KeyboardAvoidingView>

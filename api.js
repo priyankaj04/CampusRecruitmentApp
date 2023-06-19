@@ -1,7 +1,7 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.0.101:8000';
+const URL = 'http://192.168.0.103:8000';
 
 //student registration
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
@@ -354,6 +354,24 @@ export const SendOTPCode = async (reqbody, id) => {
 
 export const verifyOTP = async (reqbody, id) => {
     const url = URL + '/api/talent/auth/' + id;
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const CreateStudentAPI = async (reqbody) => {
+    const url = URL + '/api/student/create'
     const fetchOptions = {
         method: "POST",
         headers: {

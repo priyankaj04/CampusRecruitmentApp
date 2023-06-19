@@ -7,19 +7,29 @@ import { Capitalize } from "../components/commonFunctions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({ navigation }) => {
-  const id = AsyncStorage.getItem('talent_id');
+  const [id, setId] = useState(null)
+
+  const getData = async () => {
+    console.log(await AsyncStorage.getItem('talent_id'))
+    setId(await AsyncStorage.getItem('talent_id'));
+  }
+
+
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    TalentDetailsById(id).then((res) => {
-      console.log(res);
-      if (res.status) {
-        setDetails(res.data[0]);
-        setIsLoading(false);
-      }
-    })
-  }, [])
+      getData();
+    if (id) {
+      TalentDetailsById(id).then((res) => {
+        console.log(res);
+        if (res.status) {
+          setDetails(res.data[0]);
+          setIsLoading(false);
+        }
+      })
+    }
+  }, [id])
 
 
   return (

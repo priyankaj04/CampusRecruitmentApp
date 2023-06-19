@@ -20,17 +20,19 @@ const RecruiterLogin = ({ navigation }) => {
       if (!password || password.length === 0 || email1.length === 0 || !email1) {
         setShowHelper(true);
         setMsg('All fields are required'); return;
-      } 
+      }
       let reqbody = {
-        email:email1,
+        email: email1,
         password
       }
       AdminLoginForm(reqbody).then((res) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          AsyncStorage.setItem('admin_id', res.data[0].admin_id)
-          navigation.navigate('IndexDashboard', { screen: "Dashboard"});
+          async () => {
+            await AsyncStorage.multiSet(['admin_id', res.data.admin_id], ['user_type', 'admin'])
+          }
+          navigation.navigate('IndexDashboard', { screen: "Dashboard" });
         } else {
           setShowHelper(true);
           setMsg(res.data.message);
@@ -40,7 +42,7 @@ const RecruiterLogin = ({ navigation }) => {
         console.log("it failed", err);
         setIsLoading(false);
         setShowHelper(true);
-        setMsg(err);
+        setMsg(err.message);
       })
     } else {
       if (!password || password.length === 0 || email.length === 0 || !email) {
@@ -64,7 +66,9 @@ const RecruiterLogin = ({ navigation }) => {
           if (res.status) {
             setIsLoading(false);
             setShowHelper(false);
-            AsyncStorage.setItem('recruiter_id', res.data[0].recruiter_id);
+            async () => {
+              await AsyncStorage.multiSet(['recruiter_id', res.data[0].recruiter_id], ['user_type', 'recruiter']);
+            }
             navigation.navigate('IndexRecruiter');
           } else {
             setShowHelper(true);

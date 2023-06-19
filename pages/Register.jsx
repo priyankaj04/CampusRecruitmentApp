@@ -34,7 +34,7 @@ const Register = ({ navigation }) => {
       setMsg({ value: 'all', msg: 'All fields are mandatory.' });
     } else if (!isGmailEmail(email)) {
       setShowHelper(true);
-      setMsg({ value: 'email', msg: 'Use valid gmail address only.' });
+      setMsg({ value: 'email', msg: 'Use valid college address only.' });
     } else if (hasNumbers(firstname) || hasNumbers(lastname)) {
       setShowHelper(true);
       setMsg({ value: 'name', msg: 'Name cannot contain numbers.' });
@@ -61,11 +61,12 @@ const Register = ({ navigation }) => {
         if (res.status) {
           const reqbody = { email }
           SendOTPCode(reqbody, res.data[0].talent_id).then((resp) => {
-            console.log("response", resp);
-            setIsLoading(false);
-            AsyncStorage.setItem('talent_id', res.data[0].talent_id);
-            AsyncStorage.setItem('email', res.data[0].email);
+            //console.log("response", resp);
+            async () => {
+              await AsyncStorage.multiSet(['talent_id', res.data[0].talent_id], ['email', res.data[0].email], ['user_type', 'talent'])
+            }
             navigation.navigate('SendOTP', { talent_id: res.data[0].talent_id, email: res.data[0].email });
+            setIsLoading(false);
           })
         } else {
           setShowHelper(true);
@@ -74,7 +75,7 @@ const Register = ({ navigation }) => {
           setIsLoading(false);
         }
         //console.log("reponsehere", res);
-        setIsLoading(false);
+        //setIsLoading(false);
       })
         .catch((err) => {
           console.log(err);
