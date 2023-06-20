@@ -12,9 +12,9 @@ const SendOTP = ({ route, navigation }) => {
     const [getData, setGetdata] = useState();
 
     const getDataasync = async () => {
-        console.log(await AsyncStorage.getAllKeys())
+        //console.log(await AsyncStorage.getAllKeys())
         let value = await AsyncStorage.multiGet(['talent_id', 'email'])
-        console.log(value[0][1])
+        //console.log(value[0][1])
         setGetdata(await AsyncStorage.multiGet(['talent_id', 'email']))
     }
 

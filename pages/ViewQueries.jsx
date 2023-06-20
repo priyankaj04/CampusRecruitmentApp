@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { AllQueryById } from '../api';
 import { calculateTimeAgo } from '../components/commonFunctions';
 
-const ViewQueries = () => {
-    const id = '21e3369b-f853-41e9-aa02-7a08c7531646';
+const ViewQueries = ({route, navigation}) => {
+    const id = route.params.id ;
     const [query, setQuery] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -17,6 +17,7 @@ const ViewQueries = () => {
                     const datetimeB = new Date(b.created_at);
                     return datetimeB - datetimeA;
                 }))
+
             }
             setLoading(false);
         })

@@ -9,7 +9,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateApplication = ({ navigation }) => {
   const [jobDetails, setJobdetails] = useState({});
-  const id = AsyncStorage.getItem('recruiter_id');
+  const [id, setId] = useState(null);
+
+  const getData = async () => {
+    setId(await AsyncStorage.getItem('recruiter_id'));
+  }
+
+  useEffect(() => {
+    if (!id) {
+      getData();
+    }
+  },[])
 
   const handleClick = () => {
     if (!jobDetails.opportunity_type || !jobDetails.job_title || !jobDetails.skills || !jobDetails.job_type || !jobDetails.number_of_openings || !jobDetails.job_start_date

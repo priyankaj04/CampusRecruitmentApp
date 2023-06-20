@@ -13,6 +13,19 @@ const Login = ({ navigation }) => {
   const [msg, setMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const ClearData = async () => {
+    console.log(await AsyncStorage.getAllKeys());
+    await AsyncStorage.removeItem('talent_id');
+  }
+
+  useEffect(() => {
+    ClearData()
+  }, [])
+
+  const GetData = async (value) => {
+    await AsyncStorage.multiSet([['user_type', 'talent'], ['talent_id', value]]);
+  }
+
   const handleClick = () => {
     if (!password || !text || password.length === 0 || text.length === 0) {
       setShowHelper(true);
@@ -32,9 +45,7 @@ const Login = ({ navigation }) => {
       TalentLogin(reqbody).then((res) => {
         console.log("its response", res);
         if (res.status) {
-          async () => {
-            await AsyncStorage.multiSet(['user_type', 'talent'], ['talent_id', res.data.talent_id]);
-          }
+          GetData(res.data.talent_id);
           setIsLoading(false);
           navigation.navigate('Index');
         } else {

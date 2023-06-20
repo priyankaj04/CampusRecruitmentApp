@@ -56,7 +56,7 @@ const RecruiterRegister = ({ navigation }) => {
           setIsLoading(false);
           setShowHelper(false);
           async () => {
-            AsyncStorage.multiSet(['admin_id', res.data[0].admin_id], ['user_type', 'admin']);
+            AsyncStorage.multiSet([['admin_id', res.data[0].admin_id], ['user_type', 'admin']]);
           }
           navigation.navigate("IndexDashboard", { screen: "Dashboard" });
         } else {
@@ -110,7 +110,7 @@ const RecruiterRegister = ({ navigation }) => {
         RecruiterRegisteration(reqbody).then((res) => {
           if (res.status) {
             async () => {
-              AsyncStorage.multiSet(['recruiter_id', res.data[0].recruiter_id], ['user_type', 'admin']);
+              AsyncStorage.multiSet([['recruiter_id', res.data[0].recruiter_id], ['user_type', 'admin']]);
             }
             setIsLoading(false);
             setShowHelper(false);

@@ -9,7 +9,6 @@ import Toastable, { showToastable } from 'react-native-toastable';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const CreateStudent = () => {
-    const id = AsyncStorage.getItem('admin_id');
     const [stream, setStream] = useState('Science');
     const [degree, setDegree] = useState('Bachelore of Computer Science');
     const [sememster, setSemester] = useState('I');
@@ -28,6 +27,17 @@ const CreateStudent = () => {
     const StreamsCollege = ['Science', 'Commerce', 'Arts'];
     const Degree = ['Bachelore of Science', 'Bachelore of Computer Science', 'Bachelore of Commerce', 'Bachelore of Arts'];
     const Sememster = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+    const [id, setId] = useState(null);
+
+    const getData = async () => {
+        setId(await AsyncStorage.getItem('admin_id'));
+    }
+
+    useEffect(() => {
+        if (!id) {
+            getData();
+        }
+    }, [])
 
     const handleClick = () => {
         const reqbody = {

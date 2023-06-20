@@ -1,15 +1,24 @@
 import { StyleSheet, Text, View, ScrollView, Linking } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { ResumeDetailsByTalentID, TalentDetailsById } from '../api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ViewResume = ({ route, navigation }) => {
   //const { talent_id, resume_id } = route.params;
-  const talent_id = '21e3369b-f853-41e9-aa02-7a08c7531646'
+  //const talent_id = '21e3369b-f853-41e9-aa02-7a08c7531646'
   const [details, setDetails] = useState([]);
   const [talentDetails, setTalentDetails] = useState([]);
   const [fetch, setFetch] = useState(false);
+  const [talent_id, setTalentid] = useState(null);
+
+  const getData = async () => {
+    setTalentid(await AsyncStorage.getItem('talent_id'));
+  }
 
   useEffect(() => {
+    if (!talent_id) {
+      getData();
+    }
     if (talent_id) {
       ResumeDetailsByTalentID(talent_id).then((res) => {
         if (res.status) {
@@ -23,7 +32,7 @@ const ViewResume = ({ route, navigation }) => {
         }
       })
     }
-  }, [fetch])
+  }, [fetch, talent_id]);
 
   const WebLink = ({ url }) => {
     const handleLinkPress = () => {

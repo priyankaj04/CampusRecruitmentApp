@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditProfile = ({ navigation }) => {
 
-  const id = AsyncStorage.getItem('talent_id');
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -24,6 +23,17 @@ const EditProfile = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [save, setSave] = useState(false);
   const [dataUri, setDataUri] = useState(null);
+  const [id, setId] = useState(null);
+
+  const getData = async () => {
+    setId(await AsyncStorage.getItem('talent_id'));
+  }
+
+  useEffect(() => {
+    if (!id) {
+      getData();
+    }
+  }, []);
 
   const Courses = [
     { label: 'Bachelor of Science', value: 'bsc' },
@@ -108,6 +118,12 @@ const EditProfile = ({ navigation }) => {
       //console.log(sizeOf(`data:${fileInfo.mimeType};base64,${fileContent}`))
     }
   };
+
+  const handleNav = () => {
+    console.log(details.resume_id);
+    async () => await AsyncStorage.setItem('resume_id', details.resume_id)
+    navigation.navigate("EditResume");
+  }
 
   return (
     <ScrollView>
@@ -207,7 +223,7 @@ const EditProfile = ({ navigation }) => {
               />
 
               <TouchableOpacity
-                onPress={() => navigation.navigate('EditResume', { resume_id: details.resume_id, talent_id: details.talent_id })}
+                onPress={() => { handleNav(); }}
                 style={{
                   backgroundColor: '#407BFF',
                   width: 130,

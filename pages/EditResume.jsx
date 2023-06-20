@@ -9,8 +9,8 @@ import { ResumeUpdation, ResumeDetailsByTalentID } from '../api';
 import Checkbox from 'expo-checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-const EditResume = ({ route, navigation }) => {
-  const { resume_id, talent_id } = route.params;
+const EditResume = ({ navigation }) => {
+  //const { resume_id, talent_id } = route.params;
   const [showEducation, setShowEducation] = useState(false);
   const [resumeDetails, setResumeDetails] = useState([]);
   const [fetch, setFetch] = useState(false);
@@ -20,6 +20,22 @@ const EditResume = ({ route, navigation }) => {
   const [showProject, setShowProject] = useState(false);
   const [showAccomplishment, setShowAccomplishment] = useState(false);
   const [showSkills, setShowSkills] = useState(false);
+  const [resume_id, setResumeid] = useState(null);
+  const [talent_id, setTalentid] = useState(null);
+
+  const getData = async () => {
+    const value = await AsyncStorage.multiGet(['talent_id', 'resume_id']);
+    if (value !== null) { 
+      setTalentid(value[0][1]);
+      setResumeid(value[1][1]);
+    }
+  }
+
+  useEffect(() => {
+    if (!resume_id || !talent_id) {
+      getData();
+    }
+  }, []);
 
 
   useEffect(() => {

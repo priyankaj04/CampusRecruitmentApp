@@ -9,9 +9,7 @@ const ContactUs = ({ route, navigation }) => {
   const [type, setType] = useState(null);
 
   const getData = async () => {
-    console.log(await AsyncStorage.getAllKeys())
-    setId(await AsyncStorage.multiGet(['talent_id', 'user_type']));
-    console.log(await AsyncStorage.multiGet(['talent_id', 'user_type']))
+    setId(await AsyncStorage.getItem(['talent_id', 'recruiter_id']));
   }
 
   const [query, setQuery] = useState('');
@@ -27,13 +25,20 @@ const ContactUs = ({ route, navigation }) => {
     if (!id || !type) {
       getData();
     }
-    let value;
-    
-    if (async() => await AsyncStorage.getItem('talent_id')) {
-      console.log("how are you huh??")
-      TalentDetailsById(id).then((res) => {
+    if (async() => await AsyncStorage.getItem('user_type') === 'talent') {
+      TalentDetailsById(id[0][1]).then((res) => {
         if (res.status) {
           setFullname(res.firstName + res.lastName);
+          setEmail(res.email);
+          setContactNo(res.contact_no);
+        }
+      })
+    } else if (async () => await AsyncStorage.getItem('user_type' === 'recruiter')) {
+      RecruiterDetailsById(id[1][1]).then((res) => {
+        if (res.status) {
+          setFullname(res.firstName + res.lastName);
+          setEmail(res.email);
+          setContactNo(res.contact_no);
         }
       })
     }
@@ -48,12 +53,16 @@ const ContactUs = ({ route, navigation }) => {
     setShowMessage(false);
     setLoading(true);
     const reqbody = {
-      id,
       type,
       message: query,
       fullname,
       email,
       contact_no
+    }
+    if (async () => await AsyncStorage.getItem('user_type') === 'talent') {
+      reqbody.id = id[0][1];
+    } else if (async () => await AsyncStorage.getItem('user_type') === 'recruiter') {
+      reqbody.id = id[1][1];
     }
 
     NewQuery(reqbody).then((res) => {
@@ -69,6 +78,14 @@ const ContactUs = ({ route, navigation }) => {
       }
       setLoading(false);
     })
+  }
+
+  const handleNav = () => {
+    if (async () => await AsyncStorage.getItem('user_type') === 'talent') {
+      navigation.navigate('ViewQueries', { id: id[0][1] })
+    } else if (async () => await AsyncStorage.getItem('user_type') === 'recruiter') {
+      navigation.navigate('ViewQueries', { id: id[1][1] })
+    }
   }
 
 
@@ -123,7 +140,7 @@ const ContactUs = ({ route, navigation }) => {
               <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Submit</Text>
             </TouchableOpacity>
             }
-            <Text style={{ fontWeight: "bold", margin: 7, color: '#407BFF' }} onPress={() => navigation.navigate('ViewQueries')}>View all your queries</Text>
+            <Text style={{ fontWeight: "bold", margin: 7, color: '#407BFF' }} onPress={() => { handleNav() }}>View all your queries</Text>
           </View>
         </View>
 

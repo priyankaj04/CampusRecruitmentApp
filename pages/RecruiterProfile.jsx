@@ -7,20 +7,29 @@ import { Capitalize } from "../components/commonFunctions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecruiterProfile = ({ navigation }) => {
-  const id = AsyncStorage.getItem('recruiter_id');
+  //const id = AsyncStorage.getItem('recruiter_id');
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [id, setId] = useState(null);
+
+  const getData = async () => {
+    setId(await AsyncStorage.getItem('recruiter_id'));
+  }
 
   useEffect(() => {
-    RecruiterDetailsById(id).then((res) => {
-      console.log(res);
-      if (res.status) {
-        setDetails(res.data[0]);
-        setIsLoading(false);
-      }
-    })
+    if (!id) {
+      getData()
+    }
+    if (async () => await AsyncStorage.getItem('recruiter_id')) {
+      RecruiterDetailsById(id).then((res) => {
+        console.log(res);
+        if (res.status) {
+          setDetails(res.data[0]);
+          setIsLoading(false);
+        }
+      })
+    }
   }, [])
-
 
   return (
     <ScrollView>
