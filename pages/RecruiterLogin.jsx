@@ -171,12 +171,15 @@ const RecruiterLogin = ({ navigation }) => {
             <TouchableOpacity style={styles.btn} onPress={() => handleClick()}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Log In</Text></TouchableOpacity>
           }
         </KeyboardAvoidingView>
-        <Text style={{
+        {email !== 'admin' && <Text style={{
           color: '#407BFF',
           fontWeight: 'bold',
           fontSize: 16,
           margin: 10
+        }} onPress={() => {
+          navigation.navigate('ForgotPassword', { type: 'recruiter' })
         }}>Forgot Password?</Text>
+        }
         <Text style={{
           color: 'gray',
           fontSize: 16,

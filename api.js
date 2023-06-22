@@ -388,6 +388,62 @@ export const CreateStudentAPI = async (reqbody) => {
         });
 }
 
+//Check if entered email is valid or not, if valid, send otp
+export const VerifyForgotEmail = async (type,reqbody) => {
+    const url = URL + '/api/forgotpassword/verify/' + type;
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Check if entered otp is valid or not
+export const ConfrimForgotOTP = async (type,reqbody) => {
+    const url = URL + '/api/forgotpassword/otp/' + type
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const ForgotpasswordEmail = async (type, reqbody) => {
+    const url = URL + '/api/forgotpassword/' + type
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
 // const sendOTP = async (email, otp) => {
 //     const SENDGRID_API_KEY = 'YOUR_SENDGRID_API_KEY';
 
