@@ -7,22 +7,37 @@ const SplashScreen = ({ navigation }) => {
 
   const getData = async () => {
     setType(await AsyncStorage.getItem('user_type'))
+    const value = await AsyncStorage.getItem('user_type');
+    if (value == 'talent') {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Index' }],
+      });
+      navigation.navigate('Index')
+    } else if (value == 'recruiter') {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'IndexRecruiter' }],
+      });
+      navigation.navigate('IndexRecruiter')
+    } else if (!value) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Getstarted' }],
+      });
+      navigation.navigate('Getstarted')
+    }
   }
 
   useEffect(() => {
-    getData().then(() => {
-      const timer = setTimeout(() => {
-        if (type == 'talent') {
-          navigation.navigate('Index')
-        } else if (type == 'recruiter') {
-          navigation.navigate('IndexRecruiter')
-        } else {
-          navigation.navigate('Getstarted')
-        }
-      }, 3000);
-      return () => clearTimeout(timer);
-    })
-  }, [type])
+
+    const timer = setTimeout(() => {
+      getData()
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [])
+
+
   return (
     <View style={{ backgroundColor: '#407BFF', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
       <View style={{ alignItems: 'center' }}>

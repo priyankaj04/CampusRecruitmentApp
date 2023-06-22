@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, View, TextInput, ScrollView, KeyboardAvoidingView, ActivityIndicator, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { NewQuery, TalentDetailsById } from '../api';
+import { NewQuery, TalentDetailsById, RecruiterDetailsById  } from '../api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -71,9 +71,6 @@ const ContactUs = ({ route, navigation }) => {
       if (res.status) {
         //navigation.navigate('Profile');
         setQuery('');
-        setFullname('');
-        setEmail('');
-        setContactNo('');
       } else {
         setShowMessage(true);
         setMsg(res.data.message)

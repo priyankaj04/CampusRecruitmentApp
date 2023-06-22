@@ -33,7 +33,13 @@ const RecruiterLogin = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          getData('admin_id', res.data.admin_id, 'admin').then(() => navigation.navigate('IndexDashboard', { screen: "Dashboard" }))
+          getData('admin_id', res.data.admin_id, 'admin').then(() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'IndexDashboard' }]
+            })
+            navigation.navigate('IndexDashboard', { screen: "Dashboard" })
+          })
         } else {
           setShowHelper(true);
           setMsg(res.data.message);
@@ -67,7 +73,13 @@ const RecruiterLogin = ({ navigation }) => {
           if (res.status) {
             setIsLoading(false);
             setShowHelper(false);
-            getData('recruiter_id', res.data.recruiter_id, 'recruiter').then(() => navigation.navigate('IndexRecruiter'))
+            getData('recruiter_id', res.data.recruiter_id, 'recruiter').then(() => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'IndexRecruiter' }]
+              })
+              navigation.navigate('IndexRecruiter');
+            })
           } else {
             setShowHelper(true);
             setMsg(res.data.message);

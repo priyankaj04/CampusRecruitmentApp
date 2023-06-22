@@ -47,6 +47,10 @@ const SendOTP = ({ route, navigation }) => {
             setIsLoading(false);
             console.log(res);
             if (res.status) {
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Index' }],
+                });
                 navigation.navigate("Index");
             }
         })

@@ -47,6 +47,10 @@ const Login = ({ navigation }) => {
         if (res.status) {
           GetData(res.data.talent_id);
           setIsLoading(false);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Index' }],
+          });
           navigation.navigate('Index');
         } else {
           setShowHelper(true);

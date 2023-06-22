@@ -34,6 +34,14 @@ const RecruiterRegister = ({ navigation }) => {
     return !regex.test(number);
   }
 
+  const setData = async (id) => {
+    AsyncStorage.multiSet([['admin_id', id], ['user_type', 'admin']]);
+  }
+
+  const setData1 = async (id) => {
+    AsyncStorage.multiSet([['recruiter_id', id], ['user_type', 'recruiter']]);
+  }
+
 
   const handleClick = () => {
     if (firstname === 'admin') {
@@ -55,10 +63,13 @@ const RecruiterRegister = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          async () => {
-            AsyncStorage.multiSet([['admin_id', res.data[0].admin_id], ['user_type', 'admin']]);
-          }
-          navigation.navigate("IndexDashboard", { screen: "Dashboard" });
+          setData(res.data[0].admin_id).then(() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'IndexDashboard' }]
+            })
+            navigation.navigate("IndexDashboard", { screen: "Dashboard" });
+          })
         } else {
           setIsLoading(false);
           setShowHelper(true);
@@ -109,12 +120,15 @@ const RecruiterRegister = ({ navigation }) => {
         //console.log("11211",reqbody);
         RecruiterRegisteration(reqbody).then((res) => {
           if (res.status) {
-            async () => {
-              AsyncStorage.multiSet([['recruiter_id', res.data[0].recruiter_id], ['user_type', 'admin']]);
-            }
+            setData1(res.data[0].recruiter_id).then((res) => {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'IndexRecruiter' }]
+              })
+              navigation.navigate('IndexRecruiter');
+            })
             setIsLoading(false);
             setShowHelper(false);
-            navigation.navigate('IndexRecruiter');
           } else {
             setShowHelper(true);
             //console.log("ERROR", res);

@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
 
-const Home = () => {
+const Home = ({ navigation }) => {
+
   return (
     <View style={{ backgroundColor: 'white' }}>
       <View style={{ alignItems: 'center', height: 200, justifyContent: 'center' }}>
