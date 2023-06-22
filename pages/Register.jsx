@@ -27,6 +27,10 @@ const Register = ({ navigation }) => {
     return regex.test(text);
   }
 
+  const storeData = async (id, email) => {
+    await AsyncStorage.multiSet([['talent_id', id], ['email', email], ['user_type', 'talent']])
+  }
+
   const handleClick = () => {
     if (!registerno || registerno.length === 0 || !firstname || firstname.length === 0 || !lastname
       || lastname.length === 0 || !email || email.length === 0 || !password || password.length === 0) {
@@ -62,9 +66,7 @@ const Register = ({ navigation }) => {
           const reqbody = { email }
           SendOTPCode(reqbody, res.data[0].talent_id).then((resp) => {
             //console.log("response", resp);
-            async () => {
-              await AsyncStorage.multiSet([['talent_id', res.data[0].talent_id], ['email', res.data[0].email], ['user_type', 'talent']])
-            }
+            storeData(res.data[0].talent_id, res.data[0].email);
             navigation.navigate('SendOTP', { talent_id: res.data[0].talent_id, email: res.data[0].email });
             setIsLoading(false);
           })

@@ -21,25 +21,19 @@ const EditResume = ({ navigation }) => {
   const [showProject, setShowProject] = useState(false);
   const [showAccomplishment, setShowAccomplishment] = useState(false);
   const [showSkills, setShowSkills] = useState(false);
-  const [resume_id, setResumeid] = useState(null);
   const [talent_id, setTalentid] = useState(null);
 
   const getData = async () => {
-    const value = await AsyncStorage.multiGet(['talent_id', 'resume_id']);
-    if (value !== null) { 
-      setTalentid(value[0][1]);
-      setResumeid(value[1][1]);
+    const value = await AsyncStorage.getItem('talent_id');
+    if (value !== null) {
+      setTalentid(value);
     }
   }
 
   useEffect(() => {
-    if (!resume_id || !talent_id) {
+    if (!talent_id) {
       getData();
     }
-  }, []);
-
-
-  useEffect(() => {
     if (talent_id) {
       ResumeDetailsByTalentID(talent_id).then((res) => {
         if (res.status) {
@@ -47,7 +41,8 @@ const EditResume = ({ navigation }) => {
         }
       })
     }
-  }, [fetch])
+  }, [talent_id, fetch]);
+
 
   const ShowEducationCard = (props) => {
 
@@ -263,7 +258,7 @@ const EditResume = ({ navigation }) => {
     const handleClick = () => {
       let reqbody = {};
       setSave(true);
-      if (!props.resumeDetails.education || !props.resumeDetails.education.length || props.resumeDetails.education.length === 0 ) {
+      if (!props.resumeDetails.education || !props.resumeDetails.education.length || props.resumeDetails.education.length === 0) {
         if (selectedLevel === 'ug/pg') {
           reqbody.education = [{
             level: selectedLevel,
@@ -2202,7 +2197,7 @@ const EditResume = ({ navigation }) => {
         </View>
         {showAccomplishment && <ShowAccomplishmentCard setShowAccomplishment={setShowAccomplishment} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
       </View>
-      <TouchableOpacity style={styles.btnpro} onPress={() => navigation.navigate("ViewResume", { talent_id: talent_id, resume_id: resume_id })}>
+      <TouchableOpacity style={styles.btnpro} onPress={() => navigation.navigate("ViewResume", { talent_id: talent_id, resume_id: resumeDetails.resume_id })}>
         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>View Resume</Text>
       </TouchableOpacity>
 

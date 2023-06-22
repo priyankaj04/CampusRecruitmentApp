@@ -26,13 +26,34 @@ const EditProfile = ({ navigation }) => {
   const [id, setId] = useState(null);
 
   const getData = async () => {
-    console.log("talent id", await AsyncStorage.getItem('talent_id') )
-    setId(await AsyncStorage.getItem('talent_id'));
+    const value = await AsyncStorage.getItem('talent_id');
+    if (value) { setId(value); }
+    console.log("talent id", await AsyncStorage.getItem('talent_id'))
   }
 
   useEffect(() => {
     if (!id) {
       getData();
+    }
+    if (id) {
+      TalentDetailsById(id).then((res) => {
+        if (res.status) {
+          console.log(res)
+          setDataUri(res.data[0].profile_url)
+          setDetails(res.data[0]);
+          setIsLoading(false);
+          setEmail(res.data[0].email);
+          setFirstname(res.data[0].firstname);
+          setLastname(res.data[0].lastname);
+          setBranch(res.data[0].branch);
+          setFieldOfExpertise(res.data[0].fieldofexpertise);
+          setSemester(res.data[0].semester);
+          setBio(res.data[0].about);
+          setContactno(res.data[0].contactno);
+          setWhatappno(res.data[0].whatappno);
+          setCity(res.data[0].city);
+        }
+      })
     }
   }, [id]);
 
@@ -72,29 +93,6 @@ const EditProfile = ({ navigation }) => {
     })
   }
 
-  useEffect(() => {
-    if (id) {
-      TalentDetailsById(id).then((res) => {
-        if (res.status) {
-          console.log(res)
-          setDataUri(res.data[0].profile_url)
-          setDetails(res.data[0]);
-          setIsLoading(false);
-          setEmail(res.data[0].email);
-          setFirstname(res.data[0].firstname);
-          setLastname(res.data[0].lastname);
-          setBranch(res.data[0].branch);
-          setFieldOfExpertise(res.data[0].fieldofexpertise);
-          setSemester(res.data[0].semester);
-          setBio(res.data[0].about);
-          setContactno(res.data[0].contactno);
-          setWhatappno(res.data[0].whatappno);
-          setCity(res.data[0].city);
-        }
-      })
-    }
-  }, []);
-
   const selectImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -123,10 +121,9 @@ const EditProfile = ({ navigation }) => {
   };
 
   const handleNav = () => {
-    console.log(details.resume_id);
-    async () => await AsyncStorage.setItem('resume_id', details.resume_id)
     navigation.navigate("EditResume");
   }
+
 
   return (
     <ScrollView>

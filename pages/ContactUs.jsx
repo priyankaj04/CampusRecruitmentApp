@@ -9,7 +9,9 @@ const ContactUs = ({ route, navigation }) => {
   const [type, setType] = useState(null);
 
   const getData = async () => {
+    setType(await AsyncStorage.getItem('user_type'))
     setId(await AsyncStorage.multiGet(['talent_id', 'recruiter_id']));
+    console.log(await AsyncStorage.multiGet(['talent_id', 'recruiter_id']));
   }
 
   const [query, setQuery] = useState('');
@@ -25,8 +27,7 @@ const ContactUs = ({ route, navigation }) => {
     if (!id || !type) {
       getData();
     }
-    const value = async () => await AsyncStorage.getItem('user_type')
-    if (value === 'talent') {
+    if (type === 'talent') {
       TalentDetailsById(id[0][1]).then((res) => {
         if (res.status) {
           setFullname(res.firstName + res.lastName);
@@ -34,7 +35,7 @@ const ContactUs = ({ route, navigation }) => {
           setContactNo(res.contact_no);
         }
       })
-    } else if (value === 'recruiter') {
+    } else if (type === 'recruiter') {
       RecruiterDetailsById(id[1][1]).then((res) => {
         if (res.status) {
           setFullname(res.firstName + res.lastName);

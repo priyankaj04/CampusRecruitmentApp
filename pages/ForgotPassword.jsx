@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react';
-import { VerifyForgotEmail, ConfrimForgotOTP, ForgotpasswordEmail } from ''
+import { VerifyForgotEmail, ConfrimForgotOTP, ForgotpasswordEmail } from '../api';
 
 const ForgotPassword = ({ route, navigation }) => {
   const type = route.params.type;

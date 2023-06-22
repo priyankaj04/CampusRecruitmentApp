@@ -1,15 +1,28 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = ({ navigation }) => {
+  const [type, setType] = useState(null);
+
+  const getData = async () => {
+    setType(await AsyncStorage.getItem('user_type'))
+  }
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.navigate('Getstarted') // Hide the splash screen after 3 seconds
-    }, 3000);
-
-    return () => clearTimeout(timer);
-  }, [])
+    getData().then(() => {
+      const timer = setTimeout(() => {
+        if (type == 'talent') {
+          navigation.navigate('Index')
+        } else if (type == 'recruiter') {
+          navigation.navigate('IndexRecruiter')
+        } else {
+          navigation.navigate('Getstarted')
+        }
+      }, 3000);
+      return () => clearTimeout(timer);
+    })
+  }, [type])
   return (
     <View style={{ backgroundColor: '#407BFF', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
       <View style={{ alignItems: 'center' }}>
