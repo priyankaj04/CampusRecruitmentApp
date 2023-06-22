@@ -9,7 +9,7 @@ const ContactUs = ({ route, navigation }) => {
   const [type, setType] = useState(null);
 
   const getData = async () => {
-    setId(await AsyncStorage.getItem(['talent_id', 'recruiter_id']));
+    setId(await AsyncStorage.multiGet(['talent_id', 'recruiter_id']));
   }
 
   const [query, setQuery] = useState('');
@@ -25,7 +25,8 @@ const ContactUs = ({ route, navigation }) => {
     if (!id || !type) {
       getData();
     }
-    if (async() => await AsyncStorage.getItem('user_type') === 'talent') {
+    const value = async () => await AsyncStorage.getItem('user_type')
+    if (value === 'talent') {
       TalentDetailsById(id[0][1]).then((res) => {
         if (res.status) {
           setFullname(res.firstName + res.lastName);
@@ -33,7 +34,7 @@ const ContactUs = ({ route, navigation }) => {
           setContactNo(res.contact_no);
         }
       })
-    } else if (async () => await AsyncStorage.getItem('user_type' === 'recruiter')) {
+    } else if (value === 'recruiter') {
       RecruiterDetailsById(id[1][1]).then((res) => {
         if (res.status) {
           setFullname(res.firstName + res.lastName);
@@ -42,7 +43,7 @@ const ContactUs = ({ route, navigation }) => {
         }
       })
     }
-  }, [])
+  }, [id, type])
 
   const handleClick = () => {
     if (!query || query.length === 0 || !fullname || fullname.length === 0 || !email || email.length === 0 || !contact_no || contact_no.length === 0) {
@@ -59,9 +60,11 @@ const ContactUs = ({ route, navigation }) => {
       email,
       contact_no
     }
-    if (async () => await AsyncStorage.getItem('user_type') === 'talent') {
+
+    const value = async () => await AsyncStorage.getItem('user_type')
+    if (value === 'talent') {
       reqbody.id = id[0][1];
-    } else if (async () => await AsyncStorage.getItem('user_type') === 'recruiter') {
+    } else if (value === 'recruiter') {
       reqbody.id = id[1][1];
     }
 

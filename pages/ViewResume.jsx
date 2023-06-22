@@ -60,10 +60,11 @@ const ViewResume = ({ route, navigation }) => {
             {talentDetails.city && <Text style={styles.normal}>{talentDetails.city}</Text>}
           </View>
         </View>
-        <View style={styles.divider} />
+
         <View>
           {
             details.education && <View>
+              <View style={styles.divider} />
               <Text style={styles.header1}>Education</Text>
               {
                 details.education.map((item, index) => (
@@ -98,10 +99,10 @@ const ViewResume = ({ route, navigation }) => {
               }
             </View>
           }
-          <View style={styles.divider} />
           {
             details.skill &&
             <View>
+              <View style={styles.divider} />
               <Text style={styles.header1}>Skills</Text>
               <View>
                 {
@@ -115,10 +116,10 @@ const ViewResume = ({ route, navigation }) => {
               </View>
             </View>
           }
-          <View style={styles.divider} />
           {
             details.project &&
             <View>
+              <View style={styles.divider} />
               <Text style={styles.header1}>Projects</Text>
               <View>
                 {
@@ -134,10 +135,10 @@ const ViewResume = ({ route, navigation }) => {
               </View>
             </View>
           }
-          <View style={styles.divider} />
           {
             details.internship &&
             <View>
+              <View style={styles.divider} />
               <Text style={styles.header1}>Internships</Text>
               <View>
                 {
@@ -153,10 +154,10 @@ const ViewResume = ({ route, navigation }) => {
               </View>
             </View>
           }
-          <View style={styles.divider} />
           {
             details.job &&
             <View>
+              <View style={styles.divider} />
               <Text style={styles.header1}>Experience</Text>
               <View>
                 {
@@ -172,10 +173,10 @@ const ViewResume = ({ route, navigation }) => {
               </View>
             </View>
           }
-          <View style={styles.divider} />
           {
             details.position_of_responsibility &&
             <View>
+              <View style={styles.divider} />
               <Text style={styles.header1}>Position of Responsiibility</Text>
               <View>
                 {
@@ -188,10 +189,10 @@ const ViewResume = ({ route, navigation }) => {
               </View>
             </View>
           }
-          <View style={styles.divider} />
           {
             details.accomplishment &&
             <View>
+              <View style={styles.divider} />
               <Text style={styles.header1}>Accomplishments</Text>
               <View>
                 {

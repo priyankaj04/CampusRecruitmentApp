@@ -13,6 +13,7 @@ const RecruiterProfile = ({ navigation }) => {
   const [id, setId] = useState(null);
 
   const getData = async () => {
+    console.log(await AsyncStorage.getAllKeys())
     setId(await AsyncStorage.getItem('recruiter_id'));
   }
 
@@ -20,7 +21,7 @@ const RecruiterProfile = ({ navigation }) => {
     if (!id) {
       getData()
     }
-    if (async () => await AsyncStorage.getItem('recruiter_id')) {
+    if (id) {
       RecruiterDetailsById(id).then((res) => {
         console.log(res);
         if (res.status) {
@@ -29,7 +30,17 @@ const RecruiterProfile = ({ navigation }) => {
         }
       })
     }
-  }, [])
+  }, [id])
+
+  const removeItem = async () => {
+    await AsyncStorage.multiRemove(['recruiter_id', 'user_type'])
+  }
+
+  const handleNav = () => {
+    removeItem().then(() => {
+      navigation.navigate('Getstarted');
+    })
+  }
 
   return (
     <ScrollView>
@@ -142,7 +153,7 @@ const RecruiterProfile = ({ navigation }) => {
             flexDirection: 'row',
             borderRadius: 15,
             alignItems: 'center'
-          }} onPress={() => navigation.navigate('Getstarted')}>
+          }} onPress={() => { handleNav() } }>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center', color: 'red' }}> Logout</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>

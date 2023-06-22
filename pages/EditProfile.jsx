@@ -26,6 +26,7 @@ const EditProfile = ({ navigation }) => {
   const [id, setId] = useState(null);
 
   const getData = async () => {
+    console.log("talent id", await AsyncStorage.getItem('talent_id') )
     setId(await AsyncStorage.getItem('talent_id'));
   }
 
@@ -33,7 +34,7 @@ const EditProfile = ({ navigation }) => {
     if (!id) {
       getData();
     }
-  }, []);
+  }, [id]);
 
   const Courses = [
     { label: 'Bachelor of Science', value: 'bsc' },
@@ -72,24 +73,26 @@ const EditProfile = ({ navigation }) => {
   }
 
   useEffect(() => {
-    TalentDetailsById(id).then((res) => {
-      if (res.status) {
-        console.log(res)
-        setDataUri(res.data[0].profile_url)
-        setDetails(res.data[0]);
-        setIsLoading(false);
-        setEmail(res.data[0].email);
-        setFirstname(res.data[0].firstname);
-        setLastname(res.data[0].lastname);
-        setBranch(res.data[0].branch);
-        setFieldOfExpertise(res.data[0].fieldofexpertise);
-        setSemester(res.data[0].semester);
-        setBio(res.data[0].about);
-        setContactno(res.data[0].contactno);
-        setWhatappno(res.data[0].whatappno);
-        setCity(res.data[0].city);
-      }
-    })
+    if (id) {
+      TalentDetailsById(id).then((res) => {
+        if (res.status) {
+          console.log(res)
+          setDataUri(res.data[0].profile_url)
+          setDetails(res.data[0]);
+          setIsLoading(false);
+          setEmail(res.data[0].email);
+          setFirstname(res.data[0].firstname);
+          setLastname(res.data[0].lastname);
+          setBranch(res.data[0].branch);
+          setFieldOfExpertise(res.data[0].fieldofexpertise);
+          setSemester(res.data[0].semester);
+          setBio(res.data[0].about);
+          setContactno(res.data[0].contactno);
+          setWhatappno(res.data[0].whatappno);
+          setCity(res.data[0].city);
+        }
+      })
+    }
   }, []);
 
   const selectImage = async () => {

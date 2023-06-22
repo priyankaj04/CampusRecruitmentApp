@@ -10,6 +10,7 @@ const Profile = ({ navigation }) => {
   const [id, setId] = useState(null)
 
   const getData = async () => {
+    console.log(await AsyncStorage.getAllKeys())
     console.log(await AsyncStorage.getItem('talent_id'))
     setId(await AsyncStorage.getItem('talent_id'));
   }
@@ -30,6 +31,16 @@ const Profile = ({ navigation }) => {
       })
     }
   }, [id])
+
+  const removeData = async () => {
+    await AsyncStorage.multiRemove(['admin_id', 'email', 'talent_id', 'user_type']);
+  }
+
+  const handleNav = () => {
+    removeData().then(() => {
+      navigation.navigate('Getstarted');
+    })
+  }
 
 
   return (
@@ -145,7 +156,7 @@ const Profile = ({ navigation }) => {
             flexDirection: 'row',
             borderRadius: 15,
             alignItems: 'center'
-          }} onPress={() => navigation.navigate('Getstarted')}>
+          }} onPress={() => { handleNav() }}>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center', color: 'red' }}> Logout</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>

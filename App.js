@@ -7,7 +7,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Index from './pages/Index'
 import Login from './pages/Login';
 import Register from './pages/Register';
 import About from './pages/About';

@@ -8,6 +8,7 @@ import { RadioButton } from 'react-native-paper';
 import { ResumeUpdation, ResumeDetailsByTalentID } from '../api';
 import Checkbox from 'expo-checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditResume = ({ navigation }) => {
   //const { resume_id, talent_id } = route.params;
@@ -39,11 +40,13 @@ const EditResume = ({ navigation }) => {
 
 
   useEffect(() => {
-    ResumeDetailsByTalentID(talent_id).then((res) => {
-      if (res.status) {
-        setResumeDetails(res.data[0]);
-      }
-    })
+    if (talent_id) {
+      ResumeDetailsByTalentID(talent_id).then((res) => {
+        if (res.status) {
+          setResumeDetails(res.data[0]);
+        }
+      })
+    }
   }, [fetch])
 
   const ShowEducationCard = (props) => {

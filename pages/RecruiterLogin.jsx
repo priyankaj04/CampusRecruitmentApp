@@ -14,6 +14,10 @@ const RecruiterLogin = ({ navigation }) => {
   const [msg, setMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const getData = async (id, val, name) => {
+    await AsyncStorage.multiSet([[id, val], ['user_type', name]]);
+  };
+
   const handleClick = () => {
 
     if (email == 'admin') {
@@ -29,10 +33,7 @@ const RecruiterLogin = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          async () => {
-            await AsyncStorage.multiSet([['admin_id', res.data.admin_id], ['user_type', 'admin']])
-          }
-          navigation.navigate('IndexDashboard', { screen: "Dashboard" });
+          getData('admin_id', res.data.admin_id, 'admin').then(() => navigation.navigate('IndexDashboard', { screen: "Dashboard" }))
         } else {
           setShowHelper(true);
           setMsg(res.data.message);
@@ -66,10 +67,7 @@ const RecruiterLogin = ({ navigation }) => {
           if (res.status) {
             setIsLoading(false);
             setShowHelper(false);
-            async () => {
-              await AsyncStorage.multiSet([['recruiter_id', res.data[0].recruiter_id], ['user_type', 'recruiter']]);
-            }
-            navigation.navigate('IndexRecruiter');
+            getData('recruiter_id', res.data.recruiter_id, 'recruiter').then(() => navigation.navigate('IndexRecruiter'))
           } else {
             setShowHelper(true);
             setMsg(res.data.message);
