@@ -20,6 +20,12 @@ const SplashScreen = ({ navigation }) => {
         routes: [{ name: 'IndexRecruiter' }],
       });
       navigation.navigate('IndexRecruiter')
+    } else if (value == 'admin') {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'IndexDashboard' }],
+      });
+      navigation.navigate('IndexDashboard')
     } else if (!value) {
       navigation.reset({
         index: 0,

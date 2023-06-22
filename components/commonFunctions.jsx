@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import moment from "moment";
-import { StyleSheet, View, TextInput, Pressable, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, TextInput, Pressable, TouchableOpacity, ScrollView, Text } from 'react-native';
+import { GetApplicationsForAdmin } from '../api'
 
 export const Capitalize = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1)
@@ -86,6 +87,25 @@ export const OTPInput = ({ code, setCode, maximumLength, setIsPinReady }) => {
         </View>
     );
 };
+
+export const JobCards = ({ type, id }) => {
+    const [detatils, setDetails] = useState([]);
+
+    useEffect(() => {
+        if (type == 'admin') {
+            GetApplicationsForAdmin().then((res) => {
+                console.log(res);
+                if (res.status) {
+                    setDetails(res.data);
+                }
+            })
+        }
+    }, [id])
+
+    return (<View>
+        <Text>Hello</Text>
+    </View>)
+}
 
 export const styles = StyleSheet.create({
     OTPInputContainer: {

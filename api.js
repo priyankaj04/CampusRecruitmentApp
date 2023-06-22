@@ -480,6 +480,23 @@ export const ForgotpasswordEmail = async (type, reqbody) => {
         });
 }
 
+//get application which are pending
+export const GetApplicationsForAdmin = async () => {
+    const url = URL + '/api/admin/action/pending';
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
 // const sendOTP = async (email, otp) => {
 //     const SENDGRID_API_KEY = 'YOUR_SENDGRID_API_KEY';
 
