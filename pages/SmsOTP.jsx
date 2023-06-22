@@ -2,20 +2,18 @@ import { StyleSheet, Text, View, ScrollView, KeyboardAvoidingView, Image, Toucha
 import React, { useState, useEffect, useRef } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { TextInput } from 'react-native-gesture-handler';
-import { verifyOTP } from '../api.js'
+import { verifyOTPSMS } from '../api.js'
 import { StatusBar } from "expo-status-bar";
 import { OTPInput } from "../components/commonFunctions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SmsOTP = ({route, navigation}) => {
-  const id = AsyncStorage.getItem('recruiter_id');
   const [getData, setGetdata] = useState();
+  const [id, setId] = useState(null);
 
   const getDataasync = async () => {
     console.log(await AsyncStorage.getAllKeys())
-    let value = await AsyncStorage.multiGet(['talent_id', 'email'])
-    console.log(value[0][1])
-    setGetdata(await AsyncStorage.multiGet(['talent_id', 'email']))
+    setId(await AsyncStorage.getItem('recruiter_id'))
   }
 
   const [isLoading, setIsLoading] = useState(true);
@@ -42,11 +40,17 @@ const SmsOTP = ({route, navigation}) => {
     const reqbody = {
       otp: pin1 + pin2 + pin3 + pin4 + pin5 + pin6
     }
-    verifyOTP(reqbody, getData[0][1]).then((res) => {
+    verifyOTPSMS(reqbody, id).then((res) => {
       setIsLoading(false);
       console.log(res);
       if (res.status) {
-        navigation.navigate("Index");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'IndexRecruiter' }]
+        });
+        navigation.navigate("IndexRecruiter");
+      } else {
+        console.log(res);
       }
     })
   }
@@ -71,13 +75,14 @@ const SmsOTP = ({route, navigation}) => {
         </View>
         <KeyboardAvoidingView>
           <View style={{ marginTop: 20 }}>
-            <Text style={{ textAlign: 'center' }} >OTP code sent to {getData[1][1]}</Text>
+            <Text style={{ textAlign: 'center' }} >OTP code sent to your mobile number.</Text>
             <View style={{
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'row',
-              justifyContent: 'space-around'
+              justifyContent: 'space-around',
+              marginTop: 20
             }}>
               <View style={styles.textInputView}>
                 <TextInput
@@ -204,4 +209,52 @@ const SmsOTP = ({route, navigation}) => {
 
 export default SmsOTP
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  textInputView: {
+    borderBottomWidth: 1,
+    width: 35,
+    borderBottomColor: '#407BFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'whitesmoke',
+    padding: 10,
+    borderRadius: 10
+  },
+  textInputStyle: {
+    fontSize: 20
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#141414",
+    alignItems: "center",
+    justifyContent: "center",
+  }, ButtonContainer: {
+    backgroundColor: "#000000",
+    padding: "20px",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "200px",
+    marginTop: "30px",
+  },
+  ButtonText: {
+    color: "black",
+    fontSize: "20px",
+  },
+  btn: {
+    width: 350,
+    height: 50,
+    backgroundColor: '#407BFF',
+    color: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10,
+    marginLeft: 30,
+    borderRadius: 25,
+    shadowOffset: { width: 5, height: 5 },
+    shadowColor: 'black',
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    elevation: 3,
+    marginTop: 40
+  }
+})

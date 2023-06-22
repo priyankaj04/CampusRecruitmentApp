@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { RecruiterRegisteration, AdminRegisteration } from '../api';
+import { RecruiterRegisteration, AdminRegisteration, SendOTPCodeSMS } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RecruiterRegister = ({ navigation }) => {
@@ -34,12 +34,12 @@ const RecruiterRegister = ({ navigation }) => {
     return !regex.test(number);
   }
 
-  const setData = async (id) => {
-    AsyncStorage.multiSet([['admin_id', id], ['user_type', 'admin']]);
+  const SetData = async (id) => {
+    await AsyncStorage.multiSet([['admin_id', id], ['user_type', 'admin']]);
   }
 
-  const setData1 = async (id) => {
-    AsyncStorage.multiSet([['recruiter_id', id], ['user_type', 'recruiter']]);
+  const SetData1 = async (id) => {
+    await AsyncStorage.multiSet([['recruiter_id', id], ['user_type', 'recruiter']]);
   }
 
 
@@ -63,12 +63,14 @@ const RecruiterRegister = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          setData(res.data[0].admin_id).then(() => {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'IndexDashboard' }]
-            })
-            navigation.navigate("IndexDashboard", { screen: "Dashboard" });
+          SetData(res.data[0].admin_id).then((resp) => {
+            if (resp.status) {
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'IndexDashboard' }]
+              })
+              navigation.navigate("IndexDashboard", { screen: "Dashboard" });
+            }
           })
         } else {
           setIsLoading(false);
@@ -120,15 +122,17 @@ const RecruiterRegister = ({ navigation }) => {
         //console.log("11211",reqbody);
         RecruiterRegisteration(reqbody).then((res) => {
           if (res.status) {
-            setData1(res.data[0].recruiter_id).then((res) => {
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'IndexRecruiter' }]
+            SetData1(res.data[0].recruiter_id).then(() => {
+              var req = { mobile: contact_no }
+              SendOTPCodeSMS(req, res.data[0].recruiter_id).then((resp) => {
+                console.log("asdfasdf", resp);
+                if (resp.status) {
+                  navigation.navigate('SMSOTP');
+                  setShowHelper(false);
+                  setIsLoading(false);
+                }
               })
-              navigation.navigate('IndexRecruiter');
             })
-            setIsLoading(false);
-            setShowHelper(false);
           } else {
             setShowHelper(true);
             //console.log("ERROR", res);
