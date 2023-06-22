@@ -11,7 +11,6 @@ const ContactUs = ({ route, navigation }) => {
   const getData = async () => {
     setType(await AsyncStorage.getItem('user_type'))
     setId(await AsyncStorage.multiGet(['talent_id', 'recruiter_id']));
-    console.log(await AsyncStorage.multiGet(['talent_id', 'recruiter_id']));
   }
 
   const [query, setQuery] = useState('');
@@ -27,20 +26,20 @@ const ContactUs = ({ route, navigation }) => {
     if (!id || !type) {
       getData();
     }
-    if (type === 'talent') {
+    if (type === 'talent' && id) {
       TalentDetailsById(id[0][1]).then((res) => {
         if (res.status) {
-          setFullname(res.firstName + res.lastName);
-          setEmail(res.email);
-          setContactNo(res.contact_no);
+          setFullname(`${res.data[0].firstname} ${res.data[0].lastname}`);
+          setEmail(res.data[0].email);
+          setContactNo(res.data[0].contactno);
         }
       })
-    } else if (type === 'recruiter') {
+    } else if (type === 'recruiter' && id) {
       RecruiterDetailsById(id[1][1]).then((res) => {
         if (res.status) {
-          setFullname(res.firstName + res.lastName);
-          setEmail(res.email);
-          setContactNo(res.contact_no);
+          setFullname(`${res.data[0].firstname} ${res.data[0].lastname}`);
+          setEmail(res.data[0].email);
+          setContactNo(res.data[0].contactno);
         }
       })
     }
@@ -62,10 +61,9 @@ const ContactUs = ({ route, navigation }) => {
       contact_no
     }
 
-    const value = async () => await AsyncStorage.getItem('user_type')
-    if (value === 'talent') {
+    if (type === 'talent') {
       reqbody.id = id[0][1];
-    } else if (value === 'recruiter') {
+    } else if (type === 'recruiter') {
       reqbody.id = id[1][1];
     }
 
@@ -85,9 +83,9 @@ const ContactUs = ({ route, navigation }) => {
   }
 
   const handleNav = () => {
-    if (async () => await AsyncStorage.getItem('user_type') === 'talent') {
+    if (type === 'talent') {
       navigation.navigate('ViewQueries', { id: id[0][1] })
-    } else if (async () => await AsyncStorage.getItem('user_type') === 'recruiter') {
+    } else if (type === 'recruiter') {
       navigation.navigate('ViewQueries', { id: id[1][1] })
     }
   }
