@@ -11,8 +11,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const CreateStudent = () => {
     const [stream, setStream] = useState('Science');
     const [degree, setDegree] = useState('Bachelore of Computer Science');
-    const [sememster, setSemester] = useState('I');
-    const [classSection, setClassSection] = useState('');
+    const [semester, setSemester] = useState('I');
+    const [classSection, setClassSection] = useState('III BCA A');
     const [email, setEmail] = useState('');
     const [cgpa, setCgpa] = useState('');
     const [blno, setBlno] = useState('');
@@ -26,8 +26,11 @@ const CreateStudent = () => {
     const Streams = ['Science', 'Computer Science', 'Commerce', 'Arts'];
     const StreamsCollege = ['Science', 'Commerce', 'Arts'];
     const Degree = ['Bachelore of Science', 'Bachelore of Computer Science', 'Bachelore of Commerce', 'Bachelore of Arts'];
-    const Sememster = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+    const Semester = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     const [id, setId] = useState(null);
+    const Classes = [
+        { value: 'III BCA A' }, { value: 'III BCA B' }, { value: 'II BCA A' }, { value: 'II BCA B' }, { value: 'I BCA A' }, { value: 'I BCA B' }
+    ]
 
     const getData = async () => {
         setId(await AsyncStorage.getItem('admin_id'));
@@ -37,14 +40,15 @@ const CreateStudent = () => {
         if (!id) {
             getData();
         }
-    }, [])
+    }, [id])
+    
 
     const handleClick = () => {
         const reqbody = {
             stream,
             degree,
-            sememster,
-            class: classSection,
+            semester,
+            classes: classSection,
             CGPA: cgpa,
             email,
             twelth_details: twelth,
@@ -114,22 +118,28 @@ const CreateStudent = () => {
                     <View style={{ flexDirection: 'row', marginLeft: 10 }}>
                         <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
                             <Picker
-                                selectedValue={sememster}
+                                selectedValue={semester}
                                 onValueChange={(itemValue) => {
                                     setSemester(itemValue)
                                 }
                                 }>
-                                {Sememster.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                                {Semester.map((item) => <Picker.Item key={item} label={item} value={item} />)}
                             </Picker>
                         </View>
                     </View>
                     <Text style={styles.label}>Class & Section</Text>
-                    <TextInput
-                        style={styles.textField}
-                        value={classSection}
-                        onChangeText={(e) => { setClassSection(e) }}
-                        placeholder="e.g. III BCA B"
-                    />
+                    <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
+                            <Picker
+                                selectedValue={classSection}
+                                onValueChange={(itemValue) => {
+                                    setClassSection(itemValue)
+                                }
+                                }>
+                                {Classes.map((item) => <Picker.Item key={item.value} label={item.value} value={item.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
                     <Text style={styles.label}>Email</Text>
                     <TextInput
                         style={styles.textField}
@@ -155,7 +165,7 @@ const CreateStudent = () => {
                     <Text style={styles.label}>School</Text>
                     <TextInput
                         style={styles.textField}
-                        value={tenth.email}
+                        value={tenth.school}
                         onChangeText={(e) => { setTenth({ ...tenth, school: e }) }}
                     />
                     <Text style={styles.label}>Board</Text>
@@ -182,7 +192,7 @@ const CreateStudent = () => {
                     <Text style={styles.label}>College</Text>
                     <TextInput
                         style={styles.textField}
-                        value={twelth.email}
+                        value={twelth.school}
                         onChangeText={(e) => { setTwelth({ ...twelth, school: e }) }}
                     />
                     <Text style={styles.label}>Board</Text>

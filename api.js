@@ -1,7 +1,7 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.15.27:8000';
+const URL = 'http://192.168.0.102:8000';
 
 //student registration
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
@@ -425,7 +425,7 @@ export const CreateStudentAPI = async (reqbody) => {
 }
 
 //Check if entered email is valid or not, if valid, send otp
-export const VerifyForgotEmail = async (type,reqbody) => {
+export const VerifyForgotEmail = async (type, reqbody) => {
     const url = URL + '/api/forgotpassword/verify/' + type;
     const fetchOptions = {
         method: "POST",
@@ -444,7 +444,7 @@ export const VerifyForgotEmail = async (type,reqbody) => {
 }
 
 //Check if entered otp is valid or not
-export const ConfrimForgotOTP = async (type,reqbody) => {
+export const ConfrimForgotOTP = async (type, reqbody) => {
     const url = URL + '/api/forgotpassword/otp/' + type
     const fetchOptions = {
         method: "PUT",
@@ -490,6 +490,42 @@ export const GetApplicationsForAdmin = async () => {
             'Content-Type': 'application/json',
         }
     };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+
+//get class students from classname
+export const StudentsByClassName = async (classes) => {
+    const url = URL + '/api/student/class/' + classes;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const UpdateStudentDetailsById = async (reqbody, id) => {
+    const url = URL + '/api/student/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
     return await fetch(url, fetchOptions)
         .then((response) => response.json())
         .catch((error) => {

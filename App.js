@@ -40,6 +40,7 @@ import AdminProfile from './pages/AdminProfile';
 import AdminQueries from './pages/AdminQueries';
 import AdminChangepassword from './pages/AdminChangepassword';
 import CreateStudent from './pages/CreateStudent';
+import StudentPage from './pages/StudentPage';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,12 +48,12 @@ const Drawer = createDrawerNavigator();
 
 const IndexDashboard = ({ navigation }) => {
   return (
-    <Drawer.Navigator initialRouteName="Dashboard">
+    <Drawer.Navigator initialRouteName="StudentPage">
       <Drawer.Screen name="Dashboard" component={Dashboard} options={{
         title: "Home"
       }} />
-      <Drawer.Screen name="CreateStudent" component={CreateStudent} options={{
-        title: 'Create Student'
+      <Drawer.Screen name="StudentPage" component={StudentPage} options={{
+        title: 'Students'
       }} />
       <Drawer.Screen name="AdminQueries" component={AdminQueries} options={{
         title: 'Queries'
@@ -300,6 +301,22 @@ export default function App() {
           component={ChangePassword}
           options={{
             title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="CreateStudent"
+          component={CreateStudent}
+          options={{
+            title: "Create Student",
             headerLeft: () => (
               <Icon
                 name="angle-left"
