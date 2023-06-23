@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import moment from "moment";
 import { StyleSheet, View, TextInput, Pressable, TouchableOpacity, ScrollView, Text } from 'react-native';
-import { GetApplicationsForAdmin } from '../api'
+import { GetApplicationsForAdmin, RecruiterDetailsById } from '../api';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export const Capitalize = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1)
@@ -89,13 +90,20 @@ export const OTPInput = ({ code, setCode, maximumLength, setIsPinReady }) => {
 };
 
 export const JobCards = ({ type, id }) => {
-    const [detatils, setDetails] = useState([]);
+    const [details, setDetails] = useState([]);
+    const [recruiterdetails, setRecruiterDetails] = useState({});
 
     useEffect(() => {
         if (type == 'admin') {
             GetApplicationsForAdmin().then((res) => {
                 console.log(res);
                 if (res.status) {
+                    RecruiterDetailsById(res.data[0].recruiter_id).then((resp) => {
+                        console.log("Recruiter", resp)
+                        if (resp.status) {
+                            setRecruiterDetails(resp.data[0]);
+                        }
+                    })
                     setDetails(res.data);
                 }
             })
@@ -103,7 +111,17 @@ export const JobCards = ({ type, id }) => {
     }, [id])
 
     return (<View>
-        <Text>Hello</Text>
+        <ScrollView horizontal >
+            {details && details.length > 0 && details.map((item, index) => (
+                <View key={index} style={styles.card}>
+                    <Text style={{ color: '#407BFF', fontSize: 18, fontWeight: 'bold' }}>{item.job_title}</Text>
+                    <Text style={{ color: 'gray', fontStyle: 'italic', }}>Round {item.round}, {item.round_name}</Text>
+                    <Text><Icon name="building-o" />{item.company_name} - <Text>{calculateTimeAgo(item.created_at)}</Text></Text>
+                    <Text numberOfLines={3} ellipsizeMode='tail' >Eligibility - {item.eligibility}</Text>
+                    <Text>{item.due_date}</Text>
+                </View>
+            ))}
+        </ScrollView>
     </View>)
 }
 
@@ -150,6 +168,17 @@ export const styles = StyleSheet.create({
         fontSize: "20px",
         textAlign: "center",
         color: "#e5e5e5",
+    }, card: {
+        backgroundColor: 'white',
+        width: 220,
+        height: 220,
+        padding: 15,
+        margin: 8,
+        borderRadius: 10,
+        shadowOffset: { width: 5, height: 5 },
+        shadowColor: 'black',
+        shadowOpacity: 0.8,
+        shadowRadius: 5,
+        elevation: 3,
     }
-
 })

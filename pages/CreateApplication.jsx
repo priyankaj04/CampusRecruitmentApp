@@ -3,13 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { RadioButton } from 'react-native-paper';
 import Checkbox from 'expo-checkbox';
 import Icon from 'react-native-vector-icons/Entypo';
-import { CreateJob } from '../api';
+import { CreateJob, RecruiterDetailsById } from '../api';
 import Toastable, { showToastable } from 'react-native-toastable';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateApplication = ({ navigation }) => {
   const [jobDetails, setJobdetails] = useState({});
   const [id, setId] = useState(null);
+  const [recruiterdetails, setRecruiterdetails] = useState({});
 
   const getData = async () => {
     setId(await AsyncStorage.getItem('recruiter_id'));
@@ -19,7 +20,15 @@ const CreateApplication = ({ navigation }) => {
     if (!id) {
       getData();
     }
-  },[])
+    if (id) {
+      RecruiterDetailsById(id).then((res) => {
+        if (res.status) {
+          setRecruiterdetails(res.data[0]);
+          console.log(res.data[0])
+        }
+      })
+    }
+  }, [id])
 
   const handleClick = () => {
     if (!jobDetails.opportunity_type || !jobDetails.job_title || !jobDetails.skills || !jobDetails.job_type || !jobDetails.number_of_openings || !jobDetails.job_start_date
@@ -30,6 +39,7 @@ const CreateApplication = ({ navigation }) => {
         status: 'info'
       })
     }
+    jobDetails.company_name = recruiterdetails.company_name;
     CreateJob(id, jobDetails).then((res) => {
       console.log("this is response", res);
       if (res.status) {

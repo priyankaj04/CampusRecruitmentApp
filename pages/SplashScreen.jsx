@@ -6,6 +6,7 @@ const SplashScreen = ({ navigation }) => {
   const [type, setType] = useState(null);
 
   const getData = async () => {
+    //await AsyncStorage.clear();
     setType(await AsyncStorage.getItem('user_type'))
     const value = await AsyncStorage.getItem('user_type');
     if (value == 'talent') {
@@ -36,7 +37,6 @@ const SplashScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
-
     const timer = setTimeout(() => {
       getData()
     }, 3000);
