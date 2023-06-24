@@ -696,3 +696,22 @@ export const ChangeForgotPassword = async (reqbody, id) => {
             console.log(error)
         });
 }
+
+//Apply for application
+export const ApplyingForApplication = async (reqbody) => {
+    const url = URL + '/api/applicants/pitch';
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}

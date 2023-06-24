@@ -44,6 +44,7 @@ import StudentPage from './pages/StudentPage';
 import ViewActionJobs from './pages/ViewActionJobs';
 import RecruiterJobPage from './pages/RecruiterJobPage';
 import EditApplication from './pages/EditApplication';
+import ApplyforJob from './pages/ApplyforJob';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -304,6 +305,22 @@ export default function App() {
           component={ChangePassword}
           options={{
             title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="ApplyforJob"
+          component={ApplyforJob}
+          options={{
+            title: "Apply",
             headerLeft: () => (
               <Icon
                 name="angle-left"

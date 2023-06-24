@@ -53,7 +53,7 @@ const Home = ({ navigation }) => {
               <View>
                 {
                   alljobs.map((item, index) => (
-                    <JobViewCard key={index} item={item} />
+                    <JobViewCard key={index} item={item} type={'talent'} navigation={navigation} />
                   ))
                 }
               </View> :
