@@ -1,8 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 import moment from "moment";
 import { StyleSheet, View, TextInput, Pressable, TouchableOpacity, ScrollView, Text, Button, Alert } from 'react-native';
-import { GetApplicationsForAdmin, RecruiterDetailsById, UpdateStudentDetailsById } from '../api';
+import { GetApplicationsForAdmin, RecruiterDetailsById, UpdateStudentDetailsById, UpdateApplicationStatusById } from '../api';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Iconz from 'react-native-vector-icons/Ionicons';
+import Iconf from 'react-native-vector-icons/Foundation';
 import Dialog from 'react-native-dialog';
 import { Picker } from '@react-native-picker/picker';
 
@@ -15,7 +17,6 @@ export const calculateTimeAgo = (datetime) => {
     const time = moment(datetime);
     const diffMinutes = now.diff(time, 'minutes');
     const diffHours = now.diff(time, 'hours');
-    console.log(now)
 
     if (diffMinutes < 1) {
         return 'Just now';
@@ -98,10 +99,8 @@ export const JobCards = ({ type, id }) => {
     useEffect(() => {
         if (type == 'admin') {
             GetApplicationsForAdmin().then((res) => {
-                console.log(res);
                 if (res.status) {
                     RecruiterDetailsById(res.data[0].recruiter_id).then((resp) => {
-                        console.log("Recruiter", resp)
                         if (resp.status) {
                             setRecruiterDetails(resp.data[0]);
                         }
@@ -112,19 +111,23 @@ export const JobCards = ({ type, id }) => {
         }
     }, [id])
 
-    return (<View>
-        <ScrollView horizontal >
-            {details && details.length > 0 && details.map((item, index) => (
-                <View key={index} style={styles.card}>
-                    <Text style={{ color: '#407BFF', fontSize: 18, fontWeight: 'bold' }}>{item.job_title}</Text>
-                    <Text style={{ color: 'gray', fontStyle: 'italic', }}>Round {item.round}, {item.round_name}</Text>
-                    <Text><Icon name="building-o" />{item.company_name} - <Text>{calculateTimeAgo(item.created_at)}</Text></Text>
-                    <Text numberOfLines={3} ellipsizeMode='tail' >Eligibility - {item.eligibility}</Text>
-                    <Text>{item.due_date}</Text>
-                </View>
-            ))}
-        </ScrollView>
-    </View>)
+    return (
+        <View>
+            <ScrollView horizontal >
+                {details && details.length > 0 && details.map((item, index) => (
+                    <TouchableOpacity key={index} style={styles.card}>
+                        <Text style={{ color: '#407BFF', fontSize: 16, fontWeight: 'bold' }}>{item.job_title}</Text>
+                        <Text><Icon name="building-o" color="#407BFF" /> {item.company_name} - <Text>{calculateTimeAgo(item.created_at)}</Text></Text>
+                        <View style={styles.divider} />
+                        <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                        <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
+                        <Text><Icon name="money" color="#407BFF" /> {item.ctc1} CTC</Text>
+                        <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+        </View>
+    )
 }
 
 export const EditStudentDetails = ({ item }) => {
@@ -147,7 +150,6 @@ export const EditStudentDetails = ({ item }) => {
     const StreamsCollege = ['Science', 'Commerce', 'Arts'];
     const Degree = ['Bachelore of Science', 'Bachelore of Computer Application', 'Bachelore of Commerce', 'Bachelore of Arts'];
     const Semester = ['I', 'II', 'III', 'IV', 'V', 'VI'];
-    const [id, setId] = useState(null);
     const Classes = [
         { value: 'III BCA A' }, { value: 'III BCA B' }, { value: 'II BCA A' }, { value: 'II BCA B' }, { value: 'I BCA A' }, { value: 'I BCA B' }
     ]
@@ -360,6 +362,161 @@ export const EditStudentDetails = ({ item }) => {
             </Dialog.Container>
         </View>
     );
+}
+
+export const ActionJobCard = ({ item, fetch, setFetch }) => {
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [recruiterDetails, setRecruiterDetails] = useState({});
+    //console.log("Items", item);
+    const showDialog = () => {
+        setDialogVisible(true);
+    };
+
+    const handleCancel = () => {
+        setDialogVisible(false);
+    };
+
+    const handleConfirm = () => {
+        const reqbody = { status: 'approved' };
+        Alert.alert('Are you sure?', '', [
+            {
+                text: "Yes",
+                onPress: () => {
+                    UpdateApplicationStatusById(reqbody, item.application_id).then((res) => {
+                        //console.log("ITS RESPONSE", res);
+                        if (res.status) {
+                            setDialogVisible(false);
+                            setFetch(!fetch);
+                        }
+                    })
+                },
+            },
+            {
+                text: "No",
+            },
+        ])
+
+    }
+
+    const handleReject = () => {
+        const reqbody = { status: 'rejected' };
+        Alert.alert('Are you sure?', '', [
+            {
+                text: "Yes",
+                onPress: () => {
+                    UpdateApplicationStatusById(reqbody, item.application_id).then((res) => {
+                        if (res.status) {
+                            setDialogVisible(false);
+                            setFetch(!fetch);
+                        }
+                    })
+                },
+            },
+            {
+                text: "No",
+            },
+        ])
+    }
+
+    useEffect(() => {
+        RecruiterDetailsById(item.recruiter_id).then((res) => {
+            if (res.status) {
+                setRecruiterDetails(res.data[0]);
+            }
+        })
+    }, [item])
+
+    return (
+        <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
+            <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
+                <Text style={{ color: '#407BFF', fontSize: 16, fontWeight: 'bold' }}>{item.job_title}</Text>
+                <Text><Icon name="building-o" color="#407BFF" /> {item.company_name} - <Text>{calculateTimeAgo(item.created_at)}</Text></Text>
+                <View style={styles.divider} />
+                <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
+                <Text><Icon name="money" color="#407BFF" /> {item.ctc1} CTC</Text>
+                <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+            </TouchableOpacity>
+            <Dialog.Container visible={dialogVisible}>
+                <Dialog.Title>Application Details</Dialog.Title>
+                <ScrollView>
+                    <Text>{item.job_title}</Text>
+                    <Text>{item.company_name}</Text>
+                    <Text>{item.job_start_date}</Text>
+                    <Text>{item.round} {item.round_name}</Text>
+                    <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                    <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
+                    <View style={styles.divider} />
+                    <Text>About {item.company_name}</Text>
+                    <Text>{recruiterDetails && recruiterDetails.description}</Text>
+                    <Text>About the {Capitalize(item.opportunity_type)}</Text>
+                    <Text>Selected candidate's day-to-day responsibilites include:</Text>
+                    <Text>{item.job_description}</Text>
+                    <Text>Skill(s) required</Text>
+                    <Text>{item.skills}</Text>
+                    <Text>Eligibility</Text>
+                    <Text>{item.eligibility}</Text>
+                    <Text>Perks</Text>
+                    <Text>{item.perk1} {item.perk2} {item.perk3} {item.perk4} {item.perk5} {item.perk6} {item.perk7}</Text>
+                    <Text>Number of openings</Text>
+                    <Text>{item.number_of_openings}</Text>
+                </ScrollView>
+                <Dialog.Button label="Cancel" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
+                <Dialog.Button label="Reject" style={{ color: 'red', marginRight: 10 }} onPress={handleReject} />
+                <Dialog.Button label="Approve" style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} onPress={handleConfirm} />
+            </Dialog.Container>
+        </View>
+    )
+}
+
+export const JobViewCard = ({ item }) => {
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const showDialog = () => {
+        setDialogVisible(true);
+    };
+
+    const handleCancel = () => {
+        setDialogVisible(false);
+    };
+
+    return (
+        <View>
+            <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
+                <Text style={{ color: '#407BFF', fontSize: 16, fontWeight: 'bold' }}>{item.job_title}</Text>
+                <Text><Icon name="building-o" color="#407BFF" /> {item.company_name} - <Text>{calculateTimeAgo(item.created_at)}</Text></Text>
+                <View style={styles.divider} />
+                <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
+                <Text><Icon name="money" color="#407BFF" /> {item.ctc1} CTC</Text>
+                <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                <Text>{item.status}</Text>
+            </TouchableOpacity>
+            <Dialog.Container visible={dialogVisible}>
+                <Dialog.Title>Application Details</Dialog.Title>
+                <ScrollView>
+                    <Text>{item.job_title}</Text>
+                    <Text>{item.company_name}</Text>
+                    <Text>{item.job_start_date}</Text>
+                    <Text>{item.round} {item.round_name}</Text>
+                    <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                    <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
+                    <View style={styles.divider} />
+                    <Text>About the {Capitalize(item.opportunity_type)}</Text>
+                    <Text>Selected candidate's day-to-day responsibilites include:</Text>
+                    <Text>{item.job_description}</Text>
+                    <Text>Skill(s) required</Text>
+                    <Text>{item.skills}</Text>
+                    <Text>Eligibility</Text>
+                    <Text>{item.eligibility}</Text>
+                    <Text>Perks</Text>
+                    <Text>{item.perk1} {item.perk2} {item.perk3} {item.perk4} {item.perk5} {item.perk6} {item.perk7}</Text>
+                    <Text>Number of openings</Text>
+                    <Text>{item.number_of_openings}</Text>
+                </ScrollView>
+                <Dialog.Button label="Close" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
+            </Dialog.Container>
+        </View>
+    )
 }
 
 export const styles = StyleSheet.create({

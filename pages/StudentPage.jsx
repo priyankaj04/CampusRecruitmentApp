@@ -58,7 +58,7 @@ const StudentPage = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <ScrollView>
-                <View style={{marginTop: 0, flex: 1}}>
+                <View style={{ marginTop: 0 }}>
                     {
                         students && students.length > 0 ?
                             <View>

@@ -41,6 +41,8 @@ import AdminQueries from './pages/AdminQueries';
 import AdminChangepassword from './pages/AdminChangepassword';
 import CreateStudent from './pages/CreateStudent';
 import StudentPage from './pages/StudentPage';
+import ViewActionJobs from './pages/ViewActionJobs';
+import RecruiterJobPage from './pages/RecruiterJobPage';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -48,7 +50,7 @@ const Drawer = createDrawerNavigator();
 
 const IndexDashboard = ({ navigation }) => {
   return (
-    <Drawer.Navigator initialRouteName="StudentPage">
+    <Drawer.Navigator initialRouteName="Dashboard">
       <Drawer.Screen name="Dashboard" component={Dashboard} options={{
         title: "Home"
       }} />
@@ -111,7 +113,7 @@ const HomePage = ({ navigation }) => {
 
 const RecruiterHomes = ({ navigation }) => {
   return (
-    <Tab.Navigator initialRouteName='CreateApplication' screenOptions={({ route }) => ({
+    <Tab.Navigator initialRouteName='RecruiterHome' screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
         let iconName;
         if (route.name === 'RecruiterHome') {
@@ -317,6 +319,38 @@ export default function App() {
           component={CreateStudent}
           options={{
             title: "Create Student",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="ViewActionJobs"
+          component={ViewActionJobs}
+          options={{
+            title: "Approve Jobs",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="RecruiterJobPage"
+          component={RecruiterJobPage}
+          options={{
+            title: "Approve Jobs",
             headerLeft: () => (
               <Icon
                 name="angle-left"
