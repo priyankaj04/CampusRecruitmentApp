@@ -1,13 +1,16 @@
-import { StyleSheet, Text, View, Button, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Button, ScrollView, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { JobCards } from '../components/commonFunctions';
+import { ActionJobCard } from '../components/commonFunctions';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { GetApplicationsForAdmin } from '../api';
 
 const Dashboard = ({ navigation }) => {
 
   const [id, setId] = useState(null);
+  const [details, setDetails] = useState([]);
+  const [fetch, setFetch] = useState(false);
 
   const getData = async () => {
     console.log(await AsyncStorage.getItem('admin_id'));
@@ -18,7 +21,16 @@ const Dashboard = ({ navigation }) => {
     if (!id) {
       getData();
     }
-  }, [id])
+    if (id) {
+      GetApplicationsForAdmin().then((res) => {
+        if (res.status) {
+          setDetails(res.data);
+        } else {
+          setDetails([]);
+        }
+      })
+    }
+  }, [id, fetch])
 
   return (
     <View>
@@ -30,7 +42,19 @@ const Dashboard = ({ navigation }) => {
             <Icon name="angle-double-right" color="#407BFF" size={18} />
           </TouchableOpacity>
         </View>
-        {id && <JobCards type={"admin"} id={id} />}
+        {id && details && details.length > 0 ?
+          <ScrollView horizontal style={{ width: '100%', backgroundColor: 'white', margin: 0, padding: 5 }}>
+            {details.map((item, index) => <ActionJobCard key={index} item={item} fetch={fetch} setFetch={setFetch} />)}
+          </ScrollView>
+          :
+          <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Image
+              source={require('../assets/Nodata.png')}
+              style={{ width: 200, height: 200 }}
+            />
+            <Text>No new jobs uploaded by recruiters.</Text>
+          </View>
+        }
       </View>
     </View>
   )

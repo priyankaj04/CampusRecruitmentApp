@@ -15,17 +15,23 @@ const ViewActionJobs = () => {
                 RecruiterDetailsById(res.data[0].recruiter_id).then((resp) => {
                     if (resp.status) {
                         setRecruiterDetails(resp.data[0]);
+                    } else {
+                        setRecruiterDetails([])
                     }
                 })
                 setDetails(res.data);
+            } else {
+                setDetails([]);
             }
         })
     }, [fetch])
+
     return (
         <ScrollView>
             {
                 details && details.length > 0 ?
                     <View style={{ width: '100%', backgroundColor: 'white', margin: 0, padding: 20 }}>
+                        <Text>{details.length} applications.</Text>
                         {details.map((item, index) => (<ActionJobCard key={index} item={item} fetch={fetch} setFetch={setFetch} />))}
                     </View> :
                     <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

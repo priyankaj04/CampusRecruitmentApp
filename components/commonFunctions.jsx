@@ -1,12 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import moment from "moment";
-import { StyleSheet, View, TextInput, Pressable, TouchableOpacity, ScrollView, Text, Button, Alert } from 'react-native';
-import { GetApplicationsForAdmin, RecruiterDetailsById, UpdateStudentDetailsById, UpdateApplicationStatusById } from '../api';
+import { StyleSheet, View, TextInput, Pressable, TouchableOpacity, ScrollView, Text, Button, Alert, Linking } from 'react-native';
+import {
+    GetApplicationsForAdmin, RecruiterDetailsById, UpdateStudentDetailsById,
+    UpdateApplicationStatusById, Responsetoquery
+} from '../api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Iconz from 'react-native-vector-icons/Ionicons';
 import Iconf from 'react-native-vector-icons/Foundation';
+import Iconm from 'react-native-vector-icons/MaterialIcons';
+import Icona from 'react-native-vector-icons/AntDesign';
 import Dialog from 'react-native-dialog';
 import { Picker } from '@react-native-picker/picker';
+
 
 export const Capitalize = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1)
@@ -408,6 +414,7 @@ export const ActionJobCard = ({ item, fetch, setFetch }) => {
                         if (res.status) {
                             setDialogVisible(false);
                             setFetch(!fetch);
+                            console.log("coming here")
                         }
                     })
                 },
@@ -426,39 +433,73 @@ export const ActionJobCard = ({ item, fetch, setFetch }) => {
         })
     }, [item])
 
+    const WebLink = ({ url }) => {
+        const handleLinkPress = () => {
+            // Open the web link in the default browser
+            Linking.openURL(url);
+        };
+
+        return (
+            <Text onPress={handleLinkPress} style={{ color: '#407BFF', marginBottom: 8 }}>
+                Know more
+            </Text>
+        );
+    };
+
     return (
         <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
             <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
-                <Text style={{ color: '#407BFF', fontSize: 16, fontWeight: 'bold' }}>{item.job_title}</Text>
-                <Text><Icon name="building-o" color="#407BFF" /> {item.company_name} - <Text>{calculateTimeAgo(item.created_at)}</Text></Text>
-                <View style={styles.divider} />
+                <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                <View style={{ marginTop: 20 }}></View>
                 <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
-                <Text><Icon name="money" color="#407BFF" /> {item.ctc1} CTC</Text>
+                <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
+                <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>
+                <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
+                <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
                 <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
             </TouchableOpacity>
             <Dialog.Container visible={dialogVisible}>
                 <Dialog.Title>Application Details</Dialog.Title>
                 <ScrollView>
-                    <Text>{item.job_title}</Text>
-                    <Text>{item.company_name}</Text>
-                    <Text>{item.job_start_date}</Text>
-                    <Text>{item.round} {item.round_name}</Text>
+                    <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                    <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                    <View style={{ marginTop: 20 }}></View>
                     <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                    <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
+                    <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                    <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
+                    <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>
+                    <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
+                    <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
+                    <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                    <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
                     <View style={styles.divider} />
-                    <Text>About {item.company_name}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About {item.company_name}</Text>
+                    {recruiterDetails && <WebLink url={recruiterDetails.url} />}
                     <Text>{recruiterDetails && recruiterDetails.description}</Text>
-                    <Text>About the {Capitalize(item.opportunity_type)}</Text>
-                    <Text>Selected candidate's day-to-day responsibilites include:</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About the {Capitalize(item.opportunity_type)}</Text>
+
+                    <Text style={{ fontSize: 14, color: '#407BFF', fontStyle: 'italic', marginTop: 10, marginBottom: 10 }}>Selected candidate's day-to-day responsibilites include:</Text>
                     <Text>{item.job_description}</Text>
-                    <Text>Skill(s) required</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Skill(s) required</Text>
                     <Text>{item.skills}</Text>
-                    <Text>Eligibility</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Eligibility</Text>
                     <Text>{item.eligibility}</Text>
-                    <Text>Perks</Text>
-                    <Text>{item.perk1} {item.perk2} {item.perk3} {item.perk4} {item.perk5} {item.perk6} {item.perk7}</Text>
-                    <Text>Number of openings</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Preferred candidate</Text>
+                    <Text>{item.preference}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Perks</Text>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        {item.perks1 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks1}</Text>}
+                        {item.perks2 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks2}</Text>}
+                        {item.perks3 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks3}</Text>}
+                        {item.perks4 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks4}</Text>}
+                        {item.perks5 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks5}</Text>}
+                        {item.perks6 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks6}</Text>}
+                        {item.perks7 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks7}</Text>}
+                    </View>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Number of openings</Text>
                     <Text>{item.number_of_openings}</Text>
                 </ScrollView>
                 <Dialog.Button label="Cancel" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
@@ -469,8 +510,18 @@ export const ActionJobCard = ({ item, fetch, setFetch }) => {
     )
 }
 
-export const JobViewCard = ({ item }) => {
+export const JobViewCard = ({ item, type, navigation }) => {
     const [dialogVisible, setDialogVisible] = useState(false);
+    const [recruiterDetails, setRecruiterDetails] = useState({});
+
+    useEffect(() => {
+        RecruiterDetailsById(item.recruiter_id).then((res) => {
+            if (res.status) {
+                setRecruiterDetails(res.data[0]);
+            }
+        })
+    }, [item])
+
     const showDialog = () => {
         setDialogVisible(true);
     };
@@ -479,42 +530,165 @@ export const JobViewCard = ({ item }) => {
         setDialogVisible(false);
     };
 
+    const WebLink = ({ url }) => {
+        const handleLinkPress = () => {
+            // Open the web link in the default browser
+            Linking.openURL(url);
+        };
+
+        return (
+            <Text onPress={handleLinkPress} style={{ color: '#407BFF', marginBottom: 8 }}>
+                Know more
+            </Text>
+        );
+    };
+
+    const handleNav = () => {
+        setDialogVisible(false);
+        navigation.navigate('EditApplication', { id: item.application_id });
+    }
+
     return (
-        <View>
+        <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
             <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
-                <Text style={{ color: '#407BFF', fontSize: 16, fontWeight: 'bold' }}>{item.job_title}</Text>
-                <Text><Icon name="building-o" color="#407BFF" /> {item.company_name} - <Text>{calculateTimeAgo(item.created_at)}</Text></Text>
-                <View style={styles.divider} />
+                <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                <View style={{ marginTop: 20 }}></View>
                 <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
-                <Text><Icon name="money" color="#407BFF" /> {item.ctc1} CTC</Text>
+                <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
+                <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>
+                <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
+                <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
                 <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
-                <Text>{item.status}</Text>
+                <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
+                {type == 'recruiter' && <Text style={{ color: item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF" }}><Iconf name="alert" color={item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF"} /> {Capitalize(item.status)}</Text>}
             </TouchableOpacity>
             <Dialog.Container visible={dialogVisible}>
                 <Dialog.Title>Application Details</Dialog.Title>
                 <ScrollView>
-                    <Text>{item.job_title}</Text>
-                    <Text>{item.company_name}</Text>
-                    <Text>{item.job_start_date}</Text>
-                    <Text>{item.round} {item.round_name}</Text>
+                    <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                    <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                    <View style={{ marginTop: 20 }}></View>
                     <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                    <Text><Iconz name="location-outline" color="#407BFF" /> {item.location} Koramangala</Text>
+                    <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                    <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
+                    <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>
+                    <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
+                    <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
+                    <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                    <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
                     <View style={styles.divider} />
-                    <Text>About the {Capitalize(item.opportunity_type)}</Text>
-                    <Text>Selected candidate's day-to-day responsibilites include:</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About {item.company_name}</Text>
+                    {recruiterDetails && <WebLink url={recruiterDetails.url} />}
+                    <Text>{recruiterDetails && recruiterDetails.description}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About the {Capitalize(item.opportunity_type)}</Text>
+
+                    <Text style={{ fontSize: 14, color: '#407BFF', fontStyle: 'italic', marginTop: 10, marginBottom: 10 }}>Selected candidate's day-to-day responsibilites include:</Text>
                     <Text>{item.job_description}</Text>
-                    <Text>Skill(s) required</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Skill(s) required</Text>
                     <Text>{item.skills}</Text>
-                    <Text>Eligibility</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Eligibility</Text>
                     <Text>{item.eligibility}</Text>
-                    <Text>Perks</Text>
-                    <Text>{item.perk1} {item.perk2} {item.perk3} {item.perk4} {item.perk5} {item.perk6} {item.perk7}</Text>
-                    <Text>Number of openings</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Preferred candidate</Text>
+                    <Text>{item.preference}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Perks</Text>
+                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                        {item.perks1 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks1}</Text>}
+                        {item.perks2 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks2}</Text>}
+                        {item.perks3 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks3}</Text>}
+                        {item.perks4 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks4}</Text>}
+                        {item.perks5 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks5}</Text>}
+                        {item.perks6 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks6}</Text>}
+                        {item.perks7 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks7}</Text>}
+                    </View>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Number of openings</Text>
                     <Text>{item.number_of_openings}</Text>
                 </ScrollView>
                 <Dialog.Button label="Close" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
+                {type == 'recruiter' && (item.status == 'rejected' || item.status == 'pending') && <Dialog.Button label="Edit" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleNav} />}
             </Dialog.Container>
+        </View>
+    )
+}
+
+export const ViewQueries = ({ item, setFetch, fetch }) => {
+    const [dialogVisible, setDialogVisible] = useState(false);
+    const [reply, setReply] = useState('');
+    const showDialog = () => {
+        setDialogVisible(true);
+    };
+
+    const handleCancel = () => {
+        setDialogVisible(false);
+    };
+
+    const handleConfirm = () => {
+        const reqbody = { reply: reply };
+        Alert.alert('Are you sure?', '', [
+            {
+                text: "Yes",
+                onPress: () => {
+                    Responsetoquery(item.query_id, reqbody).then((res) => {
+                        if (res.status) {
+                            setDialogVisible(false);
+                            setFetch(!fetch);
+                        }
+                    })
+                },
+            },
+            {
+                text: "No",
+            },
+        ])
+
+    }
+
+    return (
+        <View>
+            <TouchableOpacity style={{
+                backgroundColor: 'whitesmoke',
+                width: '96%',
+                margin: 8,
+                borderRadius: 20,
+                shadowOffset: { width: 5, height: 5 },
+                shadowColor: 'black',
+                shadowOpacity: 0.3,
+                shadowRadius: 3,
+                elevation: 1,
+                padding: 10
+            }} onPress={showDialog}>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}> By {item.fullname} ({Capitalize(item.type)})</Text>
+                <Text> Sent {calculateTimeAgo(item.created_at)}</Text>
+                <View style={styles.divider} />
+                <Text style={{ fontSize: 16 }}>Query: {item.message}</Text>
+                {item.reply && <Text style={{ fontSize: 16, marginTop: 5 }}>Reply: {item.reply}</Text>}
+            </TouchableOpacity>
+            {
+                !item.reply && <Dialog.Container visible={dialogVisible}>
+                    <Dialog.Title>Reply to {item.fullname}</Dialog.Title>
+                    <Text style={{ marginLeft: 10 }}>{item.message}</Text>
+                    <TextInput
+                        style={{
+                            height: 50,
+                            borderColor: 'transparent',
+                            borderWidth: 1,
+                            width: 300,
+                            padding: 8,
+                            backgroundColor: 'whitesmoke',
+                            fontSize: 16,
+                            marginTop: 10,
+                            borderRadius: 25,
+                            marginLeft: 0
+                        }}
+                        value={reply}
+                        onChangeText={(e) => setReply(e)}
+                        placeholder="Your response"
+                    />
+                    <Dialog.Button label="Cancle" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
+                    <Dialog.Button label="Send" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleConfirm} />
+                </Dialog.Container>
+            }
         </View>
     )
 }

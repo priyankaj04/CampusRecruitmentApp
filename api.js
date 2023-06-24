@@ -585,6 +585,78 @@ export const GetAllApprovedApplications = async () => {
         });
 }
 
+// to get all query for admin
+export const GetAllQueries = async () => {
+    const url = URL + '/api/query/allquery';
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//response to query by query id
+export const Responsetoquery = async (id, reqbody) => {
+    const url = URL + '/api/query/replyquery/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+
+// get Application by application_id
+export const ApplicationById = async (id) => {
+    const url = URL + '/api/application/' + id;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//
+export const UpdateApplicationDetailsById = async (reqbody, id) => {
+    const url = URL + '/api/application/update/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
 // const sendOTP = async (email, otp) => {
 //     const SENDGRID_API_KEY = 'YOUR_SENDGRID_API_KEY';
 

@@ -5,7 +5,7 @@ import { ApplicationsDetailsByStatus } from '../api';
 import { JobViewCard } from '../components/commonFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const RecruiterHome = () => {
+const RecruiterHome = ({ navigation }) => {
   const [id, setId] = useState(null)
   const [status, setStatus] = useState('all');
   const [applications, setApplications] = useState([]);
@@ -41,7 +41,7 @@ const RecruiterHome = () => {
     if (id) {
       ApplicationsDetailsByStatus(value, id).then((res) => {
         if (res.status) {
-          setApplications(res.data)
+          setApplications(res.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)))
         } else {
           setApplications([])
         }
@@ -69,7 +69,7 @@ const RecruiterHome = () => {
               <View>
                 {
                   applications.map((item, index) => (
-                    <JobViewCard key={index} item={item} />
+                    <JobViewCard key={index} item={item} type='recruiter' navigation={navigation} />
                   ))
                 }
               </View> :

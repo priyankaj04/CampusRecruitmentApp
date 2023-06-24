@@ -43,6 +43,7 @@ import CreateStudent from './pages/CreateStudent';
 import StudentPage from './pages/StudentPage';
 import ViewActionJobs from './pages/ViewActionJobs';
 import RecruiterJobPage from './pages/RecruiterJobPage';
+import EditApplication from './pages/EditApplication';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -50,7 +51,7 @@ const Drawer = createDrawerNavigator();
 
 const IndexDashboard = ({ navigation }) => {
   return (
-    <Drawer.Navigator initialRouteName="Dashboard">
+    <Drawer.Navigator initialRouteName="AdminQueries">
       <Drawer.Screen name="Dashboard" component={Dashboard} options={{
         title: "Home"
       }} />
@@ -303,6 +304,22 @@ export default function App() {
           component={ChangePassword}
           options={{
             title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="EditApplication"
+          component={EditApplication}
+          options={{
+            title: "Edit Application",
             headerLeft: () => (
               <Icon
                 name="angle-left"

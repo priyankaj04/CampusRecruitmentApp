@@ -22,12 +22,13 @@ const EditRecruiterProfile = ({ route, navigation }) => {
       reqbody.logo_url = dataUri;
     }
     UpdateRecruiterDetailsById(reqbody, details.recruiter_id).then((res) => {
-      console.log('RESPONSE', res);
+      //console.log('RESPONSE', res);
       if (res.status) {
         setSave(false);
-        navigation.navigate('RecruiterProfile');
+        setIsLoading(false);
       }
       setSave(false);
+      setIsLoading(false);
     })
   }
 
@@ -158,12 +159,6 @@ const EditRecruiterProfile = ({ route, navigation }) => {
                 style={styles.textField}
               />
               <Text style={styles.label}>Number of Employees</Text>
-              <TextInput
-                value={profileDetails.noofemployees}
-                onChangeText={(e) => setProfileDetails({ ...profileDetails, noofemployees: e })}
-                style={styles.textField}
-              />
-              <Text style={styles.label}>Number of Employees</Text>
               <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
                 <Picker
                   //ref={pScaleRef}
@@ -188,8 +183,8 @@ const EditRecruiterProfile = ({ route, navigation }) => {
               />
               <Text style={styles.label}>Contact Number</Text>
               <TextInput
-                value={profileDetails.contact_no}
-                onChangeText={(e) => setProfileDetails({ ...profileDetails, contact_no: e })}
+                value={profileDetails.contactno}
+                onChangeText={(e) => setProfileDetails({ ...profileDetails, contactno: e })}
                 style={styles.textField}
               />
               <Text style={styles.label}>Description</Text>
