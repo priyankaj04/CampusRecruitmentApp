@@ -33,7 +33,7 @@ const Profile = ({ navigation }) => {
   }, [id])
 
   const removeData = async () => {
-    await AsyncStorage.multiRemove(['admin_id', 'email', 'talent_id', 'user_type']);
+    await AsyncStorage.multiRemove(['register_no', 'talent_id', 'user_type']);
   }
 
   const handleNav = () => {

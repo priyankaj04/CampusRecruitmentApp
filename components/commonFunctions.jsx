@@ -561,7 +561,7 @@ export const JobViewCard = ({ item, type, navigation }) => {
                 <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
                 <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
                 <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
-                <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
+                {type == 'recruiter' ? <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text> : <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.updated_At)}</Text> }
                 {type == 'recruiter' && <Text style={{ color: item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF" }}><Iconf name="alert" color={item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF"} /> {Capitalize(item.status)}</Text>}
             </TouchableOpacity>
             <Dialog.Container visible={dialogVisible}>

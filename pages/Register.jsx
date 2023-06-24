@@ -28,7 +28,7 @@ const Register = ({ navigation }) => {
   }
 
   const storeData = async (id, email) => {
-    await AsyncStorage.multiSet([['talent_id', id], ['email', email], ['user_type', 'talent']])
+    await AsyncStorage.multiSet([['talent_id', id], ['register_no', registerno], ['user_type', 'talent']])
   }
 
   const handleClick = () => {

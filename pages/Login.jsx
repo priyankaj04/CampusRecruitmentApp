@@ -15,7 +15,6 @@ const Login = ({ navigation }) => {
 
   const ClearData = async () => {
     console.log(await AsyncStorage.getAllKeys());
-    await AsyncStorage.removeItem('talent_id');
   }
 
   useEffect(() => {
@@ -23,7 +22,7 @@ const Login = ({ navigation }) => {
   }, [])
 
   const GetData = async (value) => {
-    await AsyncStorage.multiSet([['user_type', 'talent'], ['talent_id', value]]);
+    await AsyncStorage.multiSet([['user_type', 'talent'], ['talent_id', value], ['register_no', text]]);
   }
 
   const handleClick = () => {

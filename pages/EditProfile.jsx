@@ -184,6 +184,7 @@ const EditProfile = ({ navigation }) => {
               <Text style={styles.label}>Email</Text>
               <TextInput
                 value={email}
+                editable={false}
                 onChangeText={(text) => { setEmail(text) }}
                 style={styles.textField}
               />
@@ -202,26 +203,6 @@ const EditProfile = ({ navigation }) => {
                 value={bio}
                 onChangeText={(e) => setBio(e)}
               />
-              <Text style={styles.header}>Academics</Text>
-              <Text style={styles.label}>Branch</Text>
-              <TextInput
-                value={branch}
-                onChangeText={(text) => { setBranch(text) }}
-                style={styles.textField}
-              />
-              <Text style={styles.label}>Field of interest</Text>
-              <TextInput
-                value={fieldofexpertise}
-                onChangeText={(e) => setFieldOfExpertise(e)}
-                style={styles.textField}
-              />
-              <Text style={styles.label}>Semester</Text>
-              <TextInput
-                value={semester}
-                onChangeText={(e) => setSemester(e)}
-                style={styles.textField}
-              />
-
               <TouchableOpacity
                 onPress={() => { handleNav(); }}
                 style={{

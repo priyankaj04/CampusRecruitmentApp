@@ -657,35 +657,42 @@ export const UpdateApplicationDetailsById = async (reqbody, id) => {
             console.log(error)
         });
 }
-// const sendOTP = async (email, otp) => {
-//     const SENDGRID_API_KEY = 'YOUR_SENDGRID_API_KEY';
 
-//     try {
-//         const response = await axios.post(
-//             'https://api.sendgrid.com/v3/mail/send',
-//             {
-//                 personalizations: [
-//                     {
-//                         to: [{ email: email }],
-//                         dynamic_template_data: {
-//                             otp: otp,
-//                         },
-//                     },
-//                 ],
-//                 from: { email: 'YOUR_SENDER_EMAIL_ADDRESS' },
-//                 template_id: 'YOUR_SENDGRID_TEMPLATE_ID',
-//             },
-//             {
-//                 headers: {
-//                     Authorization: `Bearer ${SENDGRID_API_KEY}`,
-//                     'Content-Type': 'application/json',
-//                 },
-//             }
-//         );
 
-//         console.log('OTP email sent successfully');
-//         console.log(response.data);
-//     } catch (error) {
-//         console.error('Error sending OTP email', error);
-//     }
-// };
+//get talent details by id
+// reg = talent's id
+export const GetStudentByEmail = async (regno) => {
+    const url = URL + '/api/student/regno?regno=' + regno;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        }
+    };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+
+//Change password for Recruiter 
+export const ChangeForgotPassword = async (reqbody, id) => {
+    const url = URL + '/api/recruiter/change/password';
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}

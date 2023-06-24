@@ -2051,26 +2051,6 @@ const EditResume = ({ navigation }) => {
           Whenever you apply to an internship or job, this is the resume that the employer will see,
           always make sure it is up to date.</Text>
       </View>
-      <View style={{
-        backgroundColor: 'white',
-        borderRadius: 10,
-        margin: 10,
-        minHeight: 50,
-        padding: 10,
-      }}>
-        <View style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }}>
-          <Text style={styles.header}>Education</Text>
-          {showEducation ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowEducation(false) }}>
-            <Icon name="minus" size={28} color='#407BFF' />
-          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowEducation(true) }}>
-            <Icon name="plus" size={28} color='#407BFF' />
-          </TouchableOpacity>}
-        </View>
-        {showEducation && <ShowEducationCard setShowEducation={setShowEducation} fetch={fetch} setFetch={setFetch} resumeDetails={resumeDetails} />}
-      </View>
 
       <View style={{
         backgroundColor: 'white',

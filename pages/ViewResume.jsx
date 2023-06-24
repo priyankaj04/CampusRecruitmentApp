@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, ScrollView, Linking } from 'react-native'
 import React, { useState, useEffect } from 'react';
-import { ResumeDetailsByTalentID, TalentDetailsById } from '../api';
+import { ResumeDetailsByTalentID, TalentDetailsById, GetStudentByEmail } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ViewResume = ({ route, navigation }) => {
@@ -10,9 +10,13 @@ const ViewResume = ({ route, navigation }) => {
   const [talentDetails, setTalentDetails] = useState([]);
   const [fetch, setFetch] = useState(false);
   const [talent_id, setTalentid] = useState(null);
+  const [registerno, setRegisterno] = useState(null);
+  const [studentDetails, setStudentDetails] = useState([]);
 
   const getData = async () => {
+    console.log(await AsyncStorage.getAllKeys());
     setTalentid(await AsyncStorage.getItem('talent_id'));
+    setRegisterno(await AsyncStorage.getItem('register_no'))
   }
 
   useEffect(() => {
@@ -28,11 +32,19 @@ const ViewResume = ({ route, navigation }) => {
       TalentDetailsById(talent_id).then((res) => {
         if (res.status) {
           setTalentDetails(res.data[0]);
+          console.log("Email", res.data[0].register_no )
+          GetStudentByEmail(res.data[0].register_no).then((resp) => {
+            console.log(resp);
+            if (resp.status) {
+              setStudentDetails(res.data[0]);
+            }
+
+          })
           //console.log(res.data[0]);
         }
       })
     }
-  }, [fetch, talent_id]);
+  }, [fetch, talent_id, registerno]);
 
   const WebLink = ({ url }) => {
     const handleLinkPress = () => {

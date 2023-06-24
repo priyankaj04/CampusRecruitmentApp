@@ -29,7 +29,7 @@ const ForgotPassword = ({ route, navigation }) => {
 
   const handleEmail = () => {
     if (type == 'talent') {
-      eqbody = { email }
+      reqbody = { email }
     } else if (type == 'recruiter')
     {
       reqbody = { mobile }
@@ -65,6 +65,7 @@ const ForgotPassword = ({ route, navigation }) => {
     if (password === cpassword) {
       const reqbody = { email, password }
       ForgotpasswordEmail(type, reqbody).then((res) => {
+        console.log(res)
         if (res.status) {
           if (type == 'talent') {
             navigation.navigate("Login");
