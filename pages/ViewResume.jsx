@@ -2,6 +2,12 @@ import { StyleSheet, Text, View, ScrollView, Linking } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import { ResumeDetailsByTalentID, TalentDetailsById, GetStudentByEmail } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Icone from 'react-native-vector-icons/Entypo';
+import Iconz from 'react-native-vector-icons/Ionicons';
+import Iconf from 'react-native-vector-icons/Foundation';
+import Iconm from 'react-native-vector-icons/MaterialIcons';
+import Icona from 'react-native-vector-icons/AntDesign';
 
 const ViewResume = ({ route, navigation }) => {
   //const { talent_id, resume_id } = route.params;
@@ -54,6 +60,16 @@ const ViewResume = ({ route, navigation }) => {
     );
   };
 
+  const Iconlinks = ({icon , url}) => {
+    const handleLinkPress = () => {
+      Linking.openURL(url);
+    };
+    
+    return (
+        <Icona name={icon} size={20} color="black" onPress={handleLinkPress} style={{margin: 5}} />
+    );
+  }
+
   return (
     <ScrollView>
       <View style={{ width: '96%', margin: 10, backgroundColor: 'white', borderRadius: 10, padding: 10 }}>
@@ -65,6 +81,11 @@ const ViewResume = ({ route, navigation }) => {
             <Text style={styles.normal}>{talentDetails.email}</Text>
             {talentDetails.contactno && <Text style={styles.normal}>+91 {talentDetails.contactno}</Text>}
             {talentDetails.city && <Text style={styles.normal}>{talentDetails.city}</Text>}
+            {talentDetails.url && <View style={{display:'flex', flexDirection:'row', justifyContent:'flex-end'}}>
+              {talentDetails.url.github && <Iconlinks url={talentDetails.url.github} icon={'github'} />}
+              {talentDetails.url.linkedin && <Iconlinks url={talentDetails.url.linkedin} icon={'linkedin-square'} />}
+              {talentDetails.url.dribbble && <Iconlinks url={talentDetails.url.dribbble} icon={'dribbble'} />}
+            </View>}
           </View>
         </View>
 
@@ -72,7 +93,7 @@ const ViewResume = ({ route, navigation }) => {
           {
             education && <View>
               <View style={styles.divider} />
-              <Text style={styles.header1}>Education</Text>
+              <Text style={styles.header1}><Icon name="graduation-cap" color="gray" /> Education</Text>
               {education && education.tenth_details && <View style={{ margin: 10 }}>
                 <Text style={styles.name}> ❖ {education.tenth_details.school} - {education.tenth_details.board}</Text>
                 <Text>X (secondary)</Text>
@@ -91,7 +112,7 @@ const ViewResume = ({ route, navigation }) => {
             details.skill &&
             <View>
               <View style={styles.divider} />
-              <Text style={styles.header1}>Skills</Text>
+                <Text style={styles.header1}><Icone name="tools" color="gray" /> Skill(s)</Text>
               <View>
                 {
                   details.skill.map((item, index) => (
@@ -108,7 +129,7 @@ const ViewResume = ({ route, navigation }) => {
             details.project &&
             <View>
               <View style={styles.divider} />
-              <Text style={styles.header1}>Projects</Text>
+                <Text style={styles.header1}><Icona name="profile" color="gray" /> Project(s)</Text>
               <View>
                 {
                   details.project.map((item, index) => (
@@ -127,7 +148,7 @@ const ViewResume = ({ route, navigation }) => {
             details.internship &&
             <View>
               <View style={styles.divider} />
-              <Text style={styles.header1}>Internships</Text>
+                <Text style={styles.header1}><Iconm name="work" color="gray" /> Internship(s)</Text>
               <View>
                 {
                   details.internship.map((item, index) => (
@@ -146,7 +167,7 @@ const ViewResume = ({ route, navigation }) => {
             details.job &&
             <View>
               <View style={styles.divider} />
-              <Text style={styles.header1}>Experience</Text>
+                <Text style={styles.header1}><Iconm name="work" color="gray" /> Experience</Text>
               <View>
                 {
                   details.job.map((item, index) => (
@@ -165,7 +186,7 @@ const ViewResume = ({ route, navigation }) => {
             details.position_of_responsibility &&
             <View>
               <View style={styles.divider} />
-              <Text style={styles.header1}>Position of Responsibility</Text>
+                <Text style={styles.header1}><Icon name="group" color="gray" /> Position of Responsibility</Text>
               <View>
                 {
                   details.position_of_responsibility.map((item, index) => (
@@ -181,7 +202,7 @@ const ViewResume = ({ route, navigation }) => {
             details.accomplishment &&
             <View>
               <View style={styles.divider} />
-              <Text style={styles.header1}>Accomplishments</Text>
+                <Text style={styles.header1}><Icone name="medal" color="gray" /> Accomplishment(s)</Text>
               <View>
                 {
                   details.accomplishment.map((item, index) => (

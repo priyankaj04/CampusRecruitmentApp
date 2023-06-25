@@ -938,6 +938,16 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
         );
     };
 
+    const Iconlinks = ({ icon, url }) => {
+        const handleLinkPress = () => {
+            Linking.openURL(url);
+        };
+
+        return (
+            <Icona name={icon} size={20} color="black" onPress={handleLinkPress} style={{ margin: 5 }} />
+        );
+    }
+
     return (
         <View>
             <TouchableOpacity style={{
@@ -1071,11 +1081,16 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                             </View>
                         </View>
                     }
+                    {talent.url && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                        {talent.url.github && <Iconlinks url={talent.url.github} icon={'github'} />}
+                        {talent.url.linkedin && <Iconlinks url={talent.url.linkedin} icon={'linkedin-square'} />}
+                        {talent.url.dribbble && <Iconlinks url={talent.url.dribbble} icon={'dribbble'} />}
+                    </View>}
                     {
                         resume.accomplishment &&
                         <View>
                             <View style={styles.divider} />
-                                <Text style={styles.header1}><Icone name="medal" color="gray" />Accomplishments</Text>
+                                <Text style={styles.header1}><Icone name="medal" color="gray" /> Accomplishment(s)</Text>
                             <View>
                                 {
                                         resume.accomplishment.map((item, index) => (

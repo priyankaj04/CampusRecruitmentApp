@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Iconz from 'react-native-vector-icons/AntDesign';
 
 const EditProfile = ({ navigation }) => {
 
@@ -23,6 +24,7 @@ const EditProfile = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [save, setSave] = useState(false);
   const [dataUri, setDataUri] = useState(null);
+  const [links, setLinks] = useState({});
   const [id, setId] = useState(null);
 
   const getData = async () => {
@@ -38,7 +40,6 @@ const EditProfile = ({ navigation }) => {
     if (id) {
       TalentDetailsById(id).then((res) => {
         if (res.status) {
-          console.log(res)
           setDataUri(res.data[0].profile_url)
           setDetails(res.data[0]);
           setIsLoading(false);
@@ -52,6 +53,7 @@ const EditProfile = ({ navigation }) => {
           setContactno(res.data[0].contactno);
           setWhatappno(res.data[0].whatappno);
           setCity(res.data[0].city);
+          setLinks(res.data[0].url);
         }
       })
     }
@@ -78,7 +80,8 @@ const EditProfile = ({ navigation }) => {
       about: bio,
       contactno,
       whatappno,
-      city
+      city,
+      url: links
     }
     if (dataUri) {
       reqbody.profile_url = dataUri;
@@ -234,6 +237,34 @@ const EditProfile = ({ navigation }) => {
                 value={whatappno}
                 onChangeText={(e) => setWhatappno(e)}
               />
+              <Text style={styles.header}>Url/Links</Text>
+              <View style={{ flexDirection: 'row', alignItems:'center', margin: 10 }}>
+                <Iconz name="github" color="black" size={20} />
+                <TextInput
+                  style={{...styles.textField, width: 330 }}
+                  value={links && links.github ? links.github : ''}
+                  onChangeText={(e) => { setLinks({ ...links, github: e }) }}
+                  placeholder='https://github.com/priyankaj04'
+                />
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10 }}>
+                <Iconz name="linkedin-square" color="black" size={20} />
+                <TextInput
+                  style={{ ...styles.textField, width: 330 }}
+                  value={links && links.linkedin ? links.linkedin : ''}
+                  onChangeText={(e) => { setLinks({ ...links, linkedin: e }) }}
+                  placeholder='https://www.linkedin.com/priyanka-j-687572213'
+                />
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10 }}>
+                <Iconz name="dribbble" color="black" size={20} />
+                <TextInput
+                  style={{ ...styles.textField, width: 330 }}
+                  value={links && links.dribbble ? links.dribbble : ''}
+                  onChangeText={(e) => { setLinks({ ...links, dribbble: e }) }}
+                  placeholder='https://dribbble.com/priyankaj04'
+                />
+              </View>
               <View style={styles.btncontainer}>
                 {save ? <View style={{
                   justifyContent: 'center',
