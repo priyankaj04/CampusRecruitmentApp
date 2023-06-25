@@ -45,6 +45,7 @@ import ViewActionJobs from './pages/ViewActionJobs';
 import RecruiterJobPage from './pages/RecruiterJobPage';
 import EditApplication from './pages/EditApplication';
 import ApplyforJob from './pages/ApplyforJob';
+import ActionApplications from './pages/ActionApplications';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -321,6 +322,22 @@ export default function App() {
           component={ApplyforJob}
           options={{
             title: "Apply",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="ActionApplications"
+          component={ActionApplications}
+          options={{
+            title: "Applicants",
             headerLeft: () => (
               <Icon
                 name="angle-left"

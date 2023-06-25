@@ -661,8 +661,10 @@ export const UpdateApplicationDetailsById = async (reqbody, id) => {
 
 //get talent details by id
 // reg = talent's id
-export const GetStudentByEmail = async (regno) => {
-    const url = URL + '/api/student/regno?regno=' + regno;
+export const GetStudentByEmail = async (email) => {
+    let em = encodeURIComponent(email);
+
+    const url = URL + '/api/student/email/' + em;
     const fetchOptions = {
         method: "GET",
         headers: {
@@ -702,6 +704,79 @@ export const ApplyingForApplication = async (reqbody) => {
     const url = URL + '/api/applicants/pitch';
     const fetchOptions = {
         method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Get all the applications applied by talent
+export const ApplicationsAppliedbytalentid = async (id) => {
+    const url = URL + '/api/applicants/talent/' + id;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Get all the applicants applied by talentid and applicationid
+export const ApplicantsByTidAid = async (tid, aid) => {
+    const url = URL + '/api/applicants/details?tid=' + tid + '&aid=' + aid;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Get all the applicants by application id
+export const ApplicantsByApplicationId = async (status, id) => {
+    const url = URL + '/api/applicants/application/' + id + '/?status=' + status;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Accept or reject applicants
+export const DecisionApplicant = async (reqbody, id) => {
+    const url = URL + '/api/applicants/decision/' + id;
+    const fetchOptions = {
+        method: "PUT",
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',

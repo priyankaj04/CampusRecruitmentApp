@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { GetAllApprovedApplications } from '../api';
-import { JobViewCard } from '../components/commonFunctions';
+import { TalentJobViewCard } from '../components/commonFunctions';
 
 
 const Home = ({ navigation }) => {
@@ -16,7 +16,7 @@ const Home = ({ navigation }) => {
   }, []);
 
   return (
-    <View style={{ backgroundColor: 'white' }}>
+    <ScrollView style={{ backgroundColor: 'white' }}>
       <View style={{ alignItems: 'center', height: 200, justifyContent: 'center' }}>
         <View style={{
           backgroundColor: '#407BFF',
@@ -46,14 +46,14 @@ const Home = ({ navigation }) => {
         </View>
       </View>
       <Text>All Jobs</Text>
-      <ScrollView>
+      <View>
         <View style={{ marginTop: 0 }}>
           {
             alljobs && alljobs.length > 0 ?
               <View>
                 {
                   alljobs.map((item, index) => (
-                    <JobViewCard key={index} item={item} type={'talent'} navigation={navigation} />
+                    <TalentJobViewCard key={index} item={item} navigation={navigation} />
                   ))
                 }
               </View> :
@@ -67,8 +67,8 @@ const Home = ({ navigation }) => {
 
           }
         </View>
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView>
   )
 }
 

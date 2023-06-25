@@ -11,10 +11,9 @@ const ViewResume = ({ route, navigation }) => {
   const [fetch, setFetch] = useState(false);
   const [talent_id, setTalentid] = useState(null);
   const [registerno, setRegisterno] = useState(null);
-  const [studentDetails, setStudentDetails] = useState([]);
+  const [education, setEducation] = useState({});
 
   const getData = async () => {
-    console.log(await AsyncStorage.getAllKeys());
     setTalentid(await AsyncStorage.getItem('talent_id'));
     setRegisterno(await AsyncStorage.getItem('register_no'))
   }
@@ -32,15 +31,11 @@ const ViewResume = ({ route, navigation }) => {
       TalentDetailsById(talent_id).then((res) => {
         if (res.status) {
           setTalentDetails(res.data[0]);
-          console.log("Email", res.data[0].register_no )
-          GetStudentByEmail(res.data[0].register_no).then((resp) => {
-            console.log(resp);
+          GetStudentByEmail(res.data[0].email).then((resp) => {
             if (resp.status) {
-              setStudentDetails(res.data[0]);
+              setEducation(res.data[0]);
             }
-
           })
-          //console.log(res.data[0]);
         }
       })
     }
@@ -48,7 +43,6 @@ const ViewResume = ({ route, navigation }) => {
 
   const WebLink = ({ url }) => {
     const handleLinkPress = () => {
-      // Open the web link in the default browser
       Linking.openURL(url);
     };
 
@@ -75,11 +69,11 @@ const ViewResume = ({ route, navigation }) => {
 
         <View>
           {
-            details.education && <View>
+            education && <View>
               <View style={styles.divider} />
               <Text style={styles.header1}>Education</Text>
               {
-                details.education.map((item, index) => (
+                education.map((item, index) => (
                   <View key={index} style={{ margin: 10 }}>
                     {item.level == "10th" || item.level == "12th" ?
                       <View>
@@ -189,7 +183,7 @@ const ViewResume = ({ route, navigation }) => {
             details.position_of_responsibility &&
             <View>
               <View style={styles.divider} />
-              <Text style={styles.header1}>Position of Responsiibility</Text>
+              <Text style={styles.header1}>Position of Responsibility</Text>
               <View>
                 {
                   details.position_of_responsibility.map((item, index) => (
