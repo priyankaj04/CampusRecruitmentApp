@@ -80,7 +80,7 @@ const Home = ({ navigation }) => {
           </View>
           <View style={{alignItems:'center', justifyContent:'center'}}>
           <Image
-            source={require('../assets/break.png')}
+            source={require('../assets/build.png')}
             style={{ width: 100, height: 100 }}
             />
           </View>

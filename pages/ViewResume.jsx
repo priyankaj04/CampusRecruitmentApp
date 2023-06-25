@@ -33,7 +33,8 @@ const ViewResume = ({ route, navigation }) => {
           setTalentDetails(res.data[0]);
           GetStudentByEmail(res.data[0].email).then((resp) => {
             if (resp.status) {
-              setEducation(res.data[0]);
+              setEducation(resp.data[0]);
+              console.log("response: ", resp.data[0]);
             }
           })
         }
@@ -72,37 +73,18 @@ const ViewResume = ({ route, navigation }) => {
             education && <View>
               <View style={styles.divider} />
               <Text style={styles.header1}>Education</Text>
-              {
-                education.map((item, index) => (
-                  <View key={index} style={{ margin: 10 }}>
-                    {item.level == "10th" || item.level == "12th" ?
-                      <View>
-                        <Text style={styles.name}> ❖ {item.school} - {item.board}</Text>
-                        {item.level == "10th" ? <Text style={styles.normal}>X (secondary)</Text> :
-                          <Text style={styles.name}>XII (senior secondary)</Text>
-                        }
-                      </View>
-                      : ''}
-                    {item.level == "ug/pg" || item.level == "diploma" || item.level == "phd" ?
-                      <View>
-                        {item.level == "ug/pg" || item.level == "phd" ? <Text style={styles.name}> ❖ {item.degree} - {item.stream}</Text> : item.level == "diploma" && <Text style={styles.name}> ❖ {item.stream} - Diploma</Text>}
-                        <Text style={styles.normal}>{item.college} {item.startYear} - {item.endYear}</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                          <Text style={styles.normal}>{item.performance}</Text>
-                          {item.performanceScale === "cgpa(/10)" ? <Text>/10 CGPA</Text> :
-                            item.performanceScale = "cgpa(/9)" ? <Text style={styles.normal}>/9 CGPA</Text> :
-                              item.performanceScale = "cgpa(/8)" ? <Text style={styles.normal}>/8 CGPA</Text> :
-                                item.performanceScale = "cgpa(/7)" ? <Text style={styles.normal}>/7 CGPA</Text> :
-                                  item.performanceScale = "cgpa(/6)" ? <Text style={styles.normal}>/6 CGPA</Text> :
-                                    item.performanceScale = "cgpa(/5)" ? <Text style={styles.normal}>/5 CGPA</Text> :
-                                      item.performanceScale = "cgpa(/5)" ? <Text style={styles.normal}>/5 CGPA</Text> :
-                                        item.performanceScale = "percentage" ? <Text style={styles.normal}>%</Text> : ""}
-                        </View>
-                      </View> : ''}
-                    {item.level == "10th" || item.level == "12th" ? <Text style={styles.normal}>{item.yearofCompletion} - {item.performance}</Text> : ''}
-                  </View>
-                ))
-              }
+              {education && education.tenth_details && <View style={{ margin: 10 }}>
+                <Text style={styles.name}> ❖ {education.tenth_details.school} - {education.tenth_details.board}</Text>
+                <Text>X (secondary)</Text>
+                <Text>{education.tenth_details.yearofcompletion} - {education.tenth_details.percentage}</Text>
+                <Text style={{ ...styles.name, marginTop: 10 }}> ❖ {education.twelth_details.school} - {education.twelth_details.board}</Text>
+                <Text>XII (senior secondary)</Text>
+                <Text>{education.twelth_details.yearofcompletion} - {education.twelth_details.stream}, {education.twelth_details.percentage}</Text>
+                <Text style={{...styles.name, marginTop: 10 }}> ❖ {education.degree}</Text>
+                <Text>{education.stream} - {education.semester} semester</Text>
+                <Text>{education.cgpa} CGPA</Text>
+                {education.backlog_number && <Text>{education.backlog_number} backlog(s) ({education.backlog_subject})</Text>}
+              </View>}
             </View>
           }
           {

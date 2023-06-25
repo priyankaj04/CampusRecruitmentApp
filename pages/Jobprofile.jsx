@@ -47,7 +47,7 @@ const Jobprofile = ({ navigation }) => {
                   source={require('../assets/Nodata.png')}
                   style={{ width: 200, height: 200 }}
                 />
-                <Text>No students created from this class yet.</Text>
+                <Text>You have not applied for any jobs yet.</Text>
               </View>
 
           }
