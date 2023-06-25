@@ -38,6 +38,10 @@ const RecruiterProfile = ({ navigation }) => {
 
   const handleNav = () => {
     removeItem().then(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Getstarted' }],
+      });
       navigation.navigate('Getstarted');
     })
   }

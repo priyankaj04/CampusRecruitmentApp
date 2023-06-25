@@ -37,7 +37,11 @@ const Profile = ({ navigation }) => {
   }
 
   const handleNav = () => {
-    removeData().then(() => {
+    removeData().then(() => { 
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Getstarted' }],
+      });
       navigation.navigate('Getstarted');
     })
   }

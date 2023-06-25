@@ -33,30 +33,28 @@ const Dashboard = ({ navigation }) => {
   }, [id, fetch])
 
   return (
-    <View>
-      <View style={{ backgroundColor: 'white', padding: 10 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 10 }}>Approve Applications</Text>
-          <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('ViewActionJobs')}>
-            <Text style={{ fontSize: 14, color: '#407BFF', fontWeight: 'bold', marginRight: 5 }} >View all</Text>
-            <Icon name="angle-double-right" color="#407BFF" size={18} />
-          </TouchableOpacity>
-        </View>
-        {id && details && details.length > 0 ?
-          <ScrollView horizontal style={{ width: '100%', backgroundColor: 'white', margin: 0, padding: 5 }}>
-            {details.map((item, index) => <ActionJobCard key={index} item={item} fetch={fetch} setFetch={setFetch} />)}
-          </ScrollView>
-          :
-          <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Image
-              source={require('../assets/Nodata.png')}
-              style={{ width: 200, height: 200 }}
-            />
-            <Text>No new jobs uploaded by recruiters.</Text>
-          </View>
-        }
+    <ScrollView style={{ backgroundColor: 'white', padding: 10 }}>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 10 }}>Approve Applications</Text>
+        <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => navigation.navigate('ViewActionJobs')}>
+          <Text style={{ fontSize: 14, color: '#407BFF', fontWeight: 'bold', marginRight: 5 }} >View all</Text>
+          <Icon name="angle-double-right" color="#407BFF" size={18} />
+        </TouchableOpacity>
       </View>
-    </View>
+      {id && details && details.length > 0 ?
+        <ScrollView horizontal style={{ width: '100%', backgroundColor: 'white', margin: 0, padding: 5 }}>
+          {details.map((item, index) => <ActionJobCard key={index} item={item} fetch={fetch} setFetch={setFetch} />)}
+        </ScrollView>
+        :
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Image
+            source={require('../assets/Nodata.png')}
+            style={{ width: 200, height: 200 }}
+          />
+          <Text>No new jobs uploaded by recruiters.</Text>
+        </View>
+      }
+    </ScrollView>
   )
 }
 

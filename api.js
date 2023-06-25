@@ -790,3 +790,22 @@ export const DecisionApplicant = async (reqbody, id) => {
             console.log(error)
         });
 }
+
+//Change password for admin 
+export const ChangeAdminPassword = async (reqbody, id) => {
+    const url = URL + '/api/admin/changepassword/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}

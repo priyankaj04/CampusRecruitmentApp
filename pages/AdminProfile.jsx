@@ -22,13 +22,16 @@ const AdminProfile = ({ navigation }) => {
 
   const handleNav = () => {
     removeData().then(() => {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Getstarted' }],
+      });
       navigation.navigate('Getstarted');
     })
   }
 
   return (
     <View>
-      <Text>AdminProfile</Text>
       <TouchableOpacity style={{
         backgroundColor: 'white',
         width: '90%',

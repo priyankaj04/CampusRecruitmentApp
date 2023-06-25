@@ -8,6 +8,7 @@ const ChangePassword = ({ route, navigation }) => {
     const [oldpassword, setOldpassword] = useState('');
     const [newpassword, setNewpassword] = useState('');
     const [oldpass, setOldpass] = useState('');
+    const [show1, setShow1] = useState(false);
     const [confirm, setConfirm] = useState('');
     const [show, setShow] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -97,23 +98,34 @@ const ChangePassword = ({ route, navigation }) => {
                 </View>
                 <KeyboardAvoidingView>
                     <View style={{ alignItems: 'center', marginTop: 20 }}>
-                        <TextInput
-                            placeholder="Old Password"
-                            style={{
-                                height: 50,
-                                borderColor: 'transparent',
-                                borderWidth: 1,
-                                width: 350,
-                                borderRadius: 25,
-                                padding: 10,
-                                backgroundColor: '#e5e5e5',
-                                margin: 10,
-                                fontSize: 16
-                            }}
-                            onChangeText={(e) => { setOldpassword(e) }}
-                            value={oldpassword}
-                            inputMode="text"
-                        />
+                        <View style={{
+                            backgroundColor: '#e5e5e5',
+                            height: 50,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: 10,
+                            padding: 10,
+                            borderRadius: 25,
+                        }}>
+                            <TextInput
+                                placeholder='Old password'
+                                style={{
+                                    height: 50,
+                                    borderColor: 'transparent',
+                                    borderWidth: 1,
+                                    width: 300,
+                                    backgroundColor: '#e5e5e5',
+                                    fontSize: 16,
+                                    borderRadius: 25,
+                                }}
+                                secureTextEntry={show1 ? false : true}
+                                onChangeText={(e) => setOldpassword(e)}
+                                value={oldpassword}
+                                keyboardType="default"
+                            />
+                            <Icon name={show1 ? "eye" : "eye-slash"} color="gray" size={26} onPress={() => setShow1(!show1)} />
+                        </View>
                         <View style={{
                             backgroundColor: '#e5e5e5',
                             height: 50,

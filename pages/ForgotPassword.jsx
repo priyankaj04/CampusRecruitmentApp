@@ -48,7 +48,12 @@ const ForgotPassword = ({ route, navigation }) => {
   }
 
   const handleOTP = () => {
-    const reqbody = { email, otp: pin1 + pin2 + pin3 + pin4 + pin5 + pin6 }
+    let reqbody = {}
+    if (type == "talent") {
+      reqbody = { email, otp: pin1 + pin2 + pin3 + pin4 + pin5 + pin6 }
+    } else if (type == 'recruiter') {
+      reqbody = { mobile, otp: pin1 + pin2 + pin3 + pin4 + pin5 + pin6 }
+    }
     ConfrimForgotOTP(type, reqbody).then((res) => {
       if (res.status) {
         setConfirmotp(true);
@@ -63,7 +68,13 @@ const ForgotPassword = ({ route, navigation }) => {
 
   const handlePassword = () => {
     if (password === cpassword) {
-      const reqbody = { email, password }
+      let reqbody = {}
+      if (type == "talent") {
+        reqbody = { email, password }
+      } else if (type == 'recruiter') {
+        reqbody = { mobile, password }
+      }
+      
       ForgotpasswordEmail(type, reqbody).then((res) => {
         console.log(res)
         if (res.status) {
