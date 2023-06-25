@@ -27,7 +27,7 @@ const RecruiterHome = ({ navigation }) => {
       getData()
     }
     if (id) {
-      ApplicationsDetailsByStatus('all', id).then((res) => {
+      ApplicationsDetailsByStatus(status, id).then((res) => {
         if (res.status) {
           setApplications(res.data)
         } else {

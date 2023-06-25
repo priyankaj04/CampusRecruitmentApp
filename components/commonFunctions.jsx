@@ -375,7 +375,6 @@ export const EditStudentDetails = ({ item }) => {
 export const ActionJobCard = ({ item, fetch, setFetch }) => {
     const [dialogVisible, setDialogVisible] = useState(false);
     const [recruiterDetails, setRecruiterDetails] = useState({});
-    //console.log("Items", item);
     const showDialog = () => {
         setDialogVisible(true);
     };
@@ -455,11 +454,11 @@ export const ActionJobCard = ({ item, fetch, setFetch }) => {
                 <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
                 <View style={{ marginTop: 20 }}></View>
                 <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
                 <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
                 {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
-                <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
+                <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? `₹${item.stipend_amt}${item.stipend_per}` : `₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
                 <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
                 <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
             </TouchableOpacity>
@@ -470,11 +469,11 @@ export const ActionJobCard = ({ item, fetch, setFetch }) => {
                     <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
                     <View style={{ marginTop: 20 }}></View>
                     <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                    <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                    {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
                     <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
                     {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                    <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
-                    <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
+                    <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? `₹${item.stipend_amt}${item.stipend_per}` : `₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                    {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
                     <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
                     <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
                     <View style={styles.divider} />
@@ -559,11 +558,11 @@ export const JobViewCard = ({ item, navigation }) => {
                 <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
                 <View style={styles.divider}></View>
                 <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
                 <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
                 {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
-                <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
+                <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
                 <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
                 <Text style={{ color: item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF" }}>
                     <Iconf name="alert" color={item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF"} />
@@ -577,11 +576,11 @@ export const JobViewCard = ({ item, navigation }) => {
                     <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
                     <View style={{ marginTop: 20 }}></View>
                     <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                    <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                    {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
                     <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
                     {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                    <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
-                    <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
+                    <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                    {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
                     <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
                     <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
                     <View style={styles.divider} />
@@ -598,6 +597,16 @@ export const JobViewCard = ({ item, navigation }) => {
                     <Text>{item.eligibility}</Text>
                     <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Preferred candidate</Text>
                     <Text>{item.preference}</Text>
+                    {item.opportunity_type == 'job' &&
+                        <View>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Salary</Text>
+                            <Text style={{ fontSize: 16 }}>Annual CTC: ₹{item.ctc1} to {item.ctc2} LPA</Text>
+                            <Text>Annual CTC breakup:</Text>
+                            <Text style={{ color: 'gray' }}>• Fixed component: {item.fixed_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
+                            <Text style={{ color: 'gray' }}>• Variable component: {item.variable_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
+                            {item.other_incentives && <Text style={{ color: 'gray' }}>• Other component: {item.other_incentives}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>}
+                        </View>
+                    }
                     <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Perks</Text>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                         {item.perks1 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks1}</Text>}
@@ -683,6 +692,24 @@ export const TalentJobViewCard = ({ item, navigation }) => {
         navigation.navigate('ApplyforJob', { id: item.application_id });
     }
     console.log("sdfasdfsdfsdfsdfsdff", status)
+    /*
+    <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
+                <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                <View style={styles.divider}></View>
+                <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
+                <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
+                {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
+                <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? `₹${item.stipend_amt}${item.stipend_per}` : `₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
+                <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                <Text style={{ color: item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF" }}>
+                    <Iconf name="alert" color={item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF"} />
+                    {Capitalize(item.status)}
+                </Text>
+            </TouchableOpacity>
+     */
 
     return (
         <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
@@ -691,10 +718,10 @@ export const TalentJobViewCard = ({ item, navigation }) => {
                 <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
                 <View style={styles.divider}></View>
                 <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
                 <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
                 {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
+                <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
                 <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
                 <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
                 {!status ? <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.updated_at)}</Text> : !status && <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>}
@@ -716,11 +743,11 @@ export const TalentJobViewCard = ({ item, navigation }) => {
                     <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
                     <View style={{ marginTop: 20 }}></View>
                     <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                    <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>
+                    {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
                     <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
                     {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                    <Text><Icon name="money" color="#407BFF" /> ₹{item.stipend_amt}{item.stipend_per}</Text>
-                    <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
+                    <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                    {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
                     <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
                     <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
                     <View style={styles.divider} />
@@ -737,6 +764,16 @@ export const TalentJobViewCard = ({ item, navigation }) => {
                     <Text>{item.eligibility}</Text>
                     <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Preferred candidate</Text>
                     <Text>{item.preference}</Text>
+                    {item.opportunity_type == 'job' &&
+                        <View>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Salary</Text>
+                            <Text style={{ fontSize: 16 }}>Annual CTC: ₹{item.ctc1} to {item.ctc2} LPA</Text>
+                            <Text>Annual CTC breakup:</Text>
+                            <Text style={{ color: 'gray' }}>• Fixed component: {item.fixed_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
+                            <Text style={{ color: 'gray' }}>• Variable component: {item.variable_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
+                            {item.other_incentives && <Text style={{ color: 'gray' }}>• Other component: {item.other_incentives}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>}
+                        </View>
+                    }
                     <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Perks</Text>
                     <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                         {item.perks1 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks1}</Text>}
@@ -949,7 +986,7 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
     }
 
     return (
-        <View>
+        <View >
             <TouchableOpacity style={{
                 backgroundColor: 'whitesmoke',
                 width: '96%',
@@ -962,19 +999,19 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                 elevation: 1,
                 padding: 20
             }} onPress={showDialog}>
-                <Text style={{fontWeight:'bold', fontSize:16}}>{talent.firstname} {talent.lastname}</Text>
-                <Text style={{ fontStyle:'italic' }}>{student.degree} - {student.semester} Semester</Text>
-                <Text style={{ color:'#407BFF' }}>{student.cgpa} CGPA</Text>
+                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{talent.firstname} {talent.lastname}</Text>
+                <Text style={{ fontStyle: 'italic' }}>{student.degree} - {student.semester} Semester</Text>
+                <Text style={{ color: '#407BFF' }}>{student.cgpa} CGPA</Text>
                 {student.blacklog && <Text style={{ color: 'red' }}>{student.backlog_number} ({student.backlog_subject}) backlog</Text>}
                 <View style={styles.divider} />
-                <Text style={{ fontStyle: 'italic', color:'gray' }}>Why you should hire me?</Text>
+                <Text style={{ fontStyle: 'italic', color: 'gray' }}>Why you should hire me?</Text>
                 <Text>{item.pitching}</Text>
             </TouchableOpacity>
-            <Dialog.Container visible={dialogVisible}>
+            <Dialog.Container style={{width: '100%'}} visible={dialogVisible}>
                 <Dialog.Title>{talent.firstname}'s Application</Dialog.Title>
                 <ScrollView>
-                    <Text style={{color:'#407BFF', fontStyle:'italic'}}>Why you should hire me?</Text>
-                    <Text style={{backgroundColor:'whitesmoke', padding: 15, borderRadius: 10}}>{item.pitching}</Text>
+                    <Text style={{ color: '#407BFF', fontStyle: 'italic' }}>Why you should hire me?</Text>
+                    <Text style={{ backgroundColor: 'whitesmoke', padding: 15, borderRadius: 10 }}>{item.pitching}</Text>
                     <View style={styles.divider} />
                     <Text style={styles.header1}><Icon name="graduation-cap" color="gray" /> Education</Text>
                     <Text style={styles.name} > ❖ Senior Secondary(XII)</Text>
@@ -985,7 +1022,7 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                         </View>
                     }
                     <Text style={styles.name} > ❖ Secondary(X)</Text>
-                    {student.tenth_details && 
+                    {student.tenth_details &&
                         <View>
                             <Text>{student.tenth_details.school} - {student.tenth_details.yearofcompletion}</Text>
                             <Text>{student.tenth_details.board} board - {student.tenth_details.percentage} </Text>
@@ -995,10 +1032,10 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                         resume.skill &&
                         <View>
                             <View style={styles.divider} />
-                                <Text style={styles.header1}><Icone name="tools" color="gray" />Skill(s)</Text>
+                            <Text style={styles.header1}><Icone name="tools" color="gray" />Skill(s)</Text>
                             <View>
                                 {
-                                        resume.skill.map((item, index) => (
+                                    resume.skill.map((item, index) => (
                                         <View style={{ margin: 10 }} key={index}>
                                             <Text style={styles.name}> ❖ {item.skill_type}</Text>
                                             <Text>{item.skills_list}</Text>
@@ -1012,10 +1049,10 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                         resume.project &&
                         <View>
                             <View style={styles.divider} />
-                                <Text style={styles.header1}><Icona name="profile" color="gray" /> Project(s)</Text>
+                            <Text style={styles.header1}><Icona name="profile" color="gray" /> Project(s)</Text>
                             <View>
                                 {
-                                        resume.project.map((item, index) => (
+                                    resume.project.map((item, index) => (
                                         <View style={{ margin: 10 }} key={index}>
                                             <Text style={styles.name}> ❖ {item.title}</Text>
                                             <Text style={{ fontStyle: 'italic', color: 'gray' }}>{item.requirements}</Text>
@@ -1031,10 +1068,10 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                         resume.internship &&
                         <View>
                             <View style={styles.divider} />
-                                <Text style={styles.header1}><Iconm name="work" color="gray" /> Internship(s)</Text>
+                            <Text style={styles.header1}><Iconm name="work" color="gray" /> Internship(s)</Text>
                             <View>
                                 {
-                                        resume.internship.map((item, index) => (
+                                    resume.internship.map((item, index) => (
                                         <View style={{ margin: 10 }} key={index}>
                                             <Text style={styles.name}> ❖ {item.position} - {item.organization}</Text>
                                             <Text style={{ color: 'gray' }}>{item.location}</Text>
@@ -1050,10 +1087,10 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                         resume.job &&
                         <View>
                             <View style={styles.divider} />
-                                <Text style={styles.header1}><Iconm name="work" color="gray" /> Experience</Text>
+                            <Text style={styles.header1}><Iconm name="work" color="gray" /> Experience</Text>
                             <View>
                                 {
-                                        resume.job.map((item, index) => (
+                                    resume.job.map((item, index) => (
                                         <View style={{ margin: 10 }} key={index}>
                                             <Text style={styles.name}> ❖ {item.position} - {item.organization}</Text>
                                             <Text style={{ color: 'gray' }}>{item.location}</Text>
@@ -1069,10 +1106,10 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                         resume.position_of_responsibility &&
                         <View>
                             <View style={styles.divider} />
-                                <Text style={styles.header1}><Icon name="group" color="gray" /> Position of Responsibility</Text>
+                            <Text style={styles.header1}><Icon name="group" color="gray" /> Position of Responsibility</Text>
                             <View>
                                 {
-                                        resume.position_of_responsibility.map((item, index) => (
+                                    resume.position_of_responsibility.map((item, index) => (
                                         <View style={{ margin: 10 }} key={index}>
                                             <Text style={styles.description}> ❖ {item.description}</Text>
                                         </View>
@@ -1090,10 +1127,10 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                         resume.accomplishment &&
                         <View>
                             <View style={styles.divider} />
-                                <Text style={styles.header1}><Icone name="medal" color="gray" /> Accomplishment(s)</Text>
+                            <Text style={styles.header1}><Icone name="medal" color="gray" /> Accomplishment(s)</Text>
                             <View>
                                 {
-                                        resume.accomplishment.map((item, index) => (
+                                    resume.accomplishment.map((item, index) => (
                                         <View style={{ margin: 10 }} key={index}>
                                             <Text style={styles.name}> ❖ {item.title}</Text>
                                             <Text style={styles.description}>{item.description}</Text>
