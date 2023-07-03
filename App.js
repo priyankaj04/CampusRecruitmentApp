@@ -46,6 +46,7 @@ import RecruiterJobPage from './pages/RecruiterJobPage';
 import EditApplication from './pages/EditApplication';
 import ApplyforJob from './pages/ApplyforJob';
 import ActionApplications from './pages/ActionApplications';
+import ScheduleInterview from './pages/ScheduleInterview';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -306,6 +307,22 @@ export default function App() {
           component={ChangePassword}
           options={{
             title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="ScheduleInterview"
+          component={ScheduleInterview}
+          options={{
+            title: "Schedule Interview",
             headerLeft: () => (
               <Icon
                 name="angle-left"

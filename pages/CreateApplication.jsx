@@ -2,16 +2,23 @@ import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, ClearT
 import React, { useState, useEffect } from 'react';
 import { RadioButton } from 'react-native-paper';
 import Checkbox from 'expo-checkbox';
-import Icon from 'react-native-vector-icons/Entypo';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { CreateJob, RecruiterDetailsById } from '../api';
 import Toastable, { showToastable } from 'react-native-toastable';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
+
 
 const CreateApplication = ({ navigation }) => {
   const [jobDetails, setJobdetails] = useState({});
   const [id, setId] = useState(null);
   const [recruiterdetails, setRecruiterdetails] = useState({});
+  const [showMsg, setShowMsg] = useState(true);
+  const [msg, setMsg] = useState('alternate_mobile');
+  const [type, setType] = useState('');
 
+  const montlyvalues = ['/month', '/week', 'lumpsum']
+  
   const getData = async () => {
     setId(await AsyncStorage.getItem('recruiter_id'));
   }
@@ -91,6 +98,7 @@ const CreateApplication = ({ navigation }) => {
               <Text style={{ textAlign: 'center' }}>Job</Text>
             </View>
           </View>
+          {showMsg && msg && msg == 'opportunity_type' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field id required</Text>}
           <View style={styles.divider} />
           {
             jobDetails.opportunity_type == 'internship' ? <Text style={styles.header}>Internship details</Text> : <Text style={styles.header}>Job details</Text>
@@ -104,6 +112,7 @@ const CreateApplication = ({ navigation }) => {
             onChangeText={(e) => { setJobdetails({ ...jobDetails, job_title: e }) }}
             placeholder={jobDetails.opportunity_type == 'internship' ? 'e.g. Android App Development' : 'e.g. Software Engineer Trainee'}
           />
+          {showMsg && msg && msg == 'job_title' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           <Text style={styles.label}>Skills required</Text>
           <TextInput
             style={styles.textField}
@@ -111,6 +120,7 @@ const CreateApplication = ({ navigation }) => {
             onChangeText={(e) => { setJobdetails({ ...jobDetails, skills: e }) }}
             placeholder='e.g. Java'
           />
+          {showMsg && msg && msg === 'skills' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           {jobDetails.opportunity_type == 'internship' ? <Text style={styles.label}>Internship type</Text> : <Text style={styles.label}>Job type</Text>}
           <View style={{ flexDirection: 'row', marginLeft: 10 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -132,6 +142,7 @@ const CreateApplication = ({ navigation }) => {
               <Text style={{ textAlign: 'center' }}>Remote</Text>
             </View>
           </View>
+          {showMsg && msg && msg == 'job_type' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           {jobDetails.job_type == "In-office/Hybrid" && <View>
             <Text style={styles.label}>Location</Text>
             <TextInput
@@ -140,6 +151,7 @@ const CreateApplication = ({ navigation }) => {
               onChangeText={(e) => { setJobdetails({ ...jobDetails, location: e }) }}
               placeholder='e.g. Koramangala,Bengaluru'
             />
+            {showMsg && msg && msg == 'location' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           </View>}
           <Text style={styles.label}>Number of openings</Text>
           <TextInput
@@ -148,6 +160,7 @@ const CreateApplication = ({ navigation }) => {
             onChangeText={(e) => { setJobdetails({ ...jobDetails, number_of_openings: e }) }}
             placeholder='e.g. 4'
           />
+          {showMsg && msg && msg == 'number_of_openings' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           <View style={{ flexDirection: 'row', margin: 5 }}>
             <View>
               <Text style={styles.label}>Total Number of rounds</Text>
@@ -168,6 +181,7 @@ const CreateApplication = ({ navigation }) => {
               />
             </View>
           </View>
+          {showMsg && msg && msg == 'round' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           <Text style={styles.label}>Round Name</Text>
           <TextInput
             style={styles.textField}
@@ -175,6 +189,7 @@ const CreateApplication = ({ navigation }) => {
             onChangeText={(e) => { setJobdetails({ ...jobDetails, round_name: e }) }}
             placeholder='e.g. Technical Round'
           />
+          {showMsg && msg && msg == 'round_name' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           <Text style={styles.label}>Eligibility</Text>
           <TextInput
             style={styles.textField}
@@ -182,6 +197,7 @@ const CreateApplication = ({ navigation }) => {
             onChangeText={(e) => { setJobdetails({ ...jobDetails, eligibility: e }) }}
             placeholder='e.g. Any Bachelor Degree'
           />
+          {showMsg && msg && msg == 'eligibility' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           {jobDetails.opportunity_type == 'internship' && <View>
             <Text style={styles.label}>Internship start date</Text>
             <View style={{ flexDirection: 'row', marginLeft: 10 }}>
@@ -204,6 +220,7 @@ const CreateApplication = ({ navigation }) => {
                 <Text style={{ textAlign: 'center' }}>Later</Text>
               </View>
             </View>
+            {showMsg && msg && msg =='job_start_date' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           </View>
           }
           <Text style={styles.label}>Last Date to apply</Text>
@@ -234,6 +251,7 @@ const CreateApplication = ({ navigation }) => {
             />
             <Icon name="calendar" color="#407BFF" size={24} />
           </View>
+          {showMsg && msg && msg =='due_date' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' /> This field is required.</Text>}
           {jobDetails.opportunity_type === "internship" &&
             <View>
               <Text style={styles.label}>Internship duration</Text>
@@ -253,6 +271,7 @@ const CreateApplication = ({ navigation }) => {
                   placeholder='e.g. months'
                 />
               </View>
+              {showMsg && msg && msg == 'ctc2' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
             </View>
           }
           {jobDetails.opportunity_type == 'internship' ? <Text style={styles.label}>Intern's responsibilities</Text> : <Text style={styles.label}>Job description</Text>}
@@ -266,6 +285,7 @@ const CreateApplication = ({ navigation }) => {
             onChangeText={(e) => { setJobdetails({ ...jobDetails, job_description: e }) }}
             placeholder={jobDetails.opportunity_type == 'internship' ? `Selected intern's day-to-day responsibilites include: ` : 'Key responsibilities'}
           />
+          {showMsg && msg && msg == 'job_description' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           <Text style={styles.label}>Do you have any candidate preferences? (Optional)</Text>
           <TextInput
             style={styles.multiline}
@@ -276,6 +296,7 @@ const CreateApplication = ({ navigation }) => {
             onChangeText={(e) => { setJobdetails({ ...jobDetails, preference: e }) }}
             placeholder={jobDetails.opportunity_type == 'internship' ? 'e.g. Computer Science students preffered' : 'e.g. Only Computer Science graduates preferred'}
           />
+          {showMsg && msg && msg == 'preference' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
           <View style={styles.divider} />
           {jobDetails.opportunity_type == 'internship' ?
             <View>
@@ -322,6 +343,7 @@ const CreateApplication = ({ navigation }) => {
                   <Text style={{ textAlign: 'center' }}>Unpaid</Text>
                 </View>
               </View>
+              {showMsg && msg && msg == 'stipend_type' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
               <View style={{ flexDirection: 'row', alignItems: 'center', margin: 20, flex: 1, justifyContent: 'flex-start' }}>
                 <Text>₹</Text>
                 <TextInput
@@ -329,7 +351,7 @@ const CreateApplication = ({ navigation }) => {
                     height: 50,
                     borderColor: 'transparent',
                     borderWidth: 1,
-                    width: 230,
+                    width: 150,
                     padding: 8,
                     backgroundColor: 'whitesmoke',
                     fontSize: 16,
@@ -341,7 +363,18 @@ const CreateApplication = ({ navigation }) => {
                   onChangeText={(e) => { setJobdetails({ ...jobDetails, stipend_amt: e }) }}
                   placeholder='e.g. 10000'
                 />
-                <TextInput
+                <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 150, marginLeft: 10 }}>
+                  <Picker
+                    
+                    selectedValue={jobDetails.stipend_per}
+                    onValueChange={(itemValue) => {
+                      setJobdetails({ ...jobDetails, stipend_per: itemValue })
+                    }
+                    }>
+                    {montlyvalues.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                  </Picker>
+                </View>
+                {/*<TextInput
                   style={{
                     height: 50,
                     borderColor: 'transparent',
@@ -357,8 +390,9 @@ const CreateApplication = ({ navigation }) => {
                   value={jobDetails.stipend_per}
                   onChangeText={(e) => { setJobdetails({ ...jobDetails, stipend_per: e }) }}
                   placeholder='/month'
-                />
+                />*/}
               </View>
+              {showMsg && msg && msg == 'stipend_per' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
               <Text style={styles.label}>Perks (Optional)</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
@@ -472,6 +506,7 @@ const CreateApplication = ({ navigation }) => {
                   placeholder='e.g. 6.5'
                 />
               </View>
+              {showMsg && msg && msg == 'ctc12' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
               <Text style={styles.label}>CTC breakup</Text>
               <Text style={{ color: '#407BFF', fontStyle: 'italic', fontSize: 12, marginLeft: 25, margin: 0 }}>Transparent CTC breakup attracts top candidates</Text>
               <View style={{ flexDirection: 'row', marginLeft: 10 }}>
@@ -494,6 +529,7 @@ const CreateApplication = ({ navigation }) => {
                   <Text style={{ textAlign: 'center' }}>In LPA</Text>
                 </View>
               </View>
+              {showMsg && msg && msg == 'ctc_breakup' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
               <Text style={styles.label}>Fixed pay</Text>
               <Text style={{ color: '#407BFF', fontStyle: 'italic', fontSize: 12, marginLeft: 25, margin: 0 }}>Fixed pay is the fixed component of the CTC</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', margin: 10, flex: 1, justifyContent: 'flex-start' }}>
@@ -527,6 +563,7 @@ const CreateApplication = ({ navigation }) => {
                 />
                 <Text> LPA</Text>
               </View>
+              {showMsg && msg && msg == 'other_incentives' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  Above fields are required.</Text>}
               <Text style={styles.label}>Perks (Optional)</Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 20, margin: 5 }}>
                 <Checkbox
@@ -599,7 +636,8 @@ const CreateApplication = ({ navigation }) => {
               placeholder='9944332211'
             />
           </View>
-
+          {showMsg && msg && msg == 'alternate_mobile' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
+          {showMsg &&  <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  {msg}</Text>}
           <TouchableOpacity style={styles.btn} onPress={() => {
             handleClick()
           }}>

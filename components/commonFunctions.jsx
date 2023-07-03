@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect } from "react";
 import moment from "moment";
 import { StyleSheet, View, TextInput, Pressable, TouchableOpacity, ScrollView, Text, Button, Alert, Linking } from 'react-native';
 import {
-    GetApplicationsForAdmin, RecruiterDetailsById, UpdateStudentDetailsById, TalentDetailsById, ResumeDetailsByTalentID,
-    UpdateApplicationStatusById, Responsetoquery, ApplicantsByTidAid, DecisionApplicant, GetStudentByEmail
+    GetApplicationsForAdmin, RecruiterDetailsById, UpdateStudentDetailsById, TalentDetailsById, ResumeDetailsByTalentID, GetInterviewDetails,
+    UpdateApplicationStatusById, Responsetoquery, ApplicantsByTidAid, DecisionApplicant, GetStudentByEmail, SaveApplication, RemoveSavedApplication
 } from '../api';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icone from 'react-native-vector-icons/Entypo';
@@ -437,6 +437,7 @@ export const ActionJobCard = ({ item, fetch, setFetch }) => {
     const WebLink = ({ url }) => {
         const handleLinkPress = () => {
             // Open the web link in the default browser
+            setDialogVisible(false);
             Linking.openURL(url);
         };
 
@@ -535,6 +536,7 @@ export const JobViewCard = ({ item, navigation }) => {
     const WebLink = ({ url }) => {
         const handleLinkPress = () => {
             // Open the web link in the default browser
+            setDialogVisible(false);
             Linking.openURL(url);
         };
 
@@ -633,23 +635,29 @@ export const JobViewCard = ({ item, navigation }) => {
 
 
 
-export const TalentJobViewCard = ({ item, navigation }) => {
+export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }) => {
     const [dialogVisible, setDialogVisible] = useState(false);
     const [recruiterDetails, setRecruiterDetails] = useState({});
     const [tid, setTid] = useState(null);
     const [applicantsDetails, setApplicantsDetails] = useState({});
     const [status, setStatus] = useState(false);
+    const [saved, setSaved] = useState(false);
+    const [fetch, setFetch] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [interview, setInterview] = useState({});
 
     const getData = async () => {
         setTid(await AsyncStorage.getItem('talent_id'))
     }
 
     useEffect(() => {
-        RecruiterDetailsById(item.recruiter_id).then((res) => {
-            if (res.status) {
-                setRecruiterDetails(res.data[0]);
-            }
-        })
+        if (item) {
+            RecruiterDetailsById(item.recruiter_id).then((res) => {
+                if (res.status) {
+                    setRecruiterDetails(res.data[0]);
+                }
+            })
+        }
     }, [item])
 
     useEffect(() => {
@@ -663,8 +671,90 @@ export const TalentJobViewCard = ({ item, navigation }) => {
                     setStatus(true);
                 }
             })
+            GetInterviewDetails(item.application_id, tid).then((res) => {
+                console.log(res);
+                if (res.status) {
+                    setInterview(res.data[0]);
+                } else {
+                    setInterview({});
+                }
+            })
         }
     }, [tid])
+
+    useEffect(() => {
+        if (tid) {
+            TalentDetailsById(tid).then((res) => {
+                if (res.status) {
+                    let value = res.data[0].saved.indexOf(item.application_id);
+                    if (value >= 0) {
+                        setSaved(true);
+
+                    } else {
+                        setSaved(false);
+                    }
+                }
+            })
+        }
+    }, [tid, fetch])
+
+    useEffect(() => {
+        if (tid) {
+            TalentDetailsById(tid).then((res) => {
+                if (res.status) {
+                    let value = res.data[0].saved.indexOf(item.application_id);
+                    if (value >= 0) {
+                        setSaved(true);
+
+                    } else {
+                        setSaved(false);
+                    }
+                }
+            })
+            ApplicantsByTidAid(tid, item.application_id).then((res) => {
+                if (res.status) {
+                    setApplicantsDetails(res.data[0]);
+                    setStatus(true);
+                }
+            })
+            RecruiterDetailsById(item.recruiter_id).then((res) => {
+                if (res.status) {
+                    setRecruiterDetails(res.data[0]);
+                }
+            })
+        }
+    }, [tid, loading, fetch])
+
+
+    const onClickSave = () => {
+        const reqbody = { aid: item.application_id, tid: tid }
+        SaveApplication(reqbody).then((res) => {
+            if (res.status) {
+                setFetch(!fetch);
+                setLoading(!loading);
+                if (savedCard) {
+                    setLoad(!load)
+                }
+            }
+        })
+    }
+
+    const onClickRemove = () => {
+        const reqbody = { aid: item.application_id, tid: tid }
+        RemoveSavedApplication(reqbody).then((res) => {
+            if (res.status) {
+                setSaved(false);
+                setFetch(!fetch);
+                setLoading(!loading);
+                if (savedCard) {
+                    setLoad(!load);
+                }
+            } else {
+                setSaved(true)
+            }
+        })
+    }
+
 
     const showDialog = () => {
         setDialogVisible(true);
@@ -676,7 +766,7 @@ export const TalentJobViewCard = ({ item, navigation }) => {
 
     const WebLink = ({ url }) => {
         const handleLinkPress = () => {
-            // Open the web link in the default browser
+            setDialogVisible(false);
             Linking.openURL(url);
         };
 
@@ -691,30 +781,25 @@ export const TalentJobViewCard = ({ item, navigation }) => {
         setDialogVisible(false);
         navigation.navigate('ApplyforJob', { id: item.application_id });
     }
-    console.log("sdfasdfsdfsdfsdfsdff", status)
-    /*
-    <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
-                <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
-                <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
-                <View style={styles.divider}></View>
-                <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
-                <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
-                {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? `₹${item.stipend_amt}${item.stipend_per}` : `₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
-                {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
-                <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
-                <Text style={{ color: item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF" }}>
-                    <Iconf name="alert" color={item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF"} />
-                    {Capitalize(item.status)}
-                </Text>
-            </TouchableOpacity>
-     */
+
+    const MeetLink = ({ url }) => {
+        const handleLinkPress = () => {
+            setDialogVisible(false);
+            Linking.openURL(url);
+        };
+
+        return (
+            <Text>Interview Link: <Text style={{ color: '#407BFF' }} onPress={() => handleLinkPress()}>{url}</Text></Text>
+        );
+    }
 
     return (
         <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
             <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
-                <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                    <TouchableOpacity style={{ margin: 5 }} onPress={() => { saved ? onClickRemove() : onClickSave() }}>{saved ? <Icon name="bookmark" size={24} color="#407BFF" /> : <Icon name="bookmark-o" size={24} color="#407BFF" />}</TouchableOpacity>
+                </View>
                 <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
                 <View style={styles.divider}></View>
                 <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
@@ -730,16 +815,23 @@ export const TalentJobViewCard = ({ item, navigation }) => {
                     <View>
                         <View style={styles.divider} />
                         <Text style={{ color: applicantsDetails.status == 'under review' ? 'gray' : applicantsDetails.status == "shortlisted" ? 'green' : 'red', fontStyle: 'italic' }}>
-                            <Iconz name="refresh" color="#407BFF" />
+                            <Iconz name="refresh" color={applicantsDetails.status == 'under review' ? 'gray' : applicantsDetails.status == "shortlisted" ? 'green' : 'red'} />
                             Your application is {applicantsDetails.status}
                         </Text>
+                        {interview && <View>
+                            <Text>Scheduled on {interview.slot_time} {interview.slot_date}</Text>
+                            <MeetLink url={interview.link} />
+                        </View>}
                     </View>
                 }
             </TouchableOpacity>
             <Dialog.Container visible={dialogVisible}>
                 <Dialog.Title>Application Details</Dialog.Title>
                 <ScrollView>
-                    <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                        <TouchableOpacity style={{ marginRight: 15 }} onPress={() => { saved ? onClickRemove() : onClickSave() }}>{saved ? <Icon name="bookmark" size={24} color="#407BFF" /> : <Icon name="bookmark-o" size={24} color="#407BFF" />}</TouchableOpacity>
+                    </View>
                     <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
                     <View style={{ marginTop: 20 }}></View>
                     <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
@@ -751,6 +843,40 @@ export const TalentJobViewCard = ({ item, navigation }) => {
                     <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
                     <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
                     <View style={styles.divider} />
+                    {applicantsDetails.status != 'under review' && <View>
+                        {applicantsDetails.status == "shortlisted" &&
+                            <View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Results are out!!!</Text>
+                                    <Iconm name="celebration" color="green" size={18} />
+                                    <Iconm name="celebration" color="green" size={18} />
+                                </View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={{ color: 'green' }}>Congragulations you have shortlisted to this job/internship. Please, patiently wait for further updates.</Text>
+                                </View>
+                            </View>
+                        }
+                        {applicantsDetails.status == "rejected" &&
+                            <View>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Iconf name="alert" color="red" size={18} />
+                                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Your application result is here.</Text>
+                                </View>
+                                <Text style={{ color: 'red' }}>
+                                    Your application got rejected. But don't lose hope! let's crack another one.
+                                </Text>
+                            </View>
+                        }
+                        <View style={styles.divider} />
+                    </View>}
+                    {interview && <View>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold' }} >Interview Details</Text>
+                        <Text>Scheduled on {interview.slot_time} {interview.slot_date}</Text>
+                        <MeetLink url={interview.link} />
+                        <Text style={{ color: 'gray', fontStyle: 'italic' }}>Description</Text>
+                        <Text>{interview.description}</Text>
+                        <View style={styles.divider} />
+                    </View>}
                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About {item.company_name}</Text>
                     {recruiterDetails && <WebLink url={recruiterDetails.url} />}
                     <Text>{recruiterDetails && recruiterDetails.description}</Text>
@@ -886,31 +1012,42 @@ export const ViewQueries = ({ item, setFetch, fetch }) => {
 }
 
 
-export const ViewTalentCard = ({ item, fetch, setFetch }) => {
+export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
     const [resume, setResume] = useState({});
     const [talent, setTalent] = useState([]);
     const [student, setStudent] = useState([]);
     const [dialogVisible, setDialogVisible] = useState(false);
     const [remarks, setRemarks] = useState('');
+    const [interview, setInterview] = useState({});
 
     useEffect(() => {
-        ResumeDetailsByTalentID(item.talent_id).then((res) => {
-            if (res.status) {
-                setResume(res.data[0]);
-                console.log(res.data[0])
-            }
-        })
-        TalentDetailsById(item.talent_id).then((res) => {
-            if (res.status) {
-                setTalent(res.data[0]);
-                GetStudentByEmail(res.data[0].email).then((res) => {
-                    if (res.status) {
-                        //console.log(res.data[0])
-                        setStudent(res.data[0]);
-                    }
-                })
-            }
-        })
+        if (item) {
+            ResumeDetailsByTalentID(item.talent_id).then((res) => {
+                if (res.status) {
+                    setResume(res.data[0]);
+                    //console.log(res.data[0])
+                }
+            })
+            TalentDetailsById(item.talent_id).then((res) => {
+                if (res.status) {
+                    setTalent(res.data[0]);
+                    GetStudentByEmail(res.data[0].email).then((res) => {
+                        if (res.status) {
+                            //console.log(res.data[0])
+                            setStudent(res.data[0]);
+                        }
+                    })
+                }
+            })
+            GetInterviewDetails(item.application_id, item.talent_id).then((res) => {
+                console.log(res);
+                if (res.status) {
+                    setInterview(res.data[0]);
+                } else {
+                    setInterview({});
+                }
+            })
+        }
     }, [item])
 
     const showDialog = () => {
@@ -963,8 +1100,19 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
 
     }
 
+    const handleInterview = () => {
+        setDialogVisible(false);
+        navigation.navigate('ScheduleInterview', { tid: item.talent_id, aid: item.application_id, type: 'create' });
+    }
+
+    const handleEditInterview = () => {
+        setDialogVisible(false);
+        navigation.navigate('ScheduleInterview', { tid: item.talent_id, aid: item.application_id, type: 'edit' });
+    }
+
     const WebLink = ({ url }) => {
         const handleLinkPress = () => {
+            setDialogVisible(false);
             Linking.openURL(url);
         };
 
@@ -977,11 +1125,23 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
 
     const Iconlinks = ({ icon, url }) => {
         const handleLinkPress = () => {
+            setDialogVisible(false);
             Linking.openURL(url);
         };
 
         return (
             <Icona name={icon} size={20} color="black" onPress={handleLinkPress} style={{ margin: 5 }} />
+        );
+    }
+
+    const MeetLink = ({ url }) => {
+        const handleLinkPress = () => {
+            setDialogVisible(false);
+            Linking.openURL(url);
+        };
+
+        return (
+            <Text>Interview Link: <Text style={{ color: '#407BFF' }} onPress={() => handleLinkPress()}>{url}</Text></Text>
         );
     }
 
@@ -1006,10 +1166,23 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                 <View style={styles.divider} />
                 <Text style={{ fontStyle: 'italic', color: 'gray' }}>Why you should hire me?</Text>
                 <Text>{item.pitching}</Text>
+                {interview && <View>
+                    <View style={styles.divider} />
+                    <Text>Scheduled on {interview.slot_time} {interview.slot_date}</Text>
+                    <MeetLink url={interview.link} />
+                </View>}
             </TouchableOpacity>
-            <Dialog.Container style={{width: '100%'}} visible={dialogVisible}>
+            <Dialog.Container style={{ width: '100%' }} visible={dialogVisible}>
                 <Dialog.Title>{talent.firstname}'s Application</Dialog.Title>
                 <ScrollView>
+                    {interview && <View>
+                        <Text style={styles.header1} >Interview Details</Text>
+                        <Text>Scheduled on {interview.slot_time} {interview.slot_date}</Text>
+                        <MeetLink url={interview.link} />
+                        <Text style={{ color: 'gray', fontStyle: 'italic' }}>Description</Text>
+                        <Text>{interview.description}</Text>
+                        <View style={styles.divider} />
+                    </View>}
                     <Text style={{ color: '#407BFF', fontStyle: 'italic' }}>Why you should hire me?</Text>
                     <Text style={{ backgroundColor: 'whitesmoke', padding: 15, borderRadius: 10 }}>{item.pitching}</Text>
                     <View style={styles.divider} />
@@ -1143,6 +1316,8 @@ export const ViewTalentCard = ({ item, fetch, setFetch }) => {
                     }
                 </ScrollView>
                 <Dialog.Button label="Cancle" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
+                {item.status == 'shortlisted' && !interview && <Dialog.Button label="Schedule Interview" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleInterview} />}
+                {item.status == 'shortlisted' && interview && <Dialog.Button label="Edit Interview" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleEditInterview} />}
                 {item.status == 'under review' && <Dialog.Button label="Reject" style={{ color: 'red', marginRight: 10 }} onPress={handleReject} />}
                 {item.status == 'under review' && <Dialog.Button label="Accept" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleAccept} />}
             </Dialog.Container>

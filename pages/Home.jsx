@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, RefreshControl } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { GetAllApprovedApplications, TalentDetailsById } from '../api';
 import { TalentJobViewCard } from '../components/commonFunctions';
@@ -9,10 +9,31 @@ const Home = ({ navigation }) => {
   const [alljobs, setAlljobs] = useState([]);
   const [id, setId] = useState(null);
   const [name, setName] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+  const [fetch, setFetch] = useState(false);
 
   const getData = async () => {
     setId(await AsyncStorage.getItem('talent_id'));
   }
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      GetAllApprovedApplications().then((res) => {
+        if (res.status) {
+          setAlljobs(res.data);
+        }
+      })
+      if (id) {
+        TalentDetailsById(id).then((res) => {
+          if (res.status) {
+            setName(res.data[0].firstname)
+          }
+        })
+      }
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     if (!id) {
@@ -30,7 +51,7 @@ const Home = ({ navigation }) => {
         }
       })
     }
-  }, [id]);
+  }, [id, fetch]);
 
   function getGreeting() {
     const currentHour = new Date().getHours();
@@ -46,10 +67,29 @@ const Home = ({ navigation }) => {
     }
   }
 
+  useEffect(() => {
+    GetAllApprovedApplications().then((res) => {
+      if (res.status) {
+        setAlljobs(res.data);
+      }
+    })
+    if (id) {
+      TalentDetailsById(id).then((res) => {
+        if (res.status) {
+          setName(res.data[0].firstname)
+        }
+      })
+    }
+    console.log("loading...")
+  }, [])
 
 
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+      style={{ backgroundColor: 'white' }}>
       <View style={{ alignItems: 'center', height: 200, justifyContent: 'center' }}>
         <View style={{
           backgroundColor: '#407BFF',
@@ -75,18 +115,18 @@ const Home = ({ navigation }) => {
             }}>
               {getGreeting()}, {name && name}!
             </Text>
-            <Text style={{ width: 230, marginLeft: 20, color: 'white', fontStyle:'italic'}}>Dream big, work hard, and seize your dream job.
+            <Text style={{ width: 230, marginLeft: 20, color: 'white', fontStyle: 'italic' }}>Dream big, work hard, and seize your dream job.
               The future is waiting for you!</Text>
           </View>
-          <View style={{alignItems:'center', justifyContent:'center'}}>
-          <Image
-            source={require('../assets/build.png')}
-            style={{ width: 100, height: 100 }}
+          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <Image
+              source={require('../assets/build.png')}
+              style={{ width: 100, height: 100 }}
             />
           </View>
         </View>
       </View>
-      <Text style={{fontWeight:'bold', marginLeft: 15}}>All Jobs</Text>
+      <Text style={{ fontWeight: 'bold', marginLeft: 15 }}>All Jobs</Text>
       <View>
         <View style={{ marginTop: 0 }}>
           {
@@ -94,7 +134,7 @@ const Home = ({ navigation }) => {
               <View>
                 {
                   alljobs.map((item, index) => (
-                    <TalentJobViewCard key={index} item={item} navigation={navigation} />
+                    <TalentJobViewCard key={index} item={item} navigation={navigation} fetch={fetch} setFetch={setFetch} />
                   ))
                 }
               </View> :

@@ -1,7 +1,7 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.0.100:8000';
+const URL = 'http://192.168.15.27:8000';
 
 //student registration
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
@@ -794,6 +794,117 @@ export const DecisionApplicant = async (reqbody, id) => {
 //Change password for admin 
 export const ChangeAdminPassword = async (reqbody, id) => {
     const url = URL + '/api/admin/changepassword/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+
+export const SaveApplication = async (reqbody) => {
+    const url = URL + '/api/application/save/id';
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const RemoveSavedApplication = async (reqbody) => {
+    const url = URL + '/api/application/save/remove';
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const GetAllSavedApplications = async (reqbody) => {
+    const url = URL + '/api/application/save/application';
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+// schedule interview details
+export const ScheduleInterviewAPI = async (reqbody) => {
+    const url = URL + '/api/interview/create';
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+// schedule interview details
+export const GetInterviewDetails = async (aid, tid) => {
+    const url = URL + '/api/interview/getdetails?aid=' + aid + '&tid=' + tid;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//update/edit interview details.
+export const UpdateInterviewDetails = async (reqbody, id) => {
+    const url = URL + '/api/interview/update/' + id;
     const fetchOptions = {
         method: "PUT",
         headers: {
