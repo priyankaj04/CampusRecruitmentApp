@@ -95,8 +95,8 @@ const CreateStudent = () => {
                                 selectedValue={stream}
                                 onValueChange={(itemValue) => {
                                     setStream(itemValue)
-                                }
-                                }>
+                                }}
+                            >
                                 {Streams.map((item) => <Picker.Item key={item} label={item} value={item} />)}
                             </Picker>
                         </View>
@@ -108,8 +108,8 @@ const CreateStudent = () => {
                                 selectedValue={degree}
                                 onValueChange={(itemValue) => {
                                     setDegree(itemValue)
-                                }
-                                }>
+                                }}
+                            >
                                 {Degree.map((item) => <Picker.Item key={item} label={item} value={item} />)}
                             </Picker>
                         </View>
@@ -121,8 +121,8 @@ const CreateStudent = () => {
                                 selectedValue={semester}
                                 onValueChange={(itemValue) => {
                                     setSemester(itemValue)
-                                }
-                                }>
+                                }}
+                            >
                                 {Semester.map((item) => <Picker.Item key={item} label={item} value={item} />)}
                             </Picker>
                         </View>
@@ -134,8 +134,8 @@ const CreateStudent = () => {
                                 selectedValue={classSection}
                                 onValueChange={(itemValue) => {
                                     setClassSection(itemValue)
-                                }
-                                }>
+                                }}
+                            >
                                 {Classes.map((item) => <Picker.Item key={item.value} label={item.value} value={item.value} />)}
                             </Picker>
                         </View>
@@ -208,8 +208,8 @@ const CreateStudent = () => {
                                 selectedValue={twelth.stream}
                                 onValueChange={(itemValue) => {
                                     setTwelth({ ...twelth, stream: itemValue })
-                                }
-                                }>
+                                }}
+                            >
                                 {StreamsCollege.map((item) => <Picker.Item key={item} label={item} value={item} />)}
                             </Picker>
                         </View>
