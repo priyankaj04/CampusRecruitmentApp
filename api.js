@@ -1,9 +1,9 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.15.27:8000';
+const URL = 'http://192.168.0.101:8000';
 
-//student registration
+//student registration 
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
 export const TalentRegister = async (reqbody) => {
     const url = URL + '/api/talent/registration';

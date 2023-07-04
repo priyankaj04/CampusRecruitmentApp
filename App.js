@@ -47,6 +47,7 @@ import EditApplication from './pages/EditApplication';
 import ApplyforJob from './pages/ApplyforJob';
 import ActionApplications from './pages/ActionApplications';
 import ScheduleInterview from './pages/ScheduleInterview';
+import Subjects from './pages/Subjects';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -63,6 +64,9 @@ const IndexDashboard = ({ navigation }) => {
       }} />
       <Drawer.Screen name="AdminQueries" component={AdminQueries} options={{
         title: 'Queries'
+      }} />
+      <Drawer.Screen name="Subjects" component={Subjects} options={{
+        title: 'Subjects'
       }} />
       <Drawer.Screen name="AdminChangepassword" component={AdminChangepassword} options={{
         title: 'Change Password'
