@@ -920,3 +920,36 @@ export const UpdateInterviewDetails = async (reqbody, id) => {
             console.log(error)
         });
 }
+
+export const UpdateSubjects = async (req, course) => {
+    const url = URL + '/api/subjects/update/' + course;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(req)
+    };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const GetSubjects = async (course) => {
+    const url = URL + '/api/subjects/course/' + course;
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}

@@ -41,7 +41,7 @@ const CreateStudent = () => {
             getData();
         }
     }, [id])
-    
+
 
     const handleClick = () => {
         const reqbody = {
@@ -79,7 +79,7 @@ const CreateStudent = () => {
 
     return (
         <View>
-            <View style={{ position: 'absolute', width: '100%', height: 100, zIndex: 9999}}>
+            <View style={{ position: 'absolute', width: '100%', height: 100, zIndex: 9999 }}>
                 <Toastable statusMap={{
                     success: 'rgba(66, 126, 255, 0.85)',
                     info: 'rgba(0, 0, 0, 0.85)'

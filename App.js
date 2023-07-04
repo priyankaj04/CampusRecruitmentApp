@@ -55,7 +55,7 @@ const Drawer = createDrawerNavigator();
 
 const IndexDashboard = ({ navigation }) => {
   return (
-    <Drawer.Navigator initialRouteName="AdminQueries">
+    <Drawer.Navigator initialRouteName="Subjects">
       <Drawer.Screen name="Dashboard" component={Dashboard} options={{
         title: "Home"
       }} />
