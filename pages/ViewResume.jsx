@@ -21,7 +21,7 @@ const ViewResume = ({ route, navigation }) => {
 
   const getData = async () => {
     setTalentid(await AsyncStorage.getItem('talent_id'));
-    setRegisterno(await AsyncStorage.getItem('register_no'))
+    setRegisterno(await AsyncStorage.getItem('register_no')) 
   }
 
   useEffect(() => {

@@ -153,6 +153,12 @@ export const EditStudentDetails = ({ item }) => {
     const [register_no, setRegisterno] = useState(item.register_no);
     const [msg, setMsg] = useState('');
     const [showMsg, setShowMsg] = useState('');
+    const [isem, setISem] = useState(item.subject_marks[0].I);
+    const [iisem, setIISem] = useState(item.subject_marks[1].II);
+    const [iiisem, setIIISem] = useState(item.subject_marks[2].III);
+    const [ivsem, setIVSem] = useState(item.subject_marks[3].IV);
+    const [vsem, setVSem] = useState(item.subject_marks[4].V);
+    const [visem, setVISem] = useState(item.subject_marks[5].VI);
 
     const Streams = ['Science', 'Computer Science', 'Commerce', 'Arts'];
     const StreamsCollege = ['Science', 'Commerce', 'Arts'];
@@ -182,9 +188,25 @@ export const EditStudentDetails = ({ item }) => {
             tenth_details: tenth,
             backlog_number: blno,
             backlog_subject: blsub,
-            register_no: register_no
+            register_no: register_no,
+            subject_marks: [
+                { I: isem },
+                { II: iisem },
+                { III: iiisem },
+                { IV: ivsem },
+                { V: vsem },
+                { VI: visem }
+            ]
         }
 
+        console.log([
+            { I: isem },
+            { II: iisem },
+            { III: iiisem },
+            { IV: ivsem },
+            { V: vsem },
+            { VI: visem }
+        ])
         UpdateStudentDetailsById(reqbody, item.student_id).then((res) => {
             console.log("response", res);
             if (res.status) {
@@ -273,6 +295,210 @@ export const EditStudentDetails = ({ item }) => {
                             onChangeText={(e) => { setRegisterno(e) }}
                             placeholder="e.g. R2013480"
                         />
+                        {
+                            (semester == 'I' || semester == 'II' || semester == 'III' || semester == 'IV' || semester == 'V' || semester == 'VI') && <View>
+                                <Text style={styles.header}>Marks Card</Text>
+                                <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>I semester</Text>
+                                {isem && isem.length > 0 && isem.map((item, index) => (<View key={index} style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: 20 }}>
+                                    <Text>{item.subject}</Text>
+                                    <TextInput
+                                        style={{
+                                            height: 50,
+                                            borderColor: 'transparent',
+                                            borderWidth: 1,
+                                            width: 160,
+                                            padding: 8,
+                                            backgroundColor: 'whitesmoke',
+                                            fontSize: 16,
+                                            marginTop: 0,
+                                            borderRadius: 25,
+                                            marginLeft: 15
+                                        }}
+                                        value={isem && isem[index] ? isem[index].marks : ''}
+                                        onChangeText={(e) => {
+                                            const existingIndex = isem.findIndex(obj => obj.subject === item.subject);
+                                            if (existingIndex !== -1) {
+                                                // Update marks for existing entry
+                                                const updatedArray = [...isem];
+                                                updatedArray[existingIndex].marks = e;
+                                                setISem(updatedArray);
+                                            }
+                                        }}
+                                        placeholder="marks"
+                                    />
+                                </View>))}
+                            </View>
+                        }
+
+                        {
+                            (semester == 'II' || semester == 'III' || semester == 'IV' || semester == 'V' || semester == 'VI') && <View>
+                                <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }} >II semester</Text>
+                                {iisem && iisem.length > 0 && iisem.map((item, index) => (<View key={index} style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: 20 }}>
+                                    <Text>{item.subject}</Text>
+                                    <TextInput
+                                        style={{
+                                            height: 50,
+                                            borderColor: 'transparent',
+                                            borderWidth: 1,
+                                            width: 160,
+                                            padding: 8,
+                                            backgroundColor: 'whitesmoke',
+                                            fontSize: 16,
+                                            marginTop: 0,
+                                            borderRadius: 25,
+                                            marginLeft: 15
+                                        }}
+                                        value={iisem && iisem[index] ? iisem[index].marks : ''}
+                                        onChangeText={(e) => {
+                                            const existingIndex = iisem.findIndex(obj => obj.subject === item.subject);
+                                            if (existingIndex !== -1) {
+                                                // Update marks for existing entry
+                                                const updatedArray = [...iisem];
+                                                updatedArray[existingIndex].marks = e;
+                                                setIISem(updatedArray);
+                                            }
+                                        }}
+                                        placeholder="marks"
+                                    />
+                                </View>))}
+                            </View>
+                        }
+
+                        {
+                            (semester == 'III' || semester == 'IV' || semester == 'V' || semester == 'VI') && <View>
+                                <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>III semester</Text>
+                                {iiisem && iiisem.length > 0 && iiisem.map((item, index) => (<View key={index} style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: 20 }}>
+                                    <Text>{item.subject}</Text>
+                                    <TextInput
+                                        style={{
+                                            height: 50,
+                                            borderColor: 'transparent',
+                                            borderWidth: 1,
+                                            width: 160,
+                                            padding: 8,
+                                            backgroundColor: 'whitesmoke',
+                                            fontSize: 16,
+                                            marginTop: 0,
+                                            borderRadius: 25,
+                                            marginLeft: 15
+                                        }}
+                                        value={iiisem && iiisem[index] ? iiisem[index].marks : ''}
+                                        onChangeText={(e) => {
+                                            const existingIndex = iiisem.findIndex(obj => obj.subject === item.subject);
+                                            if (existingIndex !== -1) {
+                                                // Update marks for existing entry
+                                                const updatedArray = [...iiisem];
+                                                updatedArray[existingIndex].marks = e;
+                                                setIIISem(updatedArray);
+                                            }
+                                        }}
+                                        placeholder="marks"
+                                    />
+                                </View>))}
+                            </View>
+                        }
+
+                        {
+                            (semester == 'IV' || semester == 'V' || semester == 'VI') && <View>
+                                <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>IV semester</Text>
+                                {ivsem && ivsem.length > 0 && ivsem.map((item, index) => (<View key={index} style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: 20 }}>
+                                    <Text>{item.subject}</Text>
+                                    <TextInput
+                                        style={{
+                                            height: 50,
+                                            borderColor: 'transparent',
+                                            borderWidth: 1,
+                                            width: 160,
+                                            padding: 8,
+                                            backgroundColor: 'whitesmoke',
+                                            fontSize: 16,
+                                            marginTop: 0,
+                                            borderRadius: 25,
+                                            marginLeft: 15
+                                        }}
+                                        value={ivsem && ivsem[index] ? ivsem[index].marks : ''}
+                                        onChangeText={(e) => {
+                                            const existingIndex = ivsem.findIndex(obj => obj.subject === item.subject);
+                                            if (existingIndex !== -1) {
+                                                // Update marks for existing entry
+                                                const updatedArray = [...ivsem];
+                                                updatedArray[existingIndex].marks = e;
+                                                setIVSem(updatedArray);
+                                            }
+                                        }}
+                                        placeholder="marks"
+                                    />
+                                </View>))}
+                            </View>
+                        }
+
+                        {
+                            (semester == 'V' || semester == 'VI') && <View>
+                                <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>V semester</Text>
+                                {vsem && vsem.length > 0 && vsem.map((item, index) => (<View key={index} style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: 20 }}>
+                                    <Text>{item.subject}</Text>
+                                    <TextInput
+                                        style={{
+                                            height: 50,
+                                            borderColor: 'transparent',
+                                            borderWidth: 1,
+                                            width: 160,
+                                            padding: 8,
+                                            backgroundColor: 'whitesmoke',
+                                            fontSize: 16,
+                                            marginTop: 0,
+                                            borderRadius: 25,
+                                            marginLeft: 15
+                                        }}
+                                        value={vsem && vsem[index] ? vsem[index].marks : ''}
+                                        onChangeText={(e) => {
+                                            const existingIndex = vsem.findIndex(obj => obj.subject === item.subject);
+                                            if (existingIndex !== -1) {
+                                                // Update marks for existing entry
+                                                const updatedArray = [...vsem];
+                                                updatedArray[existingIndex].marks = e;
+                                                setVSem(updatedArray);
+                                            }
+                                        }}
+                                        placeholder="marks"
+                                    />
+                                </View>))}
+                            </View>
+                        }
+
+                        {
+                            (semester == 'VI') && <View>
+                                <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>VI semester</Text>
+                                {visem && visem.length > 0 && visem.map((item, index) => (<View key={index} style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: 20 }}>
+                                    <Text>{item.subject}</Text>
+                                    <TextInput
+                                        style={{
+                                            height: 50,
+                                            borderColor: 'transparent',
+                                            borderWidth: 1,
+                                            width: 160,
+                                            padding: 8,
+                                            backgroundColor: 'whitesmoke',
+                                            fontSize: 16,
+                                            marginTop: 0,
+                                            borderRadius: 25,
+                                            marginLeft: 15
+                                        }}
+                                        value={visem && visem[index] ? visem[index].marks : ''}
+                                        onChangeText={(e) => {
+                                            const existingIndex = visem.findIndex(obj => obj.subject === item.subject);
+                                            if (existingIndex !== -1) {
+                                                // Update marks for existing entry
+                                                const updatedArray = [...visem];
+                                                updatedArray[existingIndex].marks = e;
+                                                setVISem(updatedArray);
+                                            }
+                                        }}
+                                        placeholder="marks"
+                                    />
+                                </View>))}
+                            </View>
+                        }
                         <Text style={styles.label}>Overall CGPA</Text>
                         <TextInput
                             style={styles.textField}
@@ -686,12 +912,14 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
         if (tid) {
             TalentDetailsById(tid).then((res) => {
                 if (res.status) {
-                    let value = res.data[0].saved.indexOf(item.application_id);
-                    if (value >= 0) {
-                        setSaved(true);
-
-                    } else {
-                        setSaved(false);
+                    //console.log("jfad", res.data[0].saved)
+                    if (res.data[0].saved && res.data[0].saved.length > 0) {
+                        let value = res.data[0].saved.indexOf(item.application_id);
+                        if (value >= 0) {
+                            setSaved(true);
+                        } else {
+                            setSaved(false);
+                        }
                     }
                 }
             })

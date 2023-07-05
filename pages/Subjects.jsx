@@ -14,7 +14,7 @@ const Subjects = ({ navigation }) => {
     const [visem, setVISem] = useState([]);
 
     useEffect(() => {
-        GetSubjects('BCA').then((res) => {
+        GetSubjects(degree).then((res) => {
             if (res.status) {
                 setISem(res.data[0].subject.isem)
                 setIISem(res.data[0].subject.iisem)
@@ -22,6 +22,13 @@ const Subjects = ({ navigation }) => {
                 setIVSem(res.data[0].subject.ivsem)
                 setVSem(res.data[0].subject.vsem)
                 setVISem(res.data[0].subject.visem)
+            } else {
+                setISem([]);
+                setIISem([]);
+                setIIISem([]);
+                setIVSem([]);
+                setVSem([]);
+                setVISem([]);
             }
         })
     }, []);
@@ -41,9 +48,29 @@ const Subjects = ({ navigation }) => {
         }
         UpdateSubjects(reqbody, degree).then((res) => {
             if (res.status) {
-                console.log("Updated successfully");
+                // console.log("Updated successfully");
             }
         })
+    }
+
+    const onChangePicker = (value) => {
+        GetSubjects(value).then((res) => {
+            if (res.status) {
+                setISem(res.data[0].subject.isem)
+                setIISem(res.data[0].subject.iisem)
+                setIIISem(res.data[0].subject.iiisem)
+                setIVSem(res.data[0].subject.ivsem)
+                setVSem(res.data[0].subject.vsem)
+                setVISem(res.data[0].subject.visem)
+            } else {
+                setISem([]);
+                setIISem([]);
+                setIIISem([]);
+                setIVSem([]);
+                setVSem([]);
+                setVISem([]);
+            }
+        });
     }
 
     return (
@@ -53,6 +80,7 @@ const Subjects = ({ navigation }) => {
                     selectedValue={degree}
                     onValueChange={(itemValue) => {
                         setDegree(itemValue);
+                        onChangePicker(itemValue);
                     }
                     }>
                     {Degrees.map((item) => <Picker.Item key={item.value} label={item.value} value={item.value} />)}
@@ -65,12 +93,12 @@ const Subjects = ({ navigation }) => {
                         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 22 }}> + </Text>
                     </TouchableOpacity>
                 </View>
-                {isem.map((array, index) => (
+                {isem && isem.length > 0 && isem.map((array, index) => (
                     <TextInput
                         key={index}
                         style={styles.textField}
                         placeholder='Subject name'
-                        value={isem[index]}
+                        value={isem[index] ? isem[index] : ''}
                         onChangeText={value => {
                             const updatedArrays = [...isem];
                             updatedArrays[index] = value;
@@ -90,7 +118,7 @@ const Subjects = ({ navigation }) => {
                         key={index}
                         style={styles.textField}
                         placeholder='Subject name'
-                        value={iisem[index]}
+                        value={iisem[index] ? iisem[index] : ''}
                         onChangeText={value => {
                             const updatedArrays = [...iisem];
                             updatedArrays[index] = value;
@@ -109,7 +137,7 @@ const Subjects = ({ navigation }) => {
                         key={index}
                         style={styles.textField}
                         placeholder='Subject name'
-                        value={iiisem[index]}
+                        value={iiisem[index] ? iiisem[index] : ''}
                         onChangeText={value => {
                             const updatedArrays = [...iiisem];
                             updatedArrays[index] = value;
@@ -128,7 +156,7 @@ const Subjects = ({ navigation }) => {
                         key={index}
                         style={styles.textField}
                         placeholder='Subject name'
-                        value={ivsem[index]}
+                        value={ivsem[index] ? ivsem[index] : ''}
                         onChangeText={value => {
                             const updatedArrays = [...ivsem];
                             updatedArrays[index] = value;
@@ -147,7 +175,7 @@ const Subjects = ({ navigation }) => {
                         key={index}
                         style={styles.textField}
                         placeholder='Subject name'
-                        value={vsem[index]}
+                        value={vsem[index] ? vsem[index] : ''}
                         onChangeText={value => {
                             const updatedArrays = [...vsem];
                             updatedArrays[index] = value;
@@ -166,7 +194,7 @@ const Subjects = ({ navigation }) => {
                         key={index}
                         style={styles.textField}
                         placeholder='Subject name'
-                        value={visem[index]}
+                        value={visem[index] ? visem[index] : ''}
                         onChangeText={value => {
                             const updatedArrays = [...visem];
                             updatedArrays[index] = value;
