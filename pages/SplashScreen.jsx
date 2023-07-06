@@ -6,7 +6,7 @@ const SplashScreen = ({ navigation }) => {
   const [type, setType] = useState(null);
 
   const getData = async () => {
-    //await AsyncStorage.clear();
+    await AsyncStorage.clear();
     setType(await AsyncStorage.getItem('user_type'))
     const value = await AsyncStorage.getItem('user_type');
     if (value == 'talent') {

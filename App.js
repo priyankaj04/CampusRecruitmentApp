@@ -48,6 +48,7 @@ import ApplyforJob from './pages/ApplyforJob';
 import ActionApplications from './pages/ActionApplications';
 import ScheduleInterview from './pages/ScheduleInterview';
 import Subjects from './pages/Subjects';
+import Demo from './pages/Demo';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -55,7 +56,7 @@ const Drawer = createDrawerNavigator();
 
 const IndexDashboard = ({ navigation }) => {
   return (
-    <Drawer.Navigator initialRouteName="StudentPage">
+    <Drawer.Navigator initialRouteName="Demo">
       <Drawer.Screen name="Dashboard" component={Dashboard} options={{
         title: "Home"
       }} />
@@ -65,8 +66,8 @@ const IndexDashboard = ({ navigation }) => {
       <Drawer.Screen name="AdminQueries" component={AdminQueries} options={{
         title: 'Queries'
       }} />
-      <Drawer.Screen name="Subjects" component={Subjects} options={{
-        title: 'Subjects'
+      <Drawer.Screen name="Demo" component={Demo} options={{
+        title: 'Demo'
       }} />
       <Drawer.Screen name="AdminChangepassword" component={AdminChangepassword} options={{
         title: 'Change Password'
@@ -194,6 +195,15 @@ export default function App() {
           options={{
             headerShown: false,
             title: '',
+            headerTintColor: { color: "white" },
+          }}
+        />
+        <Stack.Screen
+          name="Subjects"
+          component={Subjects}
+
+          options={{
+            title: 'Subjects and Syllabus',
             headerTintColor: { color: "white" },
           }}
         />

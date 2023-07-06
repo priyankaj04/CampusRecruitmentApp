@@ -63,6 +63,26 @@ export const AdminRegisteration = async (reqbody) => {
         });
 }
 
+//hod registration
+// reqbody = { name,department, password}
+export const HodRegisteration = async (reqbody) => {
+    const url = URL + '/api/hod/registration';
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
 //student login
 // reqbody = { register_no, password }
 export const TalentLogin = async (reqbody) => {
@@ -107,6 +127,26 @@ export const RecruiterLoginForm = async (reqbody) => {
 // reqbody = { email, password }
 export const AdminLoginForm = async (reqbody) => {
     const url = URL + '/api/admin/login';
+    const fetchOptions = {
+        method: "POST",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//Hod login
+// reqbody = { department, password }
+export const HodLogin = async (reqbody) => {
+    const url = URL + '/api/hod/login';
     const fetchOptions = {
         method: "POST",
         headers: {

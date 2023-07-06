@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { RecruiterLoginForm, AdminLoginForm } from '../api';
+import { RecruiterLoginForm, AdminLoginForm, HodLogin } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 
 const RecruiterLogin = ({ navigation }) => {
 
@@ -13,6 +14,8 @@ const RecruiterLogin = ({ navigation }) => {
   const [showHelper, setShowHelper] = useState(false);
   const [msg, setMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const Streams = ['Department of Computer Science', 'Department of Mathematics', 'Department of Physics'];
 
   const getData = async (id, val, name) => {
     await AsyncStorage.multiSet([[id, val], ['user_type', name]]);
@@ -95,6 +98,40 @@ const RecruiterLogin = ({ navigation }) => {
       }
     }
   }
+
+  const handleLogin = () => {
+    if (!password || password.length === 0 || email1.length === 0 || !email1) {
+      setShowHelper(true);
+      setMsg('All fields are required'); return;
+    }
+    let reqbody = {
+      department: email1,
+      password
+    }
+    HodLogin(reqbody).then((res) => {
+      if (res.status) {
+        setIsLoading(false);
+        setShowHelper(false);
+        getData('hod_id', res.data.hod_id, 'hod').then(() => {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Subjects' }]
+          })
+          navigation.navigate('Subjects')
+        })
+      } else {
+        setShowHelper(true);
+        setMsg(res.data.message);
+        setIsLoading(false);
+      }
+    }).catch((err) => {
+      //console.log("it failed", err);
+      setIsLoading(false);
+      setShowHelper(true);
+      setMsg(err.message);
+    })
+  }
+
   return (
     <ScrollView >
       <View style={styles.container}>
@@ -114,6 +151,7 @@ const RecruiterLogin = ({ navigation }) => {
           style={{ width: '100%', height: 400 }}
         />
         <KeyboardAvoidingView >
+          {email != 'hod' ? <View>
           <TextInput
             placeholder="Email"
             style={{
@@ -181,9 +219,82 @@ const RecruiterLogin = ({ navigation }) => {
           {showHelper && <Text style={{ color: 'red', margin: 10 }}><Icon name="info-circle" size={14} color='red' />  {msg}</Text>}
           {isLoading ? <ActivityIndicator color='#407BFF' size="small" /> :
             <TouchableOpacity style={styles.btn} onPress={() => handleClick()}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Log In</Text></TouchableOpacity>
+            }
+          </View> :
+            <View>
+              <TextInput
+                placeholder="Email"
+                style={{
+                  height: 50,
+                  borderColor: 'transparent',
+                  borderWidth: 1,
+                  width: 350,
+                  borderRadius: 25,
+                  padding: 10,
+                  backgroundColor: '#e5e5e5',
+                  margin: 10,
+                  fontSize: 16
+                }}
+                onChangeText={(e) => setEmail(e)}
+                value={email}
+                keyboardType="default"
+              />
+              <View style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 350,
+                borderRadius: 25,
+                backgroundColor: '#e5e5e5',
+                margin: 10,
+                fontSize: 16
+              }}>
+                <Picker
+                  selectedValue={email1}
+                  onValueChange={(itemValue) => {
+                    setEmail1(itemValue)
+                  }
+                  }>
+                  {Streams.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                </Picker>
+              </View>
+              <View style={{
+                backgroundColor: '#e5e5e5',
+                height: 50,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: 10,
+                padding: 5,
+                borderRadius: 25,
+              }}>
+                <TextInput
+                  placeholder='Password'
+                  style={{
+                    height: 50,
+                    borderColor: 'transparent',
+                    borderWidth: 1,
+                    width: 300,
+                    padding: 10,
+                    backgroundColor: '#e5e5e5',
+                    fontSize: 16,
+                    borderRadius: 25,
+                  }}
+                  secureTextEntry={visible ? false : true}
+                  onChangeText={(e) => setPassword(e)}
+                  value={password}
+                  keyboardType="default"
+                />
+                <Icon name={visible ? "eye" : "eye-slash"} color="gray" size={26} onPress={() => setVisible(!visible)} />
+              </View>
+              {showHelper && <Text style={{ color: 'red', margin: 10 }}><Icon name="info-circle" size={14} color='red' />  {msg}</Text>}
+              {isLoading ? <ActivityIndicator color='#407BFF' size="small" /> :
+                <TouchableOpacity style={styles.btn} onPress={() => handleLogin()}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Log In</Text></TouchableOpacity>
+              }
+          </View>
           }
         </KeyboardAvoidingView>
-        {email !== 'admin' && <Text style={{
+        {email !== 'admin' || email != 'hod' && <Text style={{
           color: '#407BFF',
           fontWeight: 'bold',
           fontSize: 16,

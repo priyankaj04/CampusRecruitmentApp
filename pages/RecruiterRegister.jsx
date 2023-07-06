@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { RecruiterRegisteration, AdminRegisteration, SendOTPCodeSMS } from '../api';
+import { RecruiterRegisteration, AdminRegisteration, SendOTPCodeSMS, HodRegisteration } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
+
 
 const RecruiterRegister = ({ navigation }) => {
 
@@ -41,6 +43,12 @@ const RecruiterRegister = ({ navigation }) => {
   const SetData1 = async (id) => {
     await AsyncStorage.multiSet([['recruiter_id', id], ['user_type', 'recruiter']]);
   }
+
+  const SetData2 = async (id) => {
+    await AsyncStorage.multiSet([['hod_id', id], ['user_type', 'hod']]);
+  }
+
+  const Streams = ['Department of Computer Science', 'Department of Mathematics', 'Department of Physics'];
 
 
   const handleClick = () => {
@@ -152,6 +160,48 @@ const RecruiterRegister = ({ navigation }) => {
     }
   }
 
+  const handleHodLogin = () => {
+    if (password != confirmpass) {
+      setShowHelper(true);
+      setMsg({ value: 'all', msg: 'Password do not match.' });
+      return;
+    } else {
+      setIsLoading(true);
+      setShowHelper(false);
+      const reqbody = {
+        name: lastname,
+        department: email,
+        password
+      }
+      HodRegisteration(reqbody).then((res) => {
+        console.log(res);
+        if (res.status) {
+          SetData2(res.data[0].hod_id).then(() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Subjects' }],
+            });
+            navigation.navigate('Subjects');
+            setShowHelper(false);
+            setIsLoading(false);
+          })
+        } else {
+          setShowHelper(true);
+          //console.log("ERROR", res);
+          setMsg({ value: 'all', msg: res.message });
+          setIsLoading(false);
+        }
+        //console.log("reponsehere", res);
+        setIsLoading(false);
+      }).catch((err) => {
+        console.log(err);
+        setShowHelper(true);
+        //setMsg({ value: 'all', msg: err });
+        setIsLoading(false);
+      })
+    }
+  }
+
 
   return (
     <ScrollView >
@@ -174,7 +224,7 @@ const RecruiterRegister = ({ navigation }) => {
           style={{ width: '100%', height: 300 }}
         />
         <KeyboardAvoidingView >
-          <View style={{ alignItems: 'center' }}>
+          {firstname != "hod" ? <View style={{ alignItems: 'center' }}>
             <TextInput
               placeholder="First Name"
               style={{
@@ -341,7 +391,119 @@ const RecruiterRegister = ({ navigation }) => {
             {isLoading ? <ActivityIndicator size="small" color="#407BFF" /> :
               <TouchableOpacity onPress={() => handleClick()} style={styles.btn}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Join us</Text></TouchableOpacity>
             }
+          </View> : <View>
+            <TextInput
+              placeholder="User type"
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 350,
+                borderRadius: 25,
+                padding: 10,
+                backgroundColor: '#e5e5e5',
+                margin: 10,
+                fontSize: 16
+              }}
+              onChangeText={(e) => setFirstname(e)}
+              value={firstname}
+              inputMode="text"
+            />
+            <TextInput
+              placeholder="Full Name"
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 350,
+                borderRadius: 25,
+                padding: 10,
+                backgroundColor: '#e5e5e5',
+                margin: 10,
+                fontSize: 16
+              }}
+              onChangeText={(e) => setLastname(e)}
+              value={lastname}
+              inputMode="text"
+            />
+            <View style={{
+              height: 50,
+              borderColor: 'transparent',
+              borderWidth: 1,
+              width: 350,
+              borderRadius: 25,
+              backgroundColor: '#e5e5e5',
+              margin: 10,
+              fontSize: 16
+            }}>
+              <Picker
+                selectedValue={email}
+                onValueChange={(itemValue) => {
+                  setEmail(itemValue)
+                }
+                }>
+                {Streams.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+              </Picker>
+            </View>
+            <View style={{
+              backgroundColor: '#e5e5e5',
+              height: 50,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: 10,
+              padding: 10,
+              borderRadius: 25,
+            }}>
+              <TextInput
+                placeholder='Password'
+                style={{
+                  height: 50,
+                  borderColor: 'transparent',
+                  borderWidth: 1,
+                  width: 300,
+                  backgroundColor: '#e5e5e5',
+                  fontSize: 16,
+                  borderRadius: 25,
+                }}
+                secureTextEntry={visible ? false : true}
+                onChangeText={(e) => setPassword(e)}
+                value={password}
+                keyboardType="default"
+              />
+              <Icon name={visible ? "eye" : "eye-slash"} color="gray" size={26} onPress={() => setVisible(!visible)} />
+            </View>
+            <TextInput
+              placeholder="Confirm password"
+              style={{
+                height: 50,
+                borderColor: 'transparent',
+                borderWidth: 1,
+                width: 350,
+                borderRadius: 25,
+                padding: 10,
+                backgroundColor: '#e5e5e5',
+                margin: 10,
+                fontSize: 16
+              }}
+              secureTextEntry
+              onChangeText={(e) => setConfirmpass(e)}
+              value={confirmpass}
+              keyboardType="default"
+              />
+              {showHelper && msg && msg.value === 'all' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
+              <Text style={{ margin: 10, textAlign: 'center', color: 'gray' }}>By joining us you agree to our <Text onPress={() => navigation.navigate('TermsandConditions')} style={{
+                color: '#407BFF',
+                fontWeight: 'bold'
+              }}>Terms and Condtions</Text> and <Text onPress={() => navigation.navigate('PrivatePolicy')} style={{
+                color: '#407BFF',
+                fontWeight: 'bold'
+              }}>Private policy</Text></Text>
+              {isLoading ? <ActivityIndicator size="small" color="#407BFF" /> :
+                <TouchableOpacity onPress={() => handleHodLogin()} style={styles.btn}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Join us</Text></TouchableOpacity>
+              }
           </View>
+          }
         </KeyboardAvoidingView>
         <Text style={{
           color: 'gray',
