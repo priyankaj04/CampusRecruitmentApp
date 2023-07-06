@@ -12,9 +12,13 @@ const Subjects = ({ navigation }) => {
     const [ivsem, setIVSem] = useState([]);
     const [vsem, setVSem] = useState([]);
     const [visem, setVISem] = useState([]);
+    const [syllabus, setSyllabus] = useState([]);
+    const [totalnoofhours, setTotalnoofhours] = useState('');
+    const [points, setPoints] = useState('');
+    const [year, setYear] = useState('2020-2023');
 
     useEffect(() => {
-        GetSubjects(degree).then((res) => {
+        GetSubjects(degree, year).then((res) => {
             if (res.status) {
                 setISem(res.data[0].subject.isem)
                 setIISem(res.data[0].subject.iisem)
@@ -37,6 +41,14 @@ const Subjects = ({ navigation }) => {
         { value: 'BCA', label: 'BCA' }, { value: 'BSc', label: 'BSc' }
     ]
 
+    const AcademicYear = [
+        { value: '2019-2022', label: '2019-2022' },
+        { value: '2020-2023', label: '2020-2023' },
+        { value: '2021-2024', label: '2021-2024' },
+        { value: '2022-2025', label: '2022-2025' },
+        { value: '2023-2026', label: '2023-2026' }
+    ];
+
     const handleUpdate = () => {
         reqbody = {
             isem,
@@ -53,8 +65,8 @@ const Subjects = ({ navigation }) => {
         })
     }
 
-    const onChangePicker = (value) => {
-        GetSubjects(value).then((res) => {
+    const onChangePicker = () => {
+        GetSubjects(degree, year).then((res) => {
             if (res.status) {
                 setISem(res.data[0].subject.isem)
                 setIISem(res.data[0].subject.iisem)
@@ -75,16 +87,27 @@ const Subjects = ({ navigation }) => {
 
     return (
         <ScrollView style={{ width: '100%', backgroundColor: 'white', margin: 0, height: '100%' }}>
-            <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 25, marginTop: 10 }}>
-                <Picker
-                    selectedValue={degree}
-                    onValueChange={(itemValue) => {
-                        setDegree(itemValue);
-                        onChangePicker(itemValue);
-                    }
-                    }>
-                    {Degrees.map((item) => <Picker.Item key={item.value} label={item.value} value={item.value} />)}
-                </Picker>
+            <View style={{ flexDirection: 'row' }}>
+                <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 180, marginLeft: 25, marginTop: 10 }}>
+                    <Picker
+                        selectedValue={degree}
+                        onValueChange={(itemValue) => {
+                            setDegree(itemValue);
+                        }
+                        }>
+                        {Degrees.map((item) => <Picker.Item key={item.value} label={item.value} value={item.value} />)}
+                    </Picker>
+                </View>
+                <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 180, marginLeft: 5, marginTop: 10 }}>
+                    <Picker
+                        selectedValue={year}
+                        onValueChange={(itemValue) => {
+                            setYear(itemValue);
+                        }
+                        }>
+                        {AcademicYear.map((item) => <Picker.Item key={item.value} label={item.value} value={item.value} />)}
+                    </Picker>
+                </View>
             </View>
             <KeyboardAvoidingView>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
@@ -94,17 +117,87 @@ const Subjects = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 {isem && isem.length > 0 && isem.map((array, index) => (
-                    <TextInput
-                        key={index}
-                        style={styles.textField}
-                        placeholder='Subject name'
-                        value={isem[index] ? isem[index] : ''}
-                        onChangeText={value => {
-                            const updatedArrays = [...isem];
-                            updatedArrays[index] = value;
-                            setISem(updatedArrays);
-                        }}
-                    />
+                    <View key={index}>
+                        <Text style={styles.label}>Subject Name</Text>
+                        <TextInput
+                            style={styles.textField}
+                            placeholder='e.g. C programming'
+                            value={isem[index] ? isem[index] : ''}
+                            onChangeText={value => {
+                                const updatedArrays = [...isem];
+                                updatedArrays[index] = value;
+                                setISem(updatedArrays);
+                            }}
+                        />
+                        <View>
+                            <Text style={styles.header}>Subject Details</Text>
+                            <Text style={styles.label}>Total number of hours</Text>
+                            <TextInput
+                                style={styles.textField}
+                                placeholder='e.g. 60 hours'
+                                value={isem[index] ? isem[index] : ''}
+                                onChangeText={value => {
+                                    const updatedArrays = [...isem];
+                                    updatedArrays[index] = value;
+                                    setISem(updatedArrays);
+                                }}
+                            />
+
+                            <Text style={styles.label}>Credit points</Text>
+                            <TextInput
+                                style={styles.textField}
+                                placeholder='e.g 3'
+                                value={isem[index] ? isem[index] : ''}
+                                onChangeText={value => {
+                                    const updatedArrays = [...isem];
+                                    updatedArrays[index] = value;
+                                    setISem(updatedArrays);
+                                }}
+                            />
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
+                                <Text style={{ color: '#407BFF', fontSize: 16, fontWeight: 'bold', margin: 10 }}>Add Units</Text>
+                                <TouchableOpacity style={styles.btn} onPress={() => { setSyllabus([...isem, []]) }}>
+                                    <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}> + </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <Text style={styles.label}>Unit Name</Text>
+                            <TextInput
+                                style={styles.textField}
+                                placeholder='e.g. Introduction to C'
+                                value={points}
+                                onChangeText={value => {
+                                    const updatedArrays = [...isem];
+                                    updatedArrays[index] = value;
+                                    setISem(updatedArrays);
+                                }}
+                            />
+                            <Text style={styles.label}>Number of hours</Text>
+                            <TextInput
+                                style={styles.textField}
+                                placeholder='e.g. 10'
+                                value={points}
+                                onChangeText={value => {
+                                    const updatedArrays = [...isem];
+                                    updatedArrays[index] = value;
+                                    setISem(updatedArrays);
+                                }}
+                            />
+                            <Text style={styles.label}>Topics</Text>
+                            <TextInput
+                                style={styles.textField}
+                                placeholder='e.g. Topics'
+                                value={points}
+                                onChangeText={value => {
+                                    const updatedArrays = [...isem];
+                                    updatedArrays[index] = value;
+                                    setISem(updatedArrays);
+                                }}
+                            />
+                            <TouchableOpacity style={styles.btn} onPress={() => { setISem([...isem, []]) }}>
+                                <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}> + </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 ))}
 
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
@@ -257,5 +350,17 @@ const styles = StyleSheet.create({
         elevation: 3,
         marginLeft: 45,
         margin: 20
+    },
+    label: {
+        marginBottom: 0,
+        color: 'gray',
+        marginLeft: 25,
+        marginTop: 10
+    },
+    header: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        margin: 10,
+        marginTop: 15
     },
 })
