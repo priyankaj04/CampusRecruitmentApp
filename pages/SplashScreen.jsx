@@ -6,9 +6,10 @@ const SplashScreen = ({ navigation }) => {
   const [type, setType] = useState(null);
 
   const getData = async () => {
-    await AsyncStorage.clear();
+    //await AsyncStorage.clear();
     setType(await AsyncStorage.getItem('user_type'))
     const value = await AsyncStorage.getItem('user_type');
+    console.log(value);
     if (value == 'talent') {
       navigation.reset({
         index: 0,
@@ -27,6 +28,12 @@ const SplashScreen = ({ navigation }) => {
         routes: [{ name: 'IndexDashboard' }],
       });
       navigation.navigate('IndexDashboard')
+    } else if (value == 'hod') {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Subjects' }],
+      });
+      navigation.navigate('Subjects')
     } else if (!value) {
       navigation.reset({
         index: 0,

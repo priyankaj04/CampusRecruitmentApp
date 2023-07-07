@@ -961,8 +961,8 @@ export const UpdateInterviewDetails = async (reqbody, id) => {
         });
 }
 
-export const UpdateSubjects = async (req, course) => {
-    const url = URL + '/api/subjects/update/' + course;
+export const UpdateSubjects = async (req, course, year) => {
+    const url = URL + '/api/subjects/update/' + course + '?year=' + year;
     const fetchOptions = {
         method: "PUT",
         headers: {
@@ -978,8 +978,8 @@ export const UpdateSubjects = async (req, course) => {
         });
 }
 
-export const GetSubjects = async (course) => {
-    const url = URL + '/api/subjects/course/' + course;
+export const GetSubjects = async (course, year) => {
+    const url = URL + '/api/subjects/course/' + course + '?year=' + year;
     const fetchOptions = {
         method: "GET",
         headers: {
