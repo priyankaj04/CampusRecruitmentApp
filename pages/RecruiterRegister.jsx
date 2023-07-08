@@ -44,11 +44,11 @@ const RecruiterRegister = ({ navigation }) => {
     await AsyncStorage.multiSet([['recruiter_id', id], ['user_type', 'recruiter']]);
   }
 
-  const SetData2 = async (id) => {
-    await AsyncStorage.multiSet([['hod_id', id], ['user_type', 'hod']]);
+  const SetData2 = async (id, department) => {
+    await AsyncStorage.multiSet([['hod_id', id], ['user_type', 'hod'], ['department', department]]);
   }
 
-  const Streams = ['Department of Computer Science', 'Department of Mathematics', 'Department of Physics'];
+  const Streams = ['Department of Computer Science', 'Department of Commerce', 'Department of Arts', 'Department of Science'];
 
 
   const handleClick = () => {
@@ -176,7 +176,7 @@ const RecruiterRegister = ({ navigation }) => {
       HodRegisteration(reqbody).then((res) => {
         console.log(res);
         if (res.status) {
-          SetData2(res.data[0].hod_id).then(() => {
+          SetData2(res.data[0].hod_id, res.data[0].department).then(() => {
             navigation.reset({
               index: 0,
               routes: [{ name: 'Subjects' }],

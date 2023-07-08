@@ -13,8 +13,8 @@ const CreateApplication = ({ navigation }) => {
   const [jobDetails, setJobdetails] = useState({});
   const [id, setId] = useState(null);
   const [recruiterdetails, setRecruiterdetails] = useState({});
-  const [showMsg, setShowMsg] = useState(true);
-  const [msg, setMsg] = useState('alternate_mobile');
+  const [showMsg, setShowMsg] = useState(false);
+  const [msg, setMsg] = useState('');
   const [type, setType] = useState('');
 
   const montlyvalues = ['/month', '/week', 'lumpsum']
@@ -637,7 +637,7 @@ const CreateApplication = ({ navigation }) => {
             />
           </View>
           {showMsg && msg && msg == 'alternate_mobile' && <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  This field is required.</Text>}
-          {showMsg &&  <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  {msg}</Text>}
+          {showMsg && msg && msg == 'all' &&  <Text style={{ color: 'red', margin: 10, textAlign: 'left', marginTop: 2 }}><Icon name="info-circle" size={14} color='red' />  {msg}</Text>}
           <TouchableOpacity style={styles.btn} onPress={() => {
             handleClick()
           }}>

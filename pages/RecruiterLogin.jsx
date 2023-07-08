@@ -15,10 +15,13 @@ const RecruiterLogin = ({ navigation }) => {
   const [msg, setMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const Streams = ['Department of Computer Science', 'Department of Mathematics', 'Department of Physics'];
+  const Streams = ['Department of Computer Science', 'Department of Commerce', 'Department of Arts', 'Department of Science'];
 
   const getData = async (id, val, name) => {
     await AsyncStorage.multiSet([[id, val], ['user_type', name]]);
+  };
+  const getData1 = async (id, val, name, department) => {
+    await AsyncStorage.multiSet([[id, val], ['user_type', name], ['department', department]]);
   };
 
   const handleClick = () => {
@@ -112,7 +115,7 @@ const RecruiterLogin = ({ navigation }) => {
       if (res.status) {
         setIsLoading(false);
         setShowHelper(false);
-        getData('hod_id', res.data.hod_id, 'hod').then(() => {
+        getData1('hod_id', res.data.hod_id, 'hod', res.data.department).then(() => {
           navigation.reset({
             index: 0,
             routes: [{ name: 'Subjects' }]
