@@ -49,6 +49,7 @@ import ActionApplications from './pages/ActionApplications';
 import ScheduleInterview from './pages/ScheduleInterview';
 import Subjects from './pages/Subjects';
 import Demo from './pages/Demo';
+import SelectSlot from './pages/SelectSlot';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -321,6 +322,22 @@ export default function App() {
           component={ChangePassword}
           options={{
             title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="SelectSlot"
+          component={SelectSlot}
+          options={{
+            title: "Select Your Interview Slot",
             headerLeft: () => (
               <Icon
                 name="angle-left"

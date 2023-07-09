@@ -1,7 +1,7 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.15.27:8000';
+const URL = 'http://192.168.0.101:8000';
 
 //student registration 
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
@@ -794,6 +794,24 @@ export const ApplicantsByTidAid = async (tid, aid) => {
         });
 }
 
+//Get all the applicants applied by talentid and applicationid
+export const ApplicantsByAid = async (aid) => {
+    const url = URL + '/api/applicants/?aid=' + aid
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
 //Get all the applicants by application id
 export const ApplicantsByApplicationId = async (status, id) => {
     const url = URL + '/api/applicants/application/' + id + '/?status=' + status;
@@ -987,6 +1005,24 @@ export const GetSubjects = async (course, year) => {
             'Content-Type': 'application/json',
         },
     };
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const UpdateSlots = async (reqbody, id) => {
+    const url = URL + '/api/applicants/updateslot/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
     return await fetch(url, fetchOptions)
         .then((response) => response.json())
         .catch((error) => {

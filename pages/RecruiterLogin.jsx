@@ -297,7 +297,7 @@ const RecruiterLogin = ({ navigation }) => {
           </View>
           }
         </KeyboardAvoidingView>
-        {email !== 'admin' || email != 'hod' && <Text style={{
+        {(email !== 'admin' || email != 'hod') && <Text style={{
           color: '#407BFF',
           fontWeight: 'bold',
           fontSize: 16,

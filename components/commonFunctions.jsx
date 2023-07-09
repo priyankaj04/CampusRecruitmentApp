@@ -941,6 +941,7 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
             })
             ApplicantsByTidAid(tid, item.application_id).then((res) => {
                 if (res.status) {
+                    console.log("resoibsejdhfkadf", res.data[0]);
                     setApplicantsDetails(res.data[0]);
                     setStatus(true);
                 }
@@ -1005,6 +1006,11 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
         );
     };
 
+    const handleNav = () => {
+        setDialogVisible(false);
+        navigation.navigate('SelectSlot', { id: applicantsDetails.applicant_id })
+    }
+
     const handleApply = () => {
         setDialogVisible(false);
         navigation.navigate('ApplyforJob', { id: item.application_id });
@@ -1047,7 +1053,7 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
                             Your application is {applicantsDetails.status}
                         </Text>
                         {interview && <View>
-                            <Text>Scheduled on {interview.slot_time} {interview.slot_date}</Text>
+                            <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
                             <MeetLink url={interview.link} />
                         </View>}
                     </View>
@@ -1097,14 +1103,15 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
                         }
                         <View style={styles.divider} />
                     </View>}
-                    {interview && <View>
+                    {Object.keys(interview).length > 0 && <View>
                         <Text style={{ fontSize: 16, fontWeight: 'bold' }} >Interview Details</Text>
-                        <Text>Scheduled on {interview.slot_time} {interview.slot_date}</Text>
+                        <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
                         <MeetLink url={interview.link} />
                         <Text style={{ color: 'gray', fontStyle: 'italic' }}>Description</Text>
                         <Text>{interview.description}</Text>
                         <View style={styles.divider} />
-                    </View>}
+                    </View>
+                    }
                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About {item.company_name}</Text>
                     {recruiterDetails && <WebLink url={recruiterDetails.url} />}
                     <Text>{recruiterDetails && recruiterDetails.description}</Text>
@@ -1152,7 +1159,7 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
                 </ScrollView>
                 <Dialog.Button label="Close" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
                 {!status && <Dialog.Button label="Apply" style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} onPress={handleApply} />}
-                {status && <Dialog.Button label="Applied" style={{ color: '#407BFF', marginRight: 10 }} />}
+                {status && !applicantsDetails.selected_slot_date && !applicantsDetails.selected_slot_timings && <Dialog.Button onPress={handleNav} style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} label="Select Slot for Interview" />}
             </Dialog.Container>
         </View>
     )
@@ -1247,6 +1254,7 @@ export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
     const [dialogVisible, setDialogVisible] = useState(false);
     const [remarks, setRemarks] = useState('');
     const [interview, setInterview] = useState({});
+    const [applicantsDetails, setApplicantsDetails] = useState({});
 
     useEffect(() => {
         if (item) {
@@ -1267,8 +1275,12 @@ export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
                     })
                 }
             })
+            ApplicantsByTidAid(item.talent_id, item.application_id).then((res) => {
+                if (res.status) {
+                    setApplicantsDetails(res.data[0]);
+                }
+            })
             GetInterviewDetails(item.application_id, item.talent_id).then((res) => {
-                console.log(res);
                 if (res.status) {
                     setInterview(res.data[0]);
                 } else {
@@ -1394,18 +1406,18 @@ export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
                 <View style={styles.divider} />
                 <Text style={{ fontStyle: 'italic', color: 'gray' }}>Why you should hire me?</Text>
                 <Text>{item.pitching}</Text>
-                {interview && <View>
+                {Object.keys(interview).length > 0 && <View>
                     <View style={styles.divider} />
-                    <Text>Scheduled on {interview.slot_time} {interview.slot_date}</Text>
+                    <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
                     <MeetLink url={interview.link} />
                 </View>}
             </TouchableOpacity>
             <Dialog.Container style={{ width: '100%' }} visible={dialogVisible}>
                 <Dialog.Title>{talent.firstname}'s Application</Dialog.Title>
                 <ScrollView>
-                    {interview && <View>
+                    {Object.keys(interview).length > 0 && <View>
                         <Text style={styles.header1} >Interview Details</Text>
-                        <Text>Scheduled on {interview.slot_time} {interview.slot_date}</Text>
+                        <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
                         <MeetLink url={interview.link} />
                         <Text style={{ color: 'gray', fontStyle: 'italic' }}>Description</Text>
                         <Text>{interview.description}</Text>
@@ -1544,8 +1556,8 @@ export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
                     }
                 </ScrollView>
                 <Dialog.Button label="Cancle" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
-                {item.status == 'shortlisted' && !interview && <Dialog.Button label="Schedule Interview" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleInterview} />}
-                {item.status == 'shortlisted' && interview && <Dialog.Button label="Edit Interview" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleEditInterview} />}
+                {item.status == 'shortlisted' && Object.keys(interview).length == 0 && <Dialog.Button label="Schedule Interview" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleInterview} />}
+                {item.status == 'shortlisted' && Object.keys(interview).length > 0 && <Dialog.Button label="View Interview Details" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleEditInterview} />}
                 {item.status == 'under review' && <Dialog.Button label="Reject" style={{ color: 'red', marginRight: 10 }} onPress={handleReject} />}
                 {item.status == 'under review' && <Dialog.Button label="Accept" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleAccept} />}
             </Dialog.Container>

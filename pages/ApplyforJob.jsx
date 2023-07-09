@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Linking } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Linking, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ApplyingForApplication, ResumeDetailsByTalentID } from '../api';
@@ -37,7 +37,7 @@ const ApplyforJob = ({ route, navigation }) => {
             "resume_id": resumeid,
             "talent_id": talentid,
         }
-
+        console.log(reqbody);
         ApplyingForApplication(reqbody).then((res) => {
             if (res.status) {
                 navigation.goBack();
@@ -46,7 +46,7 @@ const ApplyforJob = ({ route, navigation }) => {
     }
 
     return (
-        <View>
+        <ScrollView>
             <View style={{ width: '100%', backgroundColor: 'white', margin: 0, padding: 25, height: '100%' }}>
                 <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#407BFF' }}>Application</Text>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10 }}>Your Resume</Text>
@@ -84,7 +84,7 @@ const ApplyforJob = ({ route, navigation }) => {
                     <Text style={{ fontSize: 18, fontWeight: 'bold', color: 'white' }}>Submit</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
