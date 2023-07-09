@@ -14,7 +14,7 @@ import Icona from 'react-native-vector-icons/AntDesign';
 import Dialog from 'react-native-dialog';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { MotiView } from 'moti';
 
 export const Capitalize = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1)
@@ -1028,140 +1028,156 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
     }
 
     return (
-        <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
-            <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
-                    <TouchableOpacity style={{ margin: 5 }} onPress={() => { saved ? onClickRemove() : onClickSave() }}>{saved ? <Icon name="bookmark" size={24} color="#407BFF" /> : <Icon name="bookmark-o" size={24} color="#407BFF" />}</TouchableOpacity>
-                </View>
-                <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
-                <View style={styles.divider}></View>
-                <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
-                <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
-                {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
-                <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
-                <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
-                {!status ? <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.updated_at)}</Text> : !status && <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>}
-                {
-                    status &&
-                    <View>
+        <MotiView
+            from={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            duration={500}
+        >
+            <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
+                <MotiView
+                    from={{ opacity: 0, translateX: 100 }}
+                    animate={{ opacity: 1, translateX: 0 }}
+                    duration={1000}
+                    delay={500}
+                >
+                    <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                            <TouchableOpacity style={{ margin: 5 }} onPress={() => { saved ? onClickRemove() : onClickSave() }}>{saved ? <Icon name="bookmark" size={24} color="#407BFF" /> : <Icon name="bookmark-o" size={24} color="#407BFF" />}</TouchableOpacity>
+                        </View>
+                        <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                        <View style={styles.divider}></View>
+
+
+                        <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+
+                        {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
+                        <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
+                        {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
+                        <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                        <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>
+                        <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                        {!status ? <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.updated_at)}</Text> : !status && <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>}
+                        {
+                            status &&
+                            <View>
+                                <View style={styles.divider} />
+                                <Text style={{ color: applicantsDetails.status == 'under review' ? 'gray' : applicantsDetails.status == "shortlisted" ? 'green' : 'red', fontStyle: 'italic' }}>
+                                    <Iconz name="refresh" color={applicantsDetails.status == 'under review' ? 'gray' : applicantsDetails.status == "shortlisted" ? 'green' : 'red'} />
+                                    Your application is {applicantsDetails.status}
+                                </Text>
+                                {interview && <View>
+                                    <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
+                                    <MeetLink url={interview.link} />
+                                </View>}
+                            </View>
+                        }
+                    </TouchableOpacity>
+                </MotiView>
+                <Dialog.Container visible={dialogVisible}>
+                    <Dialog.Title>Application Details</Dialog.Title>
+                    <ScrollView>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                            <TouchableOpacity style={{ marginRight: 15 }} onPress={() => { saved ? onClickRemove() : onClickSave() }}>{saved ? <Icon name="bookmark" size={24} color="#407BFF" /> : <Icon name="bookmark-o" size={24} color="#407BFF" />}</TouchableOpacity>
+                        </View>
+                        <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                        <View style={{ marginTop: 20 }}></View>
+                        <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                        {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
+                        <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
+                        {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
+                        <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                        {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
+                        <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                        <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
                         <View style={styles.divider} />
-                        <Text style={{ color: applicantsDetails.status == 'under review' ? 'gray' : applicantsDetails.status == "shortlisted" ? 'green' : 'red', fontStyle: 'italic' }}>
-                            <Iconz name="refresh" color={applicantsDetails.status == 'under review' ? 'gray' : applicantsDetails.status == "shortlisted" ? 'green' : 'red'} />
-                            Your application is {applicantsDetails.status}
-                        </Text>
-                        {interview && <View>
+                        {applicantsDetails.status != 'under review' && <View>
+                            {applicantsDetails.status == "shortlisted" &&
+                                <View>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Results are out!!!</Text>
+                                        <Iconm name="celebration" color="green" size={18} />
+                                        <Iconm name="celebration" color="green" size={18} />
+                                    </View>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={{ color: 'green' }}>Congragulations you have shortlisted to this job/internship. Please, patiently wait for further updates.</Text>
+                                    </View>
+                                </View>
+                            }
+                            {applicantsDetails.status == "rejected" &&
+                                <View>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Iconf name="alert" color="red" size={18} />
+                                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Your application result is here.</Text>
+                                    </View>
+                                    <Text style={{ color: 'red' }}>
+                                        Your application got rejected. But don't lose hope! let's crack another one.
+                                    </Text>
+                                </View>
+                            }
+                            <View style={styles.divider} />
+                        </View>}
+                        {Object.keys(interview).length > 0 && <View>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold' }} >Interview Details</Text>
                             <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
                             <MeetLink url={interview.link} />
-                        </View>}
-                    </View>
-                }
-            </TouchableOpacity>
-            <Dialog.Container visible={dialogVisible}>
-                <Dialog.Title>Application Details</Dialog.Title>
-                <ScrollView>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
-                        <TouchableOpacity style={{ marginRight: 15 }} onPress={() => { saved ? onClickRemove() : onClickSave() }}>{saved ? <Icon name="bookmark" size={24} color="#407BFF" /> : <Icon name="bookmark-o" size={24} color="#407BFF" />}</TouchableOpacity>
-                    </View>
-                    <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
-                    <View style={{ marginTop: 20 }}></View>
-                    <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                    {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
-                    <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
-                    {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                    <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
-                    {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
-                    <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
-                    <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
-                    <View style={styles.divider} />
-                    {applicantsDetails.status != 'under review' && <View>
-                        {applicantsDetails.status == "shortlisted" &&
-                            <View>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Results are out!!!</Text>
-                                    <Iconm name="celebration" color="green" size={18} />
-                                    <Iconm name="celebration" color="green" size={18} />
-                                </View>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={{ color: 'green' }}>Congragulations you have shortlisted to this job/internship. Please, patiently wait for further updates.</Text>
-                                </View>
-                            </View>
-                        }
-                        {applicantsDetails.status == "rejected" &&
-                            <View>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Iconf name="alert" color="red" size={18} />
-                                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Your application result is here.</Text>
-                                </View>
-                                <Text style={{ color: 'red' }}>
-                                    Your application got rejected. But don't lose hope! let's crack another one.
-                                </Text>
-                            </View>
-                        }
-                        <View style={styles.divider} />
-                    </View>}
-                    {Object.keys(interview).length > 0 && <View>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold' }} >Interview Details</Text>
-                        <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
-                        <MeetLink url={interview.link} />
-                        <Text style={{ color: 'gray', fontStyle: 'italic' }}>Description</Text>
-                        <Text>{interview.description}</Text>
-                        <View style={styles.divider} />
-                    </View>
-                    }
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About {item.company_name}</Text>
-                    {recruiterDetails && <WebLink url={recruiterDetails.url} />}
-                    <Text>{recruiterDetails && recruiterDetails.description}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About the {Capitalize(item.opportunity_type)}</Text>
-
-                    <Text style={{ fontSize: 14, color: '#407BFF', fontStyle: 'italic', marginTop: 10, marginBottom: 10 }}>Selected candidate's day-to-day responsibilites include:</Text>
-                    <Text>{item.job_description}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Skill(s) required</Text>
-                    <Text>{item.skills}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Eligibility</Text>
-                    <Text>{item.eligibility}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Preferred candidate</Text>
-                    <Text>{item.preference}</Text>
-                    {item.opportunity_type == 'job' &&
-                        <View>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Salary</Text>
-                            <Text style={{ fontSize: 16 }}>Annual CTC: ₹{item.ctc1} to {item.ctc2} LPA</Text>
-                            <Text>Annual CTC breakup:</Text>
-                            <Text style={{ color: 'gray' }}>• Fixed component: {item.fixed_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
-                            <Text style={{ color: 'gray' }}>• Variable component: {item.variable_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
-                            {item.other_incentives && <Text style={{ color: 'gray' }}>• Other component: {item.other_incentives}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>}
+                            <Text style={{ color: 'gray', fontStyle: 'italic' }}>Description</Text>
+                            <Text>{interview.description}</Text>
+                            <View style={styles.divider} />
                         </View>
-                    }
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Perks</Text>
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                        {item.perks1 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks1}</Text>}
-                        {item.perks2 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks2}</Text>}
-                        {item.perks3 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks3}</Text>}
-                        {item.perks4 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks4}</Text>}
-                        {item.perks5 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks5}</Text>}
-                        {item.perks6 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks6}</Text>}
-                        {item.perks7 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks7}</Text>}
-                    </View>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Number of openings</Text>
-                    <Text>{item.number_of_openings}</Text>
-                    {status && <View>
-                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Your application</Text>
-                        <TouchableOpacity onPress={() => {
-                            setDialogVisible(false);
-                            navigation.navigate('ViewResume');
-                        }}><Text style={{ color: '#407BFF' }}>View your resume</Text></TouchableOpacity>
-                        <Text style={{ marginTop: 10, color: 'gray', fontStyle: 'italic' }}>Why should you be hired for this role?</Text>
-                        <Text style={{ backgroundColor: 'whitesmoke', padding: 15, borderRadius: 10 }}>{applicantsDetails.pitching}</Text>
-                    </View>}
-                </ScrollView>
-                <Dialog.Button label="Close" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
-                {!status && <Dialog.Button label="Apply" style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} onPress={handleApply} />}
-                {status && !applicantsDetails.selected_slot_date && !applicantsDetails.selected_slot_timings && <Dialog.Button onPress={handleNav} style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} label="Select Slot for Interview" />}
-            </Dialog.Container>
-        </View>
+                        }
+                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About {item.company_name}</Text>
+                        {recruiterDetails && <WebLink url={recruiterDetails.url} />}
+                        <Text>{recruiterDetails && recruiterDetails.description}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About the {Capitalize(item.opportunity_type)}</Text>
+
+                        <Text style={{ fontSize: 14, color: '#407BFF', fontStyle: 'italic', marginTop: 10, marginBottom: 10 }}>Selected candidate's day-to-day responsibilites include:</Text>
+                        <Text>{item.job_description}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Skill(s) required</Text>
+                        <Text>{item.skills}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Eligibility</Text>
+                        <Text>{item.eligibility}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Preferred candidate</Text>
+                        <Text>{item.preference}</Text>
+                        {item.opportunity_type == 'job' &&
+                            <View>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Salary</Text>
+                                <Text style={{ fontSize: 16 }}>Annual CTC: ₹{item.ctc1} to {item.ctc2} LPA</Text>
+                                <Text>Annual CTC breakup:</Text>
+                                <Text style={{ color: 'gray' }}>• Fixed component: {item.fixed_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
+                                <Text style={{ color: 'gray' }}>• Variable component: {item.variable_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
+                                {item.other_incentives && <Text style={{ color: 'gray' }}>• Other component: {item.other_incentives}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>}
+                            </View>
+                        }
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Perks</Text>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                            {item.perks1 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks1}</Text>}
+                            {item.perks2 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks2}</Text>}
+                            {item.perks3 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks3}</Text>}
+                            {item.perks4 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks4}</Text>}
+                            {item.perks5 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks5}</Text>}
+                            {item.perks6 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks6}</Text>}
+                            {item.perks7 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks7}</Text>}
+                        </View>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Number of openings</Text>
+                        <Text>{item.number_of_openings}</Text>
+                        {status && <View>
+                            <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Your application</Text>
+                            <TouchableOpacity onPress={() => {
+                                setDialogVisible(false);
+                                navigation.navigate('ViewResume');
+                            }}><Text style={{ color: '#407BFF' }}>View your resume</Text></TouchableOpacity>
+                            <Text style={{ marginTop: 10, color: 'gray', fontStyle: 'italic' }}>Why should you be hired for this role?</Text>
+                            <Text style={{ backgroundColor: 'whitesmoke', padding: 15, borderRadius: 10 }}>{applicantsDetails.pitching}</Text>
+                        </View>}
+                    </ScrollView>
+                    <Dialog.Button label="Close" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
+                    {!status && <Dialog.Button label="Apply" style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} onPress={handleApply} />}
+                    {status && !applicantsDetails.selected_slot_date && !applicantsDetails.selected_slot_timings && <Dialog.Button onPress={handleNav} style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} label="Select Slot for Interview" />}
+                </Dialog.Container>
+            </View>
+        </MotiView>
     )
 }
 

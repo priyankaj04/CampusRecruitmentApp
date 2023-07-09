@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { TalentDetailsById } from '../api';
 import { Capitalize } from "../components/commonFunctions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icona from 'react-native-vector-icons/AntDesign';
 
 const Profile = ({ navigation }) => {
   const [id, setId] = useState(null)
@@ -20,7 +21,7 @@ const Profile = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-      getData();
+    getData();
     if (id) {
       TalentDetailsById(id).then((res) => {
         console.log(res);
@@ -37,7 +38,7 @@ const Profile = ({ navigation }) => {
   }
 
   const handleNav = () => {
-    removeData().then(() => { 
+    removeData().then(() => {
       navigation.reset({
         index: 0,
         routes: [{ name: 'Getstarted' }],
@@ -120,6 +121,20 @@ const Profile = ({ navigation }) => {
             alignItems: 'center'
           }} onPress={() => navigation.navigate('ChangePassword', { id: id, type: 'talent' })}>
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center' }}> <Icon name="key-variant" size={24} color='#407BFF' />  Change Password</Text>
+            <Icon name="chevron-right" size={18} color='gray' />
+          </TouchableOpacity>
+          <TouchableOpacity style={{
+            backgroundColor: 'white',
+            width: '90%',
+            margin: 20,
+            marginTop: 5,
+            padding: 20,
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            borderRadius: 15,
+            alignItems: 'center'
+          }} onPress={() => navigation.navigate('Report', { id: id, type: 'recruiter' })}>
+            <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center' }}> <Icona name="piechart" size={24} color='#407BFF' />  Report</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>
           <TouchableOpacity style={{

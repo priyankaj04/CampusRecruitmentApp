@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icona from 'react-native-vector-icons/AntDesign';
 import { ScrollView } from 'react-native-gesture-handler';
 import { RecruiterDetailsById } from '../api';
 import { Capitalize } from "../components/commonFunctions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const RecruiterProfile = ({ navigation }) => {
   //const id = AsyncStorage.getItem('recruiter_id');
@@ -119,6 +121,22 @@ const RecruiterProfile = ({ navigation }) => {
             <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center' }}> <Icon name="key-variant" size={24} color='#407BFF' />  Change Password</Text>
             <Icon name="chevron-right" size={18} color='gray' />
           </TouchableOpacity>
+
+          <TouchableOpacity style={{
+            backgroundColor: 'white',
+            width: '90%',
+            margin: 20,
+            marginTop: 5,
+            padding: 20,
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            borderRadius: 15,
+            alignItems: 'center'
+          }} onPress={() => navigation.navigate('Report', { id: id, type: 'recruiter' })}>
+            <Text style={{ fontSize: 20, alignItems: 'center', textAlign: 'center' }}> <Icona name="piechart" size={24} color='#407BFF' />  Report</Text>
+            <Icon name="chevron-right" size={18} color='gray' />
+          </TouchableOpacity>
+
           <TouchableOpacity style={{
             backgroundColor: 'white',
             width: '90%',

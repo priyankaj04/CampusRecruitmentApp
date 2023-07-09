@@ -48,8 +48,9 @@ import ApplyforJob from './pages/ApplyforJob';
 import ActionApplications from './pages/ActionApplications';
 import ScheduleInterview from './pages/ScheduleInterview';
 import Subjects from './pages/Subjects';
-import Demo from './pages/Demo';
 import SelectSlot from './pages/SelectSlot';
+import Report from './pages/Report';
+import Demo from './pages/Demo';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -57,7 +58,7 @@ const Drawer = createDrawerNavigator();
 
 const IndexDashboard = ({ navigation }) => {
   return (
-    <Drawer.Navigator initialRouteName="Demo">
+    <Drawer.Navigator initialRouteName="Dashboard">
       <Drawer.Screen name="Dashboard" component={Dashboard} options={{
         title: "Home"
       }} />
@@ -67,11 +68,11 @@ const IndexDashboard = ({ navigation }) => {
       <Drawer.Screen name="AdminQueries" component={AdminQueries} options={{
         title: 'Queries'
       }} />
-      <Drawer.Screen name="Demo" component={Demo} options={{
-        title: 'Demo'
-      }} />
       <Drawer.Screen name="AdminChangepassword" component={AdminChangepassword} options={{
         title: 'Change Password'
+      }} />
+      <Drawer.Screen name="ReportData" component={Report} options={{
+        title: 'Report'
       }} />
       <Drawer.Screen name="AdminProfile" component={AdminProfile} options={{
         title: 'Profile'
@@ -173,6 +174,14 @@ export default function App() {
         <Stack.Screen
           name="SplashScreen"
           component={SplashScreen}
+          options={{
+            title: '',
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Demo"
+          component={Demo}
           options={{
             title: '',
             headerShown: false,
@@ -322,6 +331,22 @@ export default function App() {
           component={ChangePassword}
           options={{
             title: "Change Password",
+            headerLeft: () => (
+              <Icon
+                name="angle-left"
+                size={30}
+                color="black"
+                style={{ marginLeft: 5, marginRight: 10 }}
+                onPress={() => navigationRef.goBack()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="Report"
+          component={Report}
+          options={{
+            title: "Report",
             headerLeft: () => (
               <Icon
                 name="angle-left"
