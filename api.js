@@ -1,7 +1,7 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
 
 import axios from 'axios';
-const URL = 'http://192.168.0.101:8000';
+const URL = 'http://192.168.0.100:8000';
 
 //student registration 
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
@@ -1014,6 +1014,24 @@ export const GetSubjects = async (course, year) => {
 
 export const UpdateSlots = async (reqbody, id) => {
     const url = URL + '/api/applicants/updateslot/' + id;
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+export const UpdateMultipleStatus = async (reqbody) => {
+    const url = URL + '/api/applicants/multidecision';
     const fetchOptions = {
         method: "PUT",
         headers: {

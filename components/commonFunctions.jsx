@@ -780,29 +780,17 @@ export const JobViewCard = ({ item, navigation }) => {
 
 
     return (
-        <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
-            <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
-                <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
-                <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
-                <View style={styles.divider}></View>
-                <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
-                {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
-                <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
-                {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
-                <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
-                {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
-                <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
-                <Text style={{ color: item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF" }}>
-                    <Iconf name="alert" color={item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF"} />
-                    {Capitalize(item.status)}
-                </Text>
-            </TouchableOpacity>
-            <Dialog.Container visible={dialogVisible}>
-                <Dialog.Title>Application Details</Dialog.Title>
-                <ScrollView>
+        <MotiView
+            from={{ opacity: 0, translateX: 100 }}
+            animate={{ opacity: 1, translateX: 0 }}
+            duration={1000}
+            delay={500}
+        >
+            <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
+                <TouchableOpacity style={styles.cardJob} onPress={showDialog}>
                     <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
                     <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
-                    <View style={{ marginTop: 20 }}></View>
+                    <View style={styles.divider}></View>
                     <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
                     {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
                     <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
@@ -810,52 +798,71 @@ export const JobViewCard = ({ item, navigation }) => {
                     <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
                     {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
                     <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
-                    <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
-                    <View style={styles.divider} />
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About {item.company_name}</Text>
-                    {recruiterDetails && <WebLink url={recruiterDetails.url} />}
-                    <Text>{recruiterDetails && recruiterDetails.description}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About the {Capitalize(item.opportunity_type)}</Text>
+                    <Text style={{ color: item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF" }}>
+                        <Iconf name="alert" color={item.status == 'pending' ? "gray" : item.status == 'rejected' ? "red" : "#407BFF"} />
+                        {Capitalize(item.status)}
+                    </Text>
+                </TouchableOpacity>
+                <Dialog.Container visible={dialogVisible}>
+                    <Dialog.Title>Application Details</Dialog.Title>
+                    <ScrollView>
+                        <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                        <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                        <View style={{ marginTop: 20 }}></View>
+                        <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                        {item.job_start_date && <Text><Iconm name="not-started" color="#407BFF" /> Starts {item.job_start_date}</Text>}
+                        <Text><Icona name="profile" color="#407BFF" /> Round -{item.round} {item.round_name}</Text>
+                        {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
+                        <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? ` ₹${item.stipend_amt}${item.stipend_per}` : ` ₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                        {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
+                        <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                        <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
+                        <View style={styles.divider} />
+                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About {item.company_name}</Text>
+                        {recruiterDetails && <WebLink url={recruiterDetails.url} />}
+                        <Text>{recruiterDetails && recruiterDetails.description}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>About the {Capitalize(item.opportunity_type)}</Text>
 
-                    <Text style={{ fontSize: 14, color: '#407BFF', fontStyle: 'italic', marginTop: 10, marginBottom: 10 }}>Selected candidate's day-to-day responsibilites include:</Text>
-                    <Text>{item.job_description}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Skill(s) required</Text>
-                    <Text>{item.skills}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Eligibility</Text>
-                    <Text>{item.eligibility}</Text>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Preferred candidate</Text>
-                    <Text>{item.preference}</Text>
-                    {item.opportunity_type == 'job' &&
-                        <View>
-                            <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Salary</Text>
-                            <Text style={{ fontSize: 16 }}>Annual CTC: ₹{item.ctc1} to {item.ctc2} LPA</Text>
-                            <Text>Annual CTC breakup:</Text>
-                            <Text style={{ color: 'gray' }}>• Fixed component: {item.fixed_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
-                            <Text style={{ color: 'gray' }}>• Variable component: {item.variable_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
-                            {item.other_incentives && <Text style={{ color: 'gray' }}>• Other component: {item.other_incentives}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>}
+                        <Text style={{ fontSize: 14, color: '#407BFF', fontStyle: 'italic', marginTop: 10, marginBottom: 10 }}>Selected candidate's day-to-day responsibilites include:</Text>
+                        <Text>{item.job_description}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Skill(s) required</Text>
+                        <Text>{item.skills}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Eligibility</Text>
+                        <Text>{item.eligibility}</Text>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Preferred candidate</Text>
+                        <Text>{item.preference}</Text>
+                        {item.opportunity_type == 'job' &&
+                            <View>
+                                <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Salary</Text>
+                                <Text style={{ fontSize: 16 }}>Annual CTC: ₹{item.ctc1} to {item.ctc2} LPA</Text>
+                                <Text>Annual CTC breakup:</Text>
+                                <Text style={{ color: 'gray' }}>• Fixed component: {item.fixed_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
+                                <Text style={{ color: 'gray' }}>• Variable component: {item.variable_pay}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>
+                                {item.other_incentives && <Text style={{ color: 'gray' }}>• Other component: {item.other_incentives}{item.ctc_breakup == 'In LPA' ? ' LPA' : '%'}</Text>}
+                            </View>
+                        }
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Perks</Text>
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+                            {item.perks1 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks1}</Text>}
+                            {item.perks2 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks2}</Text>}
+                            {item.perks3 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks3}</Text>}
+                            {item.perks4 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks4}</Text>}
+                            {item.perks5 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks5}</Text>}
+                            {item.perks6 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks6}</Text>}
+                            {item.perks7 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks7}</Text>}
                         </View>
-                    }
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Perks</Text>
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                        {item.perks1 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks1}</Text>}
-                        {item.perks2 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks2}</Text>}
-                        {item.perks3 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}> {item.perks3}</Text>}
-                        {item.perks4 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks4}</Text>}
-                        {item.perks5 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks5}</Text>}
-                        {item.perks6 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks6}</Text>}
-                        {item.perks7 && <Text style={{ backgroundColor: 'whitesmoke', padding: 10, borderRadius: 20, margin: 3 }}>{item.perks7}</Text>}
-                    </View>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Number of openings</Text>
-                    <Text>{item.number_of_openings}</Text>
-                </ScrollView>
-                <Dialog.Button label="Close" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
-                {(item.status == 'rejected' || item.status == 'pending') && <Dialog.Button label="Edit" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleNav} />}
-                {item.status == 'approved' && <Dialog.Button label="View applicants" style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} onPress={() => {
-                    setDialogVisible(false);
-                    navigation.navigate('ActionApplications', { aid: item.application_id });
-                }} />}
-            </Dialog.Container>
-        </View>
+                        <Text style={{ fontSize: 16, fontWeight: 'bold', marginTop: 10, marginBottom: 10 }}>Number of openings</Text>
+                        <Text>{item.number_of_openings}</Text>
+                    </ScrollView>
+                    <Dialog.Button label="Close" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
+                    {(item.status == 'rejected' || item.status == 'pending') && <Dialog.Button label="Edit" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleNav} />}
+                    {item.status == 'approved' && <Dialog.Button label="View applicants" style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} onPress={() => {
+                        setDialogVisible(false);
+                        navigation.navigate('ActionApplications', { aid: item.application_id });
+                    }} />}
+                </Dialog.Container>
+            </View>
+        </MotiView>
     )
 }
 
@@ -1402,182 +1409,195 @@ export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
     }
 
     return (
-        <View >
-            <TouchableOpacity style={{
-                backgroundColor: 'whitesmoke',
-                width: '96%',
-                margin: 8,
-                borderRadius: 20,
-                shadowOffset: { width: 5, height: 5 },
-                shadowColor: 'black',
-                shadowOpacity: 0.3,
-                shadowRadius: 3,
-                elevation: 1,
-                padding: 20
-            }} onPress={showDialog}>
-                <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{talent.firstname} {talent.lastname}</Text>
-                <Text style={{ fontStyle: 'italic' }}>{student.degree} - {student.semester} Semester</Text>
-                <Text style={{ color: '#407BFF' }}>{student.cgpa} CGPA</Text>
-                {student.blacklog && <Text style={{ color: 'red' }}>{student.backlog_number} ({student.backlog_subject}) backlog</Text>}
-                <View style={styles.divider} />
-                <Text style={{ fontStyle: 'italic', color: 'gray' }}>Why you should hire me?</Text>
-                <Text>{item.pitching}</Text>
-                {Object.keys(interview).length > 0 && <View>
-                    <View style={styles.divider} />
-                    <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
-                    <MeetLink url={interview.link} />
-                </View>}
-            </TouchableOpacity>
-            <Dialog.Container style={{ width: '100%' }} visible={dialogVisible}>
-                <Dialog.Title>{talent.firstname}'s Application</Dialog.Title>
-                <ScrollView>
-                    {Object.keys(interview).length > 0 && <View>
-                        <Text style={styles.header1} >Interview Details</Text>
-                        <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
-                        <MeetLink url={interview.link} />
-                        <Text style={{ color: 'gray', fontStyle: 'italic' }}>Description</Text>
-                        <Text>{interview.description}</Text>
+        <MotiView
+            from={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            duration={500}
+        >
+            <View >
+                <MotiView
+                    from={{ opacity: 0, translateX: 100 }}
+                    animate={{ opacity: 1, translateX: 0 }}
+                    duration={1000}
+                    delay={500}
+                >
+                    <TouchableOpacity style={{
+                        backgroundColor: 'whitesmoke',
+                        width: '92%',
+                        margin: 8,
+                        borderRadius: 20,
+                        shadowOffset: { width: 5, height: 5 },
+                        shadowColor: 'black',
+                        shadowOpacity: 0.3,
+                        shadowRadius: 3,
+                        elevation: 1,
+                        padding: 20
+                    }} onPress={showDialog}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>{talent.firstname} {talent.lastname}</Text>
+                        <Text style={{ fontStyle: 'italic' }}>{student.degree} - {student.semester} Semester</Text>
+                        <Text style={{ color: '#407BFF' }}>{student.cgpa} CGPA</Text>
+                        {student.blacklog && <Text style={{ color: 'red' }}>{student.backlog_number} ({student.backlog_subject}) backlog</Text>}
                         <View style={styles.divider} />
-                    </View>}
-                    <Text style={{ color: '#407BFF', fontStyle: 'italic' }}>Why you should hire me?</Text>
-                    <Text style={{ backgroundColor: 'whitesmoke', padding: 15, borderRadius: 10 }}>{item.pitching}</Text>
-                    <View style={styles.divider} />
-                    <Text style={styles.header1}><Icon name="graduation-cap" color="gray" /> Education</Text>
-                    <Text style={styles.name} > ❖ Senior Secondary(XII)</Text>
-                    {student.twelth_details &&
-                        <View>
-                            <Text>{student.twelth_details.school} - {student.twelth_details.yearofcompletion}</Text>
-                            <Text>{student.twelth_details.board} board - {student.twelth_details.stream} - {student.twelth_details.percentage}</Text>
-                        </View>
-                    }
-                    <Text style={styles.name} > ❖ Secondary(X)</Text>
-                    {student.tenth_details &&
-                        <View>
-                            <Text>{student.tenth_details.school} - {student.tenth_details.yearofcompletion}</Text>
-                            <Text>{student.tenth_details.board} board - {student.tenth_details.percentage} </Text>
-                        </View>
-                    }
-                    {
-                        resume.skill &&
-                        <View>
+                        <Text style={{ fontStyle: 'italic', color: 'gray' }}>Why you should hire me?</Text>
+                        <Text numberOfLines={5}>{item.pitching}</Text>
+                        {Object.keys(interview).length > 0 && <View>
                             <View style={styles.divider} />
-                            <Text style={styles.header1}><Icone name="tools" color="gray" />Skill(s)</Text>
-                            <View>
-                                {
-                                    resume.skill.map((item, index) => (
-                                        <View style={{ margin: 10 }} key={index}>
-                                            <Text style={styles.name}> ❖ {item.skill_type}</Text>
-                                            <Text>{item.skills_list}</Text>
-                                        </View>
-                                    ))
-                                }
-                            </View>
-                        </View>
-                    }
-                    {
-                        resume.project &&
-                        <View>
+                            <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
+                            <MeetLink url={interview.link} />
+                        </View>}
+                    </TouchableOpacity>
+                </MotiView>
+                <Dialog.Container style={{ width: '100%' }} visible={dialogVisible}>
+                    <Dialog.Title>{talent.firstname}'s Application</Dialog.Title>
+                    <ScrollView>
+                        {Object.keys(interview).length > 0 && <View>
+                            <Text style={styles.header1} >Interview Details</Text>
+                            <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
+                            <MeetLink url={interview.link} />
+                            <Text style={{ color: 'gray', fontStyle: 'italic' }}>Description</Text>
+                            <Text>{interview.description}</Text>
                             <View style={styles.divider} />
-                            <Text style={styles.header1}><Icona name="profile" color="gray" /> Project(s)</Text>
+                        </View>}
+                        <Text style={{ color: '#407BFF', fontStyle: 'italic' }}>Why you should hire me?</Text>
+                        <Text style={{ backgroundColor: 'whitesmoke', padding: 15, borderRadius: 10 }}>{item.pitching}</Text>
+                        <View style={styles.divider} />
+                        <Text style={styles.header1}><Icon name="graduation-cap" color="gray" /> Education</Text>
+                        <Text style={styles.name} > ❖ Senior Secondary(XII)</Text>
+                        {student.twelth_details &&
                             <View>
-                                {
-                                    resume.project.map((item, index) => (
-                                        <View style={{ margin: 10 }} key={index}>
-                                            <Text style={styles.name}> ❖ {item.title}</Text>
-                                            <Text style={{ fontStyle: 'italic', color: 'gray' }}>{item.requirements}</Text>
-                                            <Text style={styles.description}>{item.description}</Text>
-                                            <WebLink url={item.url} />
-                                        </View>
-                                    ))
-                                }
+                                <Text>{student.twelth_details.school} - {student.twelth_details.yearofcompletion}</Text>
+                                <Text>{student.twelth_details.board} board - {student.twelth_details.stream} - {student.twelth_details.percentage}</Text>
                             </View>
-                        </View>
-                    }
-                    {
-                        resume.internship &&
-                        <View>
-                            <View style={styles.divider} />
-                            <Text style={styles.header1}><Iconm name="work" color="gray" /> Internship(s)</Text>
+                        }
+                        <Text style={styles.name} > ❖ Secondary(X)</Text>
+                        {student.tenth_details &&
                             <View>
-                                {
-                                    resume.internship.map((item, index) => (
-                                        <View style={{ margin: 10 }} key={index}>
-                                            <Text style={styles.name}> ❖ {item.position} - {item.organization}</Text>
-                                            <Text style={{ color: 'gray' }}>{item.location}</Text>
-                                            <Text >{item.startDate} - {item.endDate}</Text>
-                                            <Text style={styles.description}>{item.description}</Text>
-                                        </View>
-                                    ))
-                                }
+                                <Text>{student.tenth_details.school} - {student.tenth_details.yearofcompletion}</Text>
+                                <Text>{student.tenth_details.board} board - {student.tenth_details.percentage} </Text>
                             </View>
-                        </View>
-                    }
-                    {
-                        resume.job &&
-                        <View>
-                            <View style={styles.divider} />
-                            <Text style={styles.header1}><Iconm name="work" color="gray" /> Experience</Text>
+                        }
+                        {
+                            resume.skill &&
                             <View>
-                                {
-                                    resume.job.map((item, index) => (
-                                        <View style={{ margin: 10 }} key={index}>
-                                            <Text style={styles.name}> ❖ {item.position} - {item.organization}</Text>
-                                            <Text style={{ color: 'gray' }}>{item.location}</Text>
-                                            <Text >{item.startDate} - {item.endDate}</Text>
-                                            <Text style={styles.description}>{item.description}</Text>
-                                        </View>
-                                    ))
-                                }
+                                <View style={styles.divider} />
+                                <Text style={styles.header1}><Icone name="tools" color="gray" />Skill(s)</Text>
+                                <View>
+                                    {
+                                        resume.skill.map((item, index) => (
+                                            <View style={{ margin: 10 }} key={index}>
+                                                <Text style={styles.name}> ❖ {item.skill_type}</Text>
+                                                <Text>{item.skills_list}</Text>
+                                            </View>
+                                        ))
+                                    }
+                                </View>
                             </View>
-                        </View>
-                    }
-                    {
-                        resume.position_of_responsibility &&
-                        <View>
-                            <View style={styles.divider} />
-                            <Text style={styles.header1}><Icon name="group" color="gray" /> Position of Responsibility</Text>
+                        }
+                        {
+                            resume.project &&
                             <View>
-                                {
-                                    resume.position_of_responsibility.map((item, index) => (
-                                        <View style={{ margin: 10 }} key={index}>
-                                            <Text style={styles.description}> ❖ {item.description}</Text>
-                                        </View>
-                                    ))
-                                }
+                                <View style={styles.divider} />
+                                <Text style={styles.header1}><Icona name="profile" color="gray" /> Project(s)</Text>
+                                <View>
+                                    {
+                                        resume.project.map((item, index) => (
+                                            <View style={{ margin: 10 }} key={index}>
+                                                <Text style={styles.name}> ❖ {item.title}</Text>
+                                                <Text style={{ fontStyle: 'italic', color: 'gray' }}>{item.requirements}</Text>
+                                                <Text style={styles.description}>{item.description}</Text>
+                                                <WebLink url={item.url} />
+                                            </View>
+                                        ))
+                                    }
+                                </View>
                             </View>
-                        </View>
-                    }
-                    {talent.url && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                        {talent.url.github && <Iconlinks url={talent.url.github} icon={'github'} />}
-                        {talent.url.linkedin && <Iconlinks url={talent.url.linkedin} icon={'linkedin-square'} />}
-                        {talent.url.dribbble && <Iconlinks url={talent.url.dribbble} icon={'dribbble'} />}
-                    </View>}
-                    {
-                        resume.accomplishment &&
-                        <View>
-                            <View style={styles.divider} />
-                            <Text style={styles.header1}><Icone name="medal" color="gray" /> Accomplishment(s)</Text>
+                        }
+                        {
+                            resume.internship &&
                             <View>
-                                {
-                                    resume.accomplishment.map((item, index) => (
-                                        <View style={{ margin: 10 }} key={index}>
-                                            <Text style={styles.name}> ❖ {item.title}</Text>
-                                            <Text style={styles.description}>{item.description}</Text>
-                                            {item.url && <WebLink url={item.url} />}
-                                        </View>
-                                    ))
-                                }
+                                <View style={styles.divider} />
+                                <Text style={styles.header1}><Iconm name="work" color="gray" /> Internship(s)</Text>
+                                <View>
+                                    {
+                                        resume.internship.map((item, index) => (
+                                            <View style={{ margin: 10 }} key={index}>
+                                                <Text style={styles.name}> ❖ {item.position} - {item.organization}</Text>
+                                                <Text style={{ color: 'gray' }}>{item.location}</Text>
+                                                <Text >{item.startDate} - {item.endDate}</Text>
+                                                <Text style={styles.description}>{item.description}</Text>
+                                            </View>
+                                        ))
+                                    }
+                                </View>
                             </View>
-                        </View>
-                    }
-                </ScrollView>
-                <Dialog.Button label="Cancle" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
-                {item.status == 'shortlisted' && Object.keys(interview).length == 0 && <Dialog.Button label="Schedule Interview" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleInterview} />}
-                {item.status == 'shortlisted' && Object.keys(interview).length > 0 && <Dialog.Button label="View Interview Details" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleEditInterview} />}
-                {item.status == 'under review' && <Dialog.Button label="Reject" style={{ color: 'red', marginRight: 10 }} onPress={handleReject} />}
-                {item.status == 'under review' && <Dialog.Button label="Accept" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleAccept} />}
-            </Dialog.Container>
-        </View>
+                        }
+                        {
+                            resume.job &&
+                            <View>
+                                <View style={styles.divider} />
+                                <Text style={styles.header1}><Iconm name="work" color="gray" /> Experience</Text>
+                                <View>
+                                    {
+                                        resume.job.map((item, index) => (
+                                            <View style={{ margin: 10 }} key={index}>
+                                                <Text style={styles.name}> ❖ {item.position} - {item.organization}</Text>
+                                                <Text style={{ color: 'gray' }}>{item.location}</Text>
+                                                <Text >{item.startDate} - {item.endDate}</Text>
+                                                <Text style={styles.description}>{item.description}</Text>
+                                            </View>
+                                        ))
+                                    }
+                                </View>
+                            </View>
+                        }
+                        {
+                            resume.position_of_responsibility &&
+                            <View>
+                                <View style={styles.divider} />
+                                <Text style={styles.header1}><Icon name="group" color="gray" /> Position of Responsibility</Text>
+                                <View>
+                                    {
+                                        resume.position_of_responsibility.map((item, index) => (
+                                            <View style={{ margin: 10 }} key={index}>
+                                                <Text style={styles.description}> ❖ {item.description}</Text>
+                                            </View>
+                                        ))
+                                    }
+                                </View>
+                            </View>
+                        }
+                        {talent.url && <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                            {talent.url.github && <Iconlinks url={talent.url.github} icon={'github'} />}
+                            {talent.url.linkedin && <Iconlinks url={talent.url.linkedin} icon={'linkedin-square'} />}
+                            {talent.url.dribbble && <Iconlinks url={talent.url.dribbble} icon={'dribbble'} />}
+                        </View>}
+                        {
+                            resume.accomplishment &&
+                            <View>
+                                <View style={styles.divider} />
+                                <Text style={styles.header1}><Icone name="medal" color="gray" /> Accomplishment(s)</Text>
+                                <View>
+                                    {
+                                        resume.accomplishment.map((item, index) => (
+                                            <View style={{ margin: 10 }} key={index}>
+                                                <Text style={styles.name}> ❖ {item.title}</Text>
+                                                <Text style={styles.description}>{item.description}</Text>
+                                                {item.url && <WebLink url={item.url} />}
+                                            </View>
+                                        ))
+                                    }
+                                </View>
+                            </View>
+                        }
+                    </ScrollView>
+                    <Dialog.Button label="Cancle" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
+                    {item.status == 'shortlisted' && Object.keys(interview).length == 0 && <Dialog.Button label="Schedule Interview" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleInterview} />}
+                    {item.status == 'shortlisted' && Object.keys(interview).length > 0 && <Dialog.Button label="View Interview Details" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleEditInterview} />}
+                    {item.status == 'under review' && <Dialog.Button label="Reject" style={{ color: 'red', marginRight: 10 }} onPress={handleReject} />}
+                    {item.status == 'under review' && <Dialog.Button label="Accept" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleAccept} />}
+                </Dialog.Container>
+            </View>
+        </MotiView>
     )
 }
 

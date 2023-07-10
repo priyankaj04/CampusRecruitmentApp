@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { ApplicationsDetailsByStatus } from '../api';
 import { JobViewCard } from '../components/commonFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MotiView } from 'moti';
 
 const RecruiterHome = ({ navigation }) => {
   const [id, setId] = useState(null)
@@ -50,41 +51,48 @@ const RecruiterHome = ({ navigation }) => {
   }
 
   return (
-    <View style={{ width: '100%', backgroundColor: 'white', margin: 0, height: '100%' }}>
-      <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 25, marginTop: 10 }}>
-        <Picker
-          selectedValue={status}
-          onValueChange={(itemValue) => {
-            setStatus(itemValue);
-            onClassChange(itemValue);
-          }
-          }>
-          {Applications.map((item, index) => <Picker.Item key={index} label={item.label} value={item.value} />)}
-        </Picker>
-      </View>
-      <ScrollView>
-        <View style={{ marginTop: 0 }}>
-          {
-            applications && applications.length > 0 ?
-              <View>
-                {
-                  applications.map((item, index) => (
-                    <JobViewCard key={index} item={item} type='recruiter' navigation={navigation} />
-                  ))
-                }
-              </View> :
-              <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Image
-                  source={require('../assets/Nodata.png')}
-                  style={{ width: 200, height: 200 }}
-                />
-                <Text>No applications.</Text>
-              </View>
-
-          }
+    <MotiView
+      from={{ opacity: 0, translateY: 100 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      duration={1000}
+      delay={500}
+    >
+      <View style={{ width: '100%', backgroundColor: 'white', margin: 0, height: '100%' }}>
+        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 25, marginTop: 10 }}>
+          <Picker
+            selectedValue={status}
+            onValueChange={(itemValue) => {
+              setStatus(itemValue);
+              onClassChange(itemValue);
+            }
+            }>
+            {Applications.map((item, index) => <Picker.Item key={index} label={item.label} value={item.value} />)}
+          </Picker>
         </View>
-      </ScrollView>
-    </View>
+        <ScrollView>
+          <View style={{ marginTop: 0 }}>
+            {
+              applications && applications.length > 0 ?
+                <View>
+                  {
+                    applications.map((item, index) => (
+                        <JobViewCard key={index}  item={item} type='recruiter' navigation={navigation} />
+                    ))
+                  }
+                </View> :
+                <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Image
+                    source={require('../assets/Nodata.png')}
+                    style={{ width: 200, height: 200 }}
+                  />
+                  <Text>No applications.</Text>
+                </View>
+
+            }
+          </View>
+        </ScrollView>
+      </View>
+    </MotiView>
   )
 }
 
