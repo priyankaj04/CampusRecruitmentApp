@@ -8,9 +8,11 @@ const ApplyforJob = ({ route, navigation }) => {
     const [resumeid, setResumeId] = useState('');
     const [talentid, setTalentid] = useState(null);
     const [cv, setCv] = useState('');
+    const [email, setEmail] = useState(null);
 
     const getData = async () => {
         setTalentid(await AsyncStorage.getItem('talent_id'));
+        setEmail(await AsyncStorage.getItem('register_no'));
     }
 
     useEffect(() => {
@@ -36,6 +38,7 @@ const ApplyforJob = ({ route, navigation }) => {
             "pitching": cv,
             "resume_id": resumeid,
             "talent_id": talentid,
+            "registerno": email,
         }
         console.log(reqbody);
         ApplyingForApplication(reqbody).then((res) => {

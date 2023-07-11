@@ -812,6 +812,43 @@ export const ApplicantsByAid = async (aid) => {
         });
 }
 
+//Get all the applicants applied to application
+export const AllApplicantsByAid = async (aid) => {
+    const url = URL + '/api/applicants/application/' + aid
+    const fetchOptions = {
+        method: "GET",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
+//PUT all the talent ids for their student information
+export const StudentInfoByTalentId = async (reqbody) => {
+    const url = URL + '/api/applicants/student'
+    const fetchOptions = {
+        method: "PUT",
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqbody)
+    };
+    //console.log("slkdfdfdjfsldf",reqbody)
+    return await fetch(url, fetchOptions)
+        .then((response) => response.json())
+        .catch((error) => {
+            console.log(error)
+        });
+}
+
 //Get all the applicants by application id
 export const ApplicantsByApplicationId = async (status, id) => {
     const url = URL + '/api/applicants/application/' + id + '/?status=' + status;
