@@ -1015,7 +1015,7 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
 
     const handleNav = () => {
         setDialogVisible(false);
-        navigation.navigate('SelectSlot', { id: applicantsDetails.applicant_id })
+        navigation.navigate('SelectSlot', { id: item.applicant_id })
     }
 
     const handleApply = () => {

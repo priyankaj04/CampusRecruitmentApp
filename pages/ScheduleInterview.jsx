@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { ScheduleInterviewAPI, GetInterviewDetails, UpdateInterviewDetails } from '../api';
 import { Picker } from '@react-native-picker/picker';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { MotiView, AnimatePresence, MotiText } from 'moti';
 
 const ScheduleInterview = ({ route, navigation }) => {
   const [interview, setInterview] = useState({});
@@ -20,18 +21,18 @@ const ScheduleInterview = ({ route, navigation }) => {
       } else {
         setInterview({});
       }
-    })
+    });
   }, [fetch]);
 
-  const Duration = [{ value: '10', label: '10 mins' },
-  { value: '15', label: '15 mins' },
-  { value: '20', label: '20 mins' },
-  { value: '30', label: '30 mins' },
-  { value: '45', label: '45 mins' },
-  { value: '60', label: '60 mins' },
-  { value: '90', label: '90 mins' }
-  ]
-
+  const Duration = [
+    { value: '10', label: '10 mins' },
+    { value: '15', label: '15 mins' },
+    { value: '20', label: '20 mins' },
+    { value: '30', label: '30 mins' },
+    { value: '45', label: '45 mins' },
+    { value: '60', label: '60 mins' },
+    { value: '90', label: '90 mins' }
+  ];
 
   const handleSchedule = () => {
     const reqbody = {
@@ -43,22 +44,20 @@ const ScheduleInterview = ({ route, navigation }) => {
       description: interview.description,
       slot_time: interview.slot_time,
       slots: ScheduleInterview()
-    }
+    };
 
-    if (type == 'create') {
+    if (type === 'create') {
       ScheduleInterviewAPI(reqbody).then((res) => {
         console.log(res);
         if (res.status) {
           setInterview({});
           navigation.goBack();
         }
-      })
+      });
     }
-  }
-
+  };
 
   const timeslots = (arr, value) => {
-
     const timeSlots = arr;
     const timeFormat = 'h:mm a';
 
@@ -73,11 +72,11 @@ const ScheduleInterview = ({ route, navigation }) => {
         startTime.add(value, 'minutes');
       }
     }
+
     return slots;
-  }
+  };
 
   const datesting = (value) => {
-
     const startDateString = value[0];
     const endDateString = value[1];
 
@@ -94,7 +93,7 @@ const ScheduleInterview = ({ route, navigation }) => {
     }
 
     return datesBetween;
-  }
+  };
 
   const ScheduleInterview = () => {
     const dates = datesting(interview.slot_dates);
@@ -116,19 +115,46 @@ const ScheduleInterview = ({ route, navigation }) => {
 
     console.log("dfadfdfSDF", combinedSlots);
     return combinedSlots;
-  }
-
+  };
 
   return (
-    <ScrollView style={{ backgroundColor: 'white' }}>
+    <ScrollView style={styles.container}>
+      <AnimatePresence>
+        {type === 'create' ? (
+          <MotiText
+            style={{ ...styles.title, marginBottom: 10 }}
+            from={{ opacity: 0, translateY: -100 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: -100 }}
+            transition={{ type: 'timing', duration: 500 }}
+          >
+            Schedule Interview
+          </MotiText>
+        ) : (
+          <MotiText
+            style={{ ...styles.title, marginBottom: 10 }}
+            from={{ opacity: 0, translateY: -100 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: -100 }}
+            transition={{ type: 'timing', duration: 500 }}
+          >
+            Scheduled Interview
+          </MotiText>
+        )}
+      </AnimatePresence>
 
-      {type == 'create' ? <Text style={{ color: '#407BFF', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Schedule Interview</Text> :
-        <Text style={{ color: '#407BFF', fontSize: 18, textAlign: "center", fontWeight: 'bold' }}>Scheduled Interview</Text>}
+      <MotiView
+        from={{ opacity: 0, translateX: -100 }}
+        animate={{ opacity: 1, translateX: 0 }}
+        exit={{ opacity: 0, translateX: -100 }}
+        transition={{ type: 'timing', duration: 1000 }}
+        delay={500}
+      >
         <Text style={styles.label}>Slot date</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={styles.dateContainer}>
           <TextInput
             style={styles.halfText}
-            value={interview && interview.slot_dates && interview.slot_dates[0] ? interview.slot_dates[0] : ''}
+            value={interview.slot_dates && interview.slot_dates[0] ? interview.slot_dates[0] : ''}
             onChangeText={(e) => {
               const updatedHobbies = interview.slot_dates ? [...interview.slot_dates] : [];
               if (updatedHobbies.length > 0 && updatedHobbies[0]) {
@@ -144,10 +170,10 @@ const ScheduleInterview = ({ route, navigation }) => {
             }}
             placeholder='e.g. 25 July 2023'
           />
-          <Text style={{ marginLeft: 15 }}>{'to'}</Text>
+          <Text style={styles.toText}>to</Text>
           <TextInput
             style={{ ...styles.halfText, marginLeft: 18 }}
-            value={interview && interview.slot_dates && interview.slot_dates[1] ? interview.slot_dates[1] : ''}
+            value={interview.slot_dates && interview.slot_dates[1] ? interview.slot_dates[1] : ''}
             onChangeText={(e) => {
               const updatedHobbies = interview.slot_dates ? [...interview.slot_dates] : [];
               if (updatedHobbies.length > 0 && updatedHobbies[1]) {
@@ -164,15 +190,23 @@ const ScheduleInterview = ({ route, navigation }) => {
             placeholder='e.g. 25 July 2023'
           />
         </View>
+      </MotiView>
+      <MotiView
+        from={{ opacity: 0, translateX: -100 }}
+        animate={{ opacity: 1, translateX: 0 }}
+        exit={{ opacity: 0, translateX: -100 }}
+        transition={{ type: 'timing', duration: 1000 }}
+        delay={1000}
+      >
         <Text style={styles.label}>Select time</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={styles.timeContainer}>
           <TextInput
             style={styles.halfText}
-            value={interview && interview.slot_time && interview.slot_time[0] ? interview.slot_time[0] : ''}
+            value={interview.slot_time && interview.slot_time[0] ? interview.slot_time[0] : ''}
             onChangeText={(e) => {
-              console.log('sdlkfjalsf', e)
+              console.log('sdlkfjalsf', e);
               const updatedHobbies = interview.slot_time ? [...interview.slot_time] : [];
-              if (updatedHobbies.length > 0 && updatedHobbies[0] && updatedHobbies[0] != "") {
+              if (updatedHobbies.length > 0 && updatedHobbies[0] && updatedHobbies[0] !== '') {
                 updatedHobbies[0] = e;
               } else {
                 updatedHobbies.push(e);
@@ -185,10 +219,10 @@ const ScheduleInterview = ({ route, navigation }) => {
             }}
             placeholder='e.g. 25 July 2023'
           />
-          <Text style={{ marginLeft: 15 }}>to</Text>
+          <Text style={styles.toText}>to</Text>
           <TextInput
             style={{ ...styles.halfText, marginLeft: 18 }}
-            value={interview && interview.slot_time && interview.slot_time[1] ? interview.slot_time[1] : ''}
+            value={interview.slot_time && interview.slot_time[1] ? interview.slot_time[1] : ''}
             onChangeText={(e) => {
               const updatedHobbies = interview.slot_time ? [...interview.slot_time] : [];
               if (updatedHobbies.length > 0 && updatedHobbies[1]) {
@@ -205,56 +239,116 @@ const ScheduleInterview = ({ route, navigation }) => {
             placeholder='e.g. 25 July 2023'
           />
         </View>
+      </MotiView>
+      <MotiView
+        from={{ opacity: 0, translateX: -100 }}
+        animate={{ opacity: 1, translateX: 0 }}
+        exit={{ opacity: 0, translateX: -100 }}
+        transition={{ type: 'timing', duration: 1000 }}
+        delay={1500}
+      >
         <Text style={styles.label}>Duration</Text>
-        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 25, marginTop: 10 }}>
+        <View style={styles.durationContainer}>
           <Picker
-            selectedValue={interview && interview.slot_timings ? interview.slot_timings : ''}
+            selectedValue={interview.slot_timings || ''}
             onValueChange={(itemValue) => {
-              setInterview({ ...interview, slot_timings: itemValue })
-            }
-            }>
-            {
-              Duration.map((item, index) => <Picker.Item key={index} label={item.label} value={item.value} />)}
+              setInterview({ ...interview, slot_timings: itemValue });
+            }}
+          >
+            {Duration.map((item, index) => (
+              <Picker.Item key={index} label={item.label} value={item.value} />
+            ))}
           </Picker>
         </View>
+      </MotiView>
+      <MotiView
+        from={{ opacity: 0, translateX: -100 }}
+        animate={{ opacity: 1, translateX: 0 }}
+        exit={{ opacity: 0, translateX: -100 }}
+        transition={{ type: 'timing', duration: 1000 }}
+        delay={2000}
+      >
         <Text style={styles.label}>Interview link</Text>
         <TextInput
           style={styles.textField}
-          value={interview && interview.link ? interview.link : ''}
-          onChangeText={(e) => { setInterview({ ...interview, link: e }) }}
+          value={interview.link || ''}
+          onChangeText={(e) => {
+            setInterview({ ...interview, link: e });
+          }}
           placeholder='e.g. https://meet.google.com/bns-qmdb-vnf'
         />
+      </MotiView>
+
+      <MotiView
+        from={{ opacity: 0, translateX: -100 }}
+        animate={{ opacity: 1, translateX: 0 }}
+        exit={{ opacity: 0, translateX: -100 }}
+        transition={{ type: 'timing', duration: 1000 }}
+        delay={2500}
+      >
         <Text style={styles.label}>Interview Description</Text>
         <TextInput
           style={styles.multiline}
           multiline
           numberOfLines={7}
-          value={interview && interview.description ? interview.description : ''}
-          onChangeText={(e) => { setInterview({ ...interview, description: e }) }}
+          value={interview.description || ''}
+          onChangeText={(e) => {
+            setInterview({ ...interview, description: e });
+          }}
           placeholder='Description about this interview i.e., documents required, rules and regulations of interview etc,.'
         />
-        {type == "create" && <TouchableOpacity style={styles.btnpro} onPress={() => handleSchedule()}>
-          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Schedule</Text>
-        </TouchableOpacity>}
-        <Text style={{ color: '#407BFF', margin: 10, textAlign: 'left', fontStyle: 'italic' }}><Icon name="info-circle" size={14} color='#407BFF' /> Once you schedule interview, cannot be edited/updated.</Text>
-    </ScrollView>
-  )
-}
+      </MotiView>
 
-export default ScheduleInterview
+      <MotiView
+        from={{ translateY: -100 }}
+        animate={{ translateY: 0 }}
+        exit={{  translateY: -100 }}
+        transition={{ type: 'timing', duration: 1000 }}
+        delay={3000}
+      >
+        {type === 'create' && (
+          <TouchableOpacity style={styles.btnpro} onPress={handleSchedule}>
+            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Schedule</Text>
+          </TouchableOpacity>
+        )}
+      </MotiView>
+      <MotiView
+        from={{ opacity: 0, translateY: -100 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        exit={{ opacity: 0, translateY: -100 }}
+        transition={{ type: 'timing', duration: 1000 }}
+        delay={3500}
+      >
+        <Text style={styles.infoText}>
+          <Icon name="info-circle" size={14} color='#407BFF' /> Once you schedule the interview, it cannot be edited/updated.
+        </Text>
+      </MotiView>
+    </ScrollView>
+  );
+};
+
+export default ScheduleInterview;
 
 const styles = StyleSheet.create({
-  textField: {
-    height: 50,
-    borderColor: 'transparent',
-    borderWidth: 1,
-    width: 360,
-    padding: 8,
-    backgroundColor: 'whitesmoke',
-    fontSize: 16,
-    marginTop: 0,
-    borderRadius: 25,
-    marginLeft: 25
+  container: {
+    backgroundColor: 'white'
+  },
+  title: {
+    color: '#407BFF',
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    marginTop: 10
+  },
+  label: {
+    marginBottom: 0,
+    color: 'gray',
+    marginLeft: 25,
+    marginTop: 10
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   halfText: {
     height: 50,
@@ -268,11 +362,31 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginLeft: 25
   },
-  label: {
-    marginBottom: 0,
-    color: 'gray',
+  toText: {
+    marginLeft: 15
+  },
+  timeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  durationContainer: {
+    backgroundColor: 'whitesmoke',
+    borderRadius: 25,
+    width: 360,
     marginLeft: 25,
     marginTop: 10
+  },
+  textField: {
+    height: 50,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    width: 360,
+    padding: 8,
+    backgroundColor: 'whitesmoke',
+    fontSize: 16,
+    marginTop: 0,
+    borderRadius: 25,
+    marginLeft: 25
   },
   multiline: {
     minHeight: 50,
@@ -302,5 +416,11 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginLeft: 28,
     marginTop: 30
+  },
+  infoText: {
+    color: '#407BFF',
+    margin: 10,
+    textAlign: 'left',
+    fontStyle: 'italic'
   }
-})
+});

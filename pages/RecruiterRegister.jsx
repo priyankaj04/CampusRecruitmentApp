@@ -208,7 +208,6 @@ const RecruiterRegister = ({ navigation }) => {
           from={{ opacity: 0, translateY: 100 }}
           animate={{ opacity: 1, translateY: 0 }}
           duration={500}
-          delay={1000}
         >
           <Image
             source={require('../assets/signup.png')}
@@ -224,130 +223,200 @@ const RecruiterRegister = ({ navigation }) => {
           >
             {!firstname || firstname !== "hod" ? (
               <View style={styles.inputContainer}>
-                <TextInput
-                  placeholder="First Name"
-                  style={styles.input}
-                  onChangeText={(e) => setFirstname(e)}
-                  value={firstname}
-                  inputMode="text"
-                />
-                <TextInput
-                  placeholder={!firstname || firstname !== "admin" ? "Last Name" : "Full Name"}
-                  style={styles.input}
-                  onChangeText={(e) => setLastname(e)}
-                  value={lastname}
-                  inputMode="text"
-                />
+                <MotiView
+                  from={{ opacity: 0, translateX: -100 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  duration={500}
+                  delay={2000}
+                >
+                  <TextInput
+                    placeholder="First Name"
+                    style={styles.input}
+                    onChangeText={(e) => setFirstname(e)}
+                    value={firstname}
+                    inputMode="text"
+                  />
+                </MotiView>
+                <MotiView
+                  from={{ opacity: 0, translateX: -100 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  duration={500}
+                  delay={2500}
+                >
+                  <TextInput
+                    placeholder={!firstname || firstname !== "admin" ? "Last Name" : "Full Name"}
+                    style={styles.input}
+                    onChangeText={(e) => setLastname(e)}
+                    value={lastname}
+                    inputMode="text"
+                  />
+                </MotiView>
                 {showHelper && msg && msg.value === 'name' && (
                   <Text style={styles.errorText}>
                     <Icon name="info-circle" size={14} color="red" /> {msg.msg}
                   </Text>
                 )}
                 {firstname && firstname === 'admin' && (
-                  <TextInput
-                    placeholder="Code"
-                    style={styles.input}
-                    secureTextEntry
-                    onChangeText={(e) => setCode(e)}
-                    value={code}
-                    inputMode="text"
-                  />
+                  <MotiView
+                    from={{ opacity: 0, translateX: -100 }}
+                    animate={{ opacity: 1, translateX: 0 }}
+                    duration={500}
+                    delay={3000}
+                  >
+                    <TextInput
+                      placeholder="Code"
+                      style={styles.input}
+                      secureTextEntry
+                      onChangeText={(e) => setCode(e)}
+                      value={code}
+                      inputMode="text"
+                    />
+                  </MotiView>
                 )}
                 {!firstname || firstname !== "admin" ? (
-                  <TextInput
-                    placeholder="Company Name"
-                    style={styles.input}
-                    onChangeText={(e) => setCompany(e)}
-                    value={company_name}
-                    keyboardType="default"
-                  />
+                  <MotiView
+                    from={{ opacity: 0, translateX: -100 }}
+                    animate={{ opacity: 1, translateX: 0 }}
+                    duration={500}
+                    delay={3000}
+                  >
+                    <TextInput
+                      placeholder="Company Name"
+                      style={styles.input}
+                      onChangeText={(e) => setCompany(e)}
+                      value={company_name}
+                      keyboardType="default"
+                    />
+                  </MotiView>
                 ) : null}
                 {showHelper && msg && msg.value === 'companyname' && (
                   <Text style={styles.errorText}>
                     <Icon name="info-circle" size={14} color="red" /> {msg.msg}
                   </Text>
                 )}
-                <TextInput
-                  placeholder={!firstname || firstname !== "admin" ? "Official Email Id" : "Email Id"}
-                  style={styles.input}
-                  onChangeText={(e) => setEmail(e)}
-                  value={email}
-                  inputMode="email"
-                  keyboardType="email-address"
-                />
+                <MotiView
+                  from={{ opacity: 0, translateX: -100 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  duration={500}
+                  delay={3500}
+                >
+                  <TextInput
+                    placeholder={!firstname || firstname !== "admin" ? "Official Email Id" : "Email Id"}
+                    style={styles.input}
+                    onChangeText={(e) => setEmail(e)}
+                    value={email}
+                    inputMode="email"
+                    keyboardType="email-address"
+                  />
+                </MotiView>
                 {showHelper && msg && msg.value === 'email' && (
                   <Text style={styles.errorText}>
                     <Icon name="info-circle" size={14} color="red" /> {msg.msg}
                   </Text>
                 )}
-                <TextInput
-                  placeholder="Contact No"
-                  style={styles.input}
-                  onChangeText={(e) => setContact(e)}
-                  value={contact_no}
-                  keyboardType="default"
-                />
+                <MotiView
+                  from={{ opacity: 0, translateX: -100 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  duration={500}
+                  delay={4000}
+                >
+                  <TextInput
+                    placeholder="Contact No"
+                    style={styles.input}
+                    onChangeText={(e) => setContact(e)}
+                    value={contact_no}
+                    keyboardType="default"
+                  />
+                </MotiView>
                 {showHelper && msg && msg.value === 'contactno' && (
                   <Text style={styles.errorText}>
                     <Icon name="info-circle" size={14} color="red" /> {msg.msg}
                   </Text>
                 )}
-                <View style={styles.passwordContainer}>
+                <MotiView
+                  from={{ opacity: 0, translateX: -100 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  duration={500}
+                  delay={4500}
+                >
+                  <View style={styles.passwordContainer}>
+                    <TextInput
+                      placeholder="Password"
+                      style={styles.passwordInput}
+                      secureTextEntry={visible ? false : true}
+                      onChangeText={(e) => setPassword(e)}
+                      value={password}
+                      keyboardType="default"
+                    />
+                    <Icon
+                      name={visible ? "eye" : "eye-slash"}
+                      color="gray"
+                      size={26}
+                      onPress={() => setVisible(!visible)}
+                    />
+                  </View>
+                </MotiView>
+                <MotiView
+                  from={{ opacity: 0, translateX: -100 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  duration={500}
+                  delay={5000}
+                >
                   <TextInput
-                    placeholder="Password"
-                    style={styles.passwordInput}
-                    secureTextEntry={visible ? false : true}
-                    onChangeText={(e) => setPassword(e)}
-                    value={password}
+                    placeholder="Confirm password"
+                    style={styles.input}
+                    secureTextEntry
+                    onChangeText={(e) => setConfirmpass(e)}
+                    value={confirmpass}
                     keyboardType="default"
                   />
-                  <Icon
-                    name={visible ? "eye" : "eye-slash"}
-                    color="gray"
-                    size={26}
-                    onPress={() => setVisible(!visible)}
-                  />
-                </View>
-                <TextInput
-                  placeholder="Confirm password"
-                  style={styles.input}
-                  secureTextEntry
-                  onChangeText={(e) => setConfirmpass(e)}
-                  value={confirmpass}
-                  keyboardType="default"
-                />
-                {showHelper && msg && msg.value === 'password' && (
-                  <Text style={styles.errorText}>
-                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                  {showHelper && msg && msg.value === 'password' && (
+                    <Text style={styles.errorText}>
+                      <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                    </Text>
+                  )}
+                  {showHelper && msg && msg.value === 'all' && (
+                    <Text style={styles.errorText}>
+                      <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                    </Text>
+                  )}
+                </MotiView>
+                <MotiView
+                  from={{ opacity: 0, translateX: -100 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  duration={500}
+                  delay={5500}
+                >
+                  <Text style={styles.termsText}>
+                    By joining us you agree to our{" "}
+                    <Text
+                      onPress={() => navigation.navigate('TermsandConditions')}
+                      style={styles.linkText}
+                    >
+                      Terms and Conditions
+                    </Text>{" "}
+                    and{" "}
+                    <Text
+                      onPress={() => navigation.navigate('PrivatePolicy')}
+                      style={styles.linkText}
+                    >
+                      Private Policy
+                    </Text>
                   </Text>
-                )}
-                {showHelper && msg && msg.value === 'all' && (
-                  <Text style={styles.errorText}>
-                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
-                  </Text>
-                )}
-                <Text style={styles.termsText}>
-                  By joining us you agree to our{" "}
-                  <Text
-                    onPress={() => navigation.navigate('TermsandConditions')}
-                    style={styles.linkText}
-                  >
-                    Terms and Conditions
-                  </Text>{" "}
-                  and{" "}
-                  <Text
-                    onPress={() => navigation.navigate('PrivatePolicy')}
-                    style={styles.linkText}
-                  >
-                    Private Policy
-                  </Text>
-                </Text>
+                </MotiView>
                 {isLoading ? (
                   <ActivityIndicator size="small" color="#407BFF" />
                 ) : (
-                  <TouchableOpacity onPress={handleClick} style={styles.button}>
-                    <Text style={styles.buttonText}>Join us</Text>
-                  </TouchableOpacity>
+                  <MotiView
+                    from={{ opacity: 0, translateX: -100 }}
+                    animate={{ opacity: 1, translateX: 0 }}
+                    duration={500}
+                    delay={6000}
+                  >
+                    <TouchableOpacity onPress={handleClick} style={styles.button}>
+                      <Text style={styles.buttonText}>Join us</Text>
+                    </TouchableOpacity>
+                  </MotiView>
                 )}
               </View>
             ) : (
@@ -432,12 +501,19 @@ const RecruiterRegister = ({ navigation }) => {
             )}
           </MotiView>
         </KeyboardAvoidingView>
-        <Text style={styles.signInText}>
-          Already have an account?{" "}
-          <Text style={styles.signInLink} onPress={() => navigation.navigate('RecruiterLogin')}>
-            Login
+        <MotiView
+          from={{ opacity: 0, translateY: -100 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          duration={500}
+          delay={6500}
+        >
+          <Text style={styles.signInText}>
+            Already have an account?{" "}
+            <Text style={styles.signInLink} onPress={() => navigation.navigate('RecruiterLogin')}>
+              Login
+            </Text>
           </Text>
-        </Text>
+        </MotiView>
       </View>
     </ScrollView>
   );
@@ -466,11 +542,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   image: {
-    width: '100%',
+    width: 400,
     height: 300,
   },
   inputContainer: {
-    alignItems: 'center',
+    alignItems: 'center'
   },
   input: {
     height: 50,
