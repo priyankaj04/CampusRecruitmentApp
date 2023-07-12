@@ -1,62 +1,58 @@
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native'
 import React, { useState, useEffect } from 'react';
-import { ApplicationsAppliedbytalentid } from '../api'
-import { TalentJobViewCard } from '../components/commonFunctions';
+import { View, ScrollView, Image, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ApplicationsAppliedbytalentid } from '../api';
+import { TalentJobViewCard } from '../components/commonFunctions';
+import { MotiView, AnimatePresence } from 'moti';
 
-const Jobprofile = ({ navigation }) => {
-
-  const [talentid, setTalentid] = useState(null);
-  const [applications, setApplication] = useState([]);
+const JobProfile = ({ navigation }) => {
+  const [talentId, setTalentId] = useState(null);
+  const [applications, setApplications] = useState([]);
 
   const getData = async () => {
-    setTalentid(await AsyncStorage.getItem('talent_id'));
-  }
+    const storedTalentId = await AsyncStorage.getItem('talent_id');
+    setTalentId(storedTalentId);
+  };
 
   useEffect(() => {
-    if (!talentid) {
+    if (!talentId) {
       getData();
     }
-    if (talentid) {
-      ApplicationsAppliedbytalentid(talentid).then((res) => {
+    if (talentId) {
+      ApplicationsAppliedbytalentid(talentId).then((res) => {
         console.log(res);
         if (res.status) {
-          setApplication(res.data);
+          setApplications(res.data);
         } else {
-          setApplication([]);
+          setApplications([]);
         }
-      })
+      });
     }
-  }, [talentid])
+  }, [talentId]);
 
   return (
-    <View style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
-      <ScrollView>
-        <View style={{ marginTop: 0 }}>
-          {
-            applications && applications.length > 0 ?
-              <View>
-                {
-                  applications.map((item, index) => (
-                    <TalentJobViewCard key={index} item={item} navigation={navigation} />
-                  ))
-                }
-              </View> :
-              <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <MotiView style={{ flex: 1 }}>
+        <AnimatePresence>
+          <View style={{ marginTop: 0 }}>
+            {applications.length > 0 ? (
+              applications.map((item, index) => (
+                <TalentJobViewCard key={index} item={item} navigation={navigation} />
+              ))
+            ) : (
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Image
                   source={require('../assets/Nodata.png')}
                   style={{ width: 200, height: 200 }}
                 />
                 <Text>You have not applied for any jobs yet.</Text>
               </View>
-
-          }
-        </View>
-      </ScrollView>
+            )}
+          </View>
+        </AnimatePresence>
+      </MotiView>
     </View>
-  )
-}
+  );
+};
 
-export default Jobprofile
-
-const styles = StyleSheet.create({})
+export default JobProfile;

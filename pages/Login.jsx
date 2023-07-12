@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { View, TextInput, StyleSheet, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, Text } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { TalentLogin } from '../api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MotiView } from 'moti';
 
 const Login = ({ navigation }) => {
-
   const [text, setText] = useState('');
   const [password, setPassword] = useState('');
   const [visible, setVisible] = useState(false);
@@ -15,15 +15,15 @@ const Login = ({ navigation }) => {
 
   const ClearData = async () => {
     console.log(await AsyncStorage.getAllKeys());
-  }
+  };
 
   useEffect(() => {
-    ClearData()
-  }, [])
+    ClearData();
+  }, []);
 
   const GetData = async (value) => {
     await AsyncStorage.multiSet([['user_type', 'talent'], ['talent_id', value], ['register_no', text]]);
-  }
+  };
 
   const handleClick = () => {
     if (!password || !text || password.length === 0 || text.length === 0) {
@@ -37,119 +37,206 @@ const Login = ({ navigation }) => {
       setIsLoading(true);
       let reqbody = {
         register_no: text,
-        password: password
-      }
-      //student loginr
-      //const value = "talent";
-      TalentLogin(reqbody).then((res) => {
-        console.log("its response", res);
-        if (res.status) {
-          GetData(res.data.talent_id);
-          setIsLoading(false);
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Index' }],
-          });
-          navigation.navigate('Index');
-        } else {
-          setShowHelper(true);
-          setMsg(res.data.message);
-          setIsLoading(false);
-        }
-      }).catch((err) => {
-        console.log("it failed", err);
-        setIsLoading(false);
-      })
-      //
-    }
-  }
-  return (
-    <ScrollView >
-      <View style={styles.container}>
-        <Text style={{
-          color: '#407BFF',
-          fontWeight: 'bold',
-          fontSize: 24,
-          textAlign: 'center'
-        }}>Welcome Back!</Text>
-        <Text style={{
-          color: 'gray',
-          fontWeight: 'bold',
-          fontSize: 18,
-        }}>Please sign in to continue.</Text>
-        <Image
-          source={require('../assets/achieve.png')}
-          style={{ width: '100%', height: 400 }}
-        />
-        <KeyboardAvoidingView >
-          <TextInput
-            placeholder="Register No."
-            style={{
-              height: 50,
-              borderColor: 'transparent',
-              borderWidth: 1,
-              width: 350,
-              borderRadius: 25,
-              padding: 10,
-              backgroundColor: '#e5e5e5',
-              margin: 10,
-              fontSize: 16
-            }}
-            onChangeText={(e) => setText(e)}
-            value={text}
-            keyboardType="default"
-          />
-          <View style={{
-            backgroundColor: '#e5e5e5',
-            height: 50,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: 10,
-            padding: 5,
-            borderRadius: 25,
-          }}>
-            <TextInput
-              placeholder='Password'
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 300,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                fontSize: 16,
-                borderRadius: 25,
-              }}
-              secureTextEntry={visible ? false : true}
-              onChangeText={(e) => setPassword(e)}
-              value={password}
-              keyboardType="default"
-            />
-            <Icon name={visible ? "eye" : "eye-slash"} color="gray" size={26} onPress={() => setVisible(!visible)} />
-          </View>
-          {showHelper && <Text style={{ color: 'red', margin: 10 }}><Icon name="info-circle" size={14} color='red' />  {msg}</Text>}
-          {isLoading ? <ActivityIndicator color='#407BFF' size="small" /> :
-            <TouchableOpacity style={styles.btn} onPress={() => handleClick()}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Log In</Text></TouchableOpacity>
+        password: password,
+      };
+      TalentLogin(reqbody)
+        .then((res) => {
+          console.log('its response', res);
+          if (res.status) {
+            GetData(res.data.talent_id);
+            setIsLoading(false);
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Index' }],
+            });
+            navigation.navigate('Index');
+          } else {
+            setShowHelper(true);
+            setMsg(res.data.message);
+            setIsLoading(false);
           }
-        </KeyboardAvoidingView>
-        <Text style={{
-          color: '#407BFF',
-          fontWeight: 'bold',
-          fontSize: 16,
-          margin: 10
-        }} onPress={() => navigation.navigate('ForgotPassword', {type: 'talent'})}>Forgot Password?</Text>
-        <Text style={{
-          color: 'gray',
-          fontSize: 16,
-          margin: 10
-        }}>Don't have an account? <Text style={{ color: '#407BFF', fontWeight: 'bold' }} onPress={() => navigation.navigate('Register')}>Signup</Text></Text>
+        })
+        .catch((err) => {
+          console.log('it failed', err);
+          setIsLoading(false);
+        });
+    }
+  };
+
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <MotiView
+          from={{
+            opacity: 0,
+            translateY: -100,
+          }}
+          animate={{
+            opacity: 1,
+            translateY: 0,
+          }}
+          transition={{
+            type: 'timing',
+            duration: 1000,
+          }}
+        >
+          <Text style={styles.header}>Welcome Back!</Text>
+          <Text style={styles.subHeader}>Please sign in to continue.</Text>
+          <MotiView
+            from={{
+              opacity: 0,
+              translateY: 100,
+            }}
+            animate={{
+              opacity: 1,
+              translateY: 0,
+            }}
+            transition={{
+              type: 'timing',
+              duration: 1000,
+            }}
+          >
+            <Image
+              source={require('../assets/achieve.png')}
+              style={styles.image}
+            />
+          </MotiView>
+          <KeyboardAvoidingView>
+            <MotiView
+              from={{
+                opacity: 0,
+                translateX: -100,
+              }}
+              animate={{
+                opacity: 1,
+                translateX: 0,
+              }}
+              transition={{
+                type: 'timing',
+                duration: 1000,
+              }}
+              delay={500}
+            >
+              <TextInput
+                placeholder="Register No."
+                style={styles.input}
+                onChangeText={(e) => setText(e)}
+                value={text}
+                keyboardType="default"
+              />
+            </MotiView>
+            <MotiView
+              from={{
+                opacity: 0,
+                translateX: -100,
+              }}
+              animate={{
+                opacity: 1,
+                translateX: 0,
+              }}
+              transition={{
+                type: 'timing',
+                duration: 1000,
+              }}
+              delay={1000}
+            >
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  placeholder="Password"
+                  style={styles.passwordInput}
+                  secureTextEntry={visible ? false : true}
+                  onChangeText={(e) => setPassword(e)}
+                  value={password}
+                  keyboardType="default"
+                />
+                <Icon
+                  name={visible ? 'eye' : 'eye-slash'}
+                  color="gray"
+                  size={26}
+                  onPress={() => setVisible(!visible)}
+                />
+              </View>
+            </MotiView>
+            {showHelper && (
+              <MotiView
+                from={{
+                  opacity: 0,
+                  translateY: 1000,
+                }}
+                animate={{
+                  opacity: 1,
+                  translateY: 0,
+                }}
+                transition={{
+                  type: 'timing',
+                  duration: 1000,
+                }}
+                delay={1500}
+              >
+                <Text style={styles.helperText}>
+                  <Icon name="info-circle" size={14} color="red" /> {msg}
+                </Text>
+              </MotiView>
+            )}
+            <MotiView
+              from={{
+                opacity: 0,
+                translateY: 1000,
+              }}
+              animate={{
+                opacity: 1,
+                translateY: 0,
+              }}
+              transition={{
+                type: 'timing',
+                duration: 1000,
+              }}
+              delay={2000}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="#407BFF" size="small" />
+              ) : (
+                <TouchableOpacity style={styles.button} onPress={() => handleClick()}>
+                  <Text style={styles.buttonText}>Log In</Text>
+                </TouchableOpacity>
+              )}
+            </MotiView>
+          </KeyboardAvoidingView>
+        </MotiView>
+        <MotiView
+          from={{
+            opacity: 0,
+            translateY: 1000,
+          }}
+          animate={{
+            opacity: 1,
+            translateY: 0,
+          }}
+          transition={{
+            type: 'timing',
+            duration: 1000,
+          }}
+          delay={2500}
+        >
+          <Text
+            style={styles.forgotPasswordText}
+            onPress={() => navigation.navigate('ForgotPassword', { type: 'talent' })}
+          >
+            Forgot Password?
+          </Text>
+          <Text style={styles.signupText}>
+            Don't have an account?{' '}
+            <Text style={styles.signupLink} onPress={() => navigation.navigate('Register')}>
+              Signup
+            </Text>
+          </Text>
+        </MotiView>
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;
 
 const styles = StyleSheet.create({
   container: {
@@ -159,14 +246,87 @@ const styles = StyleSheet.create({
     backgroundColor: 'whitesmoke',
     width: '100%',
   },
-  btn: {
+  header: {
+    color: '#407BFF',
+    fontWeight: 'bold',
+    fontSize: 24,
+    textAlign: 'center',
+  },
+  subHeader: {
+    color: 'gray',
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginTop: 10,
+    textAlign:'center'
+  },
+  image: {
+    width: '100%',
+    height: 400,
+  },
+  input: {
+    height: 50,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    width: 350,
+    borderRadius: 25,
+    padding: 10,
+    backgroundColor: '#e5e5e5',
+    marginVertical: 10,
+    fontSize: 16,
+  },
+  passwordContainer: {
+    backgroundColor: '#e5e5e5',
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+    padding: 5,
+    borderRadius: 25,
+  },
+  passwordInput: {
+    flex: 1,
+    height: 50,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    padding: 10,
+    backgroundColor: '#e5e5e5',
+    fontSize: 16,
+    borderRadius: 25,
+  },
+  helperText: {
+    color: 'red',
+    marginVertical: 10,
+  },
+  button: {
     width: 350,
     height: 50,
     backgroundColor: '#407BFF',
     color: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 10,
-    borderRadius: 25
-  }
-})
+    marginVertical: 10,
+    borderRadius: 25,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  forgotPasswordText: {
+    color: '#407BFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginVertical: 10,
+    textAlign:'center'
+  },
+  signupText: {
+    color: 'gray',
+    fontSize: 16,
+    marginVertical: 10,
+  },
+  signupLink: {
+    color: '#407BFF',
+    fontWeight: 'bold',
+  },
+});

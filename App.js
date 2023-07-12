@@ -42,7 +42,6 @@ import AdminChangepassword from './pages/AdminChangepassword';
 import CreateStudent from './pages/CreateStudent';
 import StudentPage from './pages/StudentPage';
 import ViewActionJobs from './pages/ViewActionJobs';
-import RecruiterJobPage from './pages/RecruiterJobPage';
 import EditApplication from './pages/EditApplication';
 import ApplyforJob from './pages/ApplyforJob';
 import ActionApplications from './pages/ActionApplications';
@@ -457,22 +456,6 @@ export default function App() {
         <Stack.Screen
           name="ViewActionJobs"
           component={ViewActionJobs}
-          options={{
-            title: "Approve Jobs",
-            headerLeft: () => (
-              <Icon
-                name="angle-left"
-                size={30}
-                color="black"
-                style={{ marginLeft: 5, marginRight: 10 }}
-                onPress={() => navigationRef.goBack()}
-              />
-            ),
-          }}
-        />
-        <Stack.Screen
-          name="RecruiterJobPage"
-          component={RecruiterJobPage}
           options={{
             title: "Approve Jobs",
             headerLeft: () => (

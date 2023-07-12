@@ -1,13 +1,12 @@
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, ActivityIndicator, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RecruiterRegisteration, AdminRegisteration, SendOTPCodeSMS, HodRegisteration } from '../api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
-
+import { MotiView } from 'moti';
 
 const RecruiterRegister = ({ navigation }) => {
-
   const [company_name, setCompany] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
@@ -50,7 +49,6 @@ const RecruiterRegister = ({ navigation }) => {
 
   const Streams = ['Department of Computer Science', 'Department of Commerce', 'Department of Arts', 'Department of Science'];
 
-
   const handleClick = () => {
     if (firstname === 'admin') {
       if (!lastname || lastname.length === 0 || !email || email.length === 0 || !password || password.length === 0 || !contact_no || contact_no.length === 0) {
@@ -87,8 +85,7 @@ const RecruiterRegister = ({ navigation }) => {
         }
       })
     } else {
-      if (!company_name || company_name.length === 0 || !firstname || firstname.length === 0 || !lastname
-        || lastname.length === 0 || !email || email.length === 0 || !password || password.length === 0 || !contact_no || contact_no.length === 0) {
+      if (!company_name || company_name.length === 0 || !firstname || firstname.length === 0 || !lastname || lastname.length === 0 || !email || email.length === 0 || !password || password.length === 0 || !contact_no || contact_no.length === 0) {
         setShowHelper(true);
         setMsg({ value: 'all', msg: 'All fields are mandatory.' });
         return;
@@ -127,7 +124,6 @@ const RecruiterRegister = ({ navigation }) => {
           contact_no,
           password
         }
-        //console.log("11211",reqbody);
         RecruiterRegisteration(reqbody).then((res) => {
           if (res.status) {
             SetData1(res.data[0].recruiter_id).then(() => {
@@ -143,15 +139,12 @@ const RecruiterRegister = ({ navigation }) => {
             })
           } else {
             setShowHelper(true);
-            //console.log("ERROR", res);
             setMsg({ value: 'all', msg: res.message });
             setIsLoading(false);
           }
-          //console.log("reponsehere", res);
           setIsLoading(false);
         })
           .catch((err) => {
-            //console.log(err);
             setShowHelper(true);
             setMsg({ value: 'all', msg: err });
             setIsLoading(false);
@@ -187,336 +180,270 @@ const RecruiterRegister = ({ navigation }) => {
           })
         } else {
           setShowHelper(true);
-          //console.log("ERROR", res);
           setMsg({ value: 'all', msg: res.message });
           setIsLoading(false);
         }
-        //console.log("reponsehere", res);
         setIsLoading(false);
       }).catch((err) => {
         console.log(err);
         setShowHelper(true);
-        //setMsg({ value: 'all', msg: err });
         setIsLoading(false);
       })
     }
   }
 
-
   return (
-    <ScrollView >
+    <ScrollView>
       <View style={styles.container}>
-        <Text style={{
-          color: '#407BFF',
-          fontWeight: 'bold',
-          fontSize: 26,
-          textAlign: 'left',
-          marginTop: 80,
-          margin: 10
-        }}>Create Account</Text>
-        <Text style={{
-          color: 'gray',
-          fontWeight: 'bold',
-          fontSize: 18,
-        }}>Please sign up to continue.</Text>
-        <Image
-          source={require('../assets/signup.png')}
-          style={{ width: '100%', height: 300 }}
-        />
-        <KeyboardAvoidingView >
-          {firstname != "hod" ? <View style={{ alignItems: 'center' }}>
-            <TextInput
-              placeholder="First Name"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              onChangeText={(e) => setFirstname(e)}
-              value={firstname}
-              inputMode="text"
-            />
-            <TextInput
-              placeholder={!firstname || firstname != "admin" ? "Last Name" : "Full Name"}
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              onChangeText={(e) => setLastname(e)}
-              value={lastname}
-              inputMode="text"
-            />
-            {showHelper && msg && msg.value === 'name' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            {firstname && firstname == 'admin' && <TextInput
-              placeholder="Code"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              secureTextEntry
-              onChangeText={(e) => setCode(e)}
-              value={code}
-              inputMode="text"
-            />}
-            {!firstname || firstname != "admin" ? <TextInput
-              placeholder="Company Name"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              onChangeText={(e) => setCompany(e)}
-              value={company_name}
-              keyboardType="default"
-            /> : null}
-            {showHelper && msg && msg.value === 'companyname' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            <TextInput
-              placeholder={!firstname || firstname != "admin" ? "Official Email Id" : "Email Id"}
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              onChangeText={(e) => setEmail(e)}
-              value={email}
-              inputMode="email"
-              keyboardType="email-address"
-            />
-            {showHelper && msg && msg.value === 'email' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            <TextInput
-              placeholder="Contact No"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              onChangeText={(e) => setContact(e)}
-              value={contact_no}
-              keyboardType="default"
-            />
-            {showHelper && msg && msg.value === 'contactno' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            <View style={{
-              backgroundColor: '#e5e5e5',
-              height: 50,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 10,
-              padding: 10,
-              borderRadius: 25,
-            }}>
-              <TextInput
-                placeholder='Password'
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 300,
-                  backgroundColor: '#e5e5e5',
-                  fontSize: 16,
-                  borderRadius: 25,
-                }}
-                secureTextEntry={visible ? false : true}
-                onChangeText={(e) => setPassword(e)}
-                value={password}
-                keyboardType="default"
-              />
-              <Icon name={visible ? "eye" : "eye-slash"} color="gray" size={26} onPress={() => setVisible(!visible)} />
-            </View>
-            <TextInput
-              placeholder="Confirm password"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              secureTextEntry
-              onChangeText={(e) => setConfirmpass(e)}
-              value={confirmpass}
-              keyboardType="default"
-            />
-            {showHelper && msg && msg.value === 'password' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            {showHelper && msg && msg.value === 'all' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-            <Text style={{ margin: 10, textAlign: 'center', color: 'gray' }}>By joining us you agree to our <Text onPress={() => navigation.navigate('TermsandConditions')} style={{
-              color: '#407BFF',
-              fontWeight: 'bold'
-            }}>Terms and Condtions</Text> and <Text onPress={() => navigation.navigate('PrivatePolicy')} style={{
-              color: '#407BFF',
-              fontWeight: 'bold'
-            }}>Private policy</Text></Text>
-            {isLoading ? <ActivityIndicator size="small" color="#407BFF" /> :
-              <TouchableOpacity onPress={() => handleClick()} style={styles.btn}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Join us</Text></TouchableOpacity>
-            }
-          </View> : <View>
-            <TextInput
-              placeholder="User type"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              onChangeText={(e) => setFirstname(e)}
-              value={firstname}
-              inputMode="text"
-            />
-            <TextInput
-              placeholder="Full Name"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              onChangeText={(e) => setLastname(e)}
-              value={lastname}
-              inputMode="text"
-            />
-            <View style={{
-              height: 50,
-              borderColor: 'transparent',
-              borderWidth: 1,
-              width: 350,
-              borderRadius: 25,
-              backgroundColor: '#e5e5e5',
-              margin: 10,
-              fontSize: 16
-            }}>
-              <Picker
-                selectedValue={email}
-                onValueChange={(itemValue) => {
-                  setEmail(itemValue)
-                }
-                }>
-                {Streams.map((item) => <Picker.Item key={item} label={item} value={item} />)}
-              </Picker>
-            </View>
-            <View style={{
-              backgroundColor: '#e5e5e5',
-              height: 50,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: 10,
-              padding: 10,
-              borderRadius: 25,
-            }}>
-              <TextInput
-                placeholder='Password'
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 300,
-                  backgroundColor: '#e5e5e5',
-                  fontSize: 16,
-                  borderRadius: 25,
-                }}
-                secureTextEntry={visible ? false : true}
-                onChangeText={(e) => setPassword(e)}
-                value={password}
-                keyboardType="default"
-              />
-              <Icon name={visible ? "eye" : "eye-slash"} color="gray" size={26} onPress={() => setVisible(!visible)} />
-            </View>
-            <TextInput
-              placeholder="Confirm password"
-              style={{
-                height: 50,
-                borderColor: 'transparent',
-                borderWidth: 1,
-                width: 350,
-                borderRadius: 25,
-                padding: 10,
-                backgroundColor: '#e5e5e5',
-                margin: 10,
-                fontSize: 16
-              }}
-              secureTextEntry
-              onChangeText={(e) => setConfirmpass(e)}
-              value={confirmpass}
-              keyboardType="default"
-              />
-              {showHelper && msg && msg.value === 'all' && <Text style={{ color: 'red', margin: 10, textAlign: 'left' }}><Icon name="info-circle" size={14} color='red' />  {msg.msg}</Text>}
-              <Text style={{ margin: 10, textAlign: 'center', color: 'gray' }}>By joining us you agree to our <Text onPress={() => navigation.navigate('TermsandConditions')} style={{
-                color: '#407BFF',
-                fontWeight: 'bold'
-              }}>Terms and Condtions</Text> and <Text onPress={() => navigation.navigate('PrivatePolicy')} style={{
-                color: '#407BFF',
-                fontWeight: 'bold'
-              }}>Private policy</Text></Text>
-              {isLoading ? <ActivityIndicator size="small" color="#407BFF" /> :
-                <TouchableOpacity onPress={() => handleHodLogin()} style={styles.btn}><Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }} >Join us</Text></TouchableOpacity>
-              }
-          </View>
-          }
+        <MotiView
+          from={{ opacity: 0, translateY: 100 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          duration={500}
+          delay={500}
+        >
+          <Text style={styles.heading}>Create Account</Text>
+          <Text style={styles.subheading}>Please sign up to continue.</Text>
+        </MotiView>
+        <MotiView
+          from={{ opacity: 0, translateY: 100 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          duration={500}
+          delay={1000}
+        >
+          <Image
+            source={require('../assets/signup.png')}
+            style={styles.image}
+          />
+        </MotiView>
+        <KeyboardAvoidingView>
+          <MotiView
+            from={{ opacity: 0, translateY: 100 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            duration={500}
+            delay={1500}
+          >
+            {!firstname || firstname !== "hod" ? (
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder="First Name"
+                  style={styles.input}
+                  onChangeText={(e) => setFirstname(e)}
+                  value={firstname}
+                  inputMode="text"
+                />
+                <TextInput
+                  placeholder={!firstname || firstname !== "admin" ? "Last Name" : "Full Name"}
+                  style={styles.input}
+                  onChangeText={(e) => setLastname(e)}
+                  value={lastname}
+                  inputMode="text"
+                />
+                {showHelper && msg && msg.value === 'name' && (
+                  <Text style={styles.errorText}>
+                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                  </Text>
+                )}
+                {firstname && firstname === 'admin' && (
+                  <TextInput
+                    placeholder="Code"
+                    style={styles.input}
+                    secureTextEntry
+                    onChangeText={(e) => setCode(e)}
+                    value={code}
+                    inputMode="text"
+                  />
+                )}
+                {!firstname || firstname !== "admin" ? (
+                  <TextInput
+                    placeholder="Company Name"
+                    style={styles.input}
+                    onChangeText={(e) => setCompany(e)}
+                    value={company_name}
+                    keyboardType="default"
+                  />
+                ) : null}
+                {showHelper && msg && msg.value === 'companyname' && (
+                  <Text style={styles.errorText}>
+                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                  </Text>
+                )}
+                <TextInput
+                  placeholder={!firstname || firstname !== "admin" ? "Official Email Id" : "Email Id"}
+                  style={styles.input}
+                  onChangeText={(e) => setEmail(e)}
+                  value={email}
+                  inputMode="email"
+                  keyboardType="email-address"
+                />
+                {showHelper && msg && msg.value === 'email' && (
+                  <Text style={styles.errorText}>
+                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                  </Text>
+                )}
+                <TextInput
+                  placeholder="Contact No"
+                  style={styles.input}
+                  onChangeText={(e) => setContact(e)}
+                  value={contact_no}
+                  keyboardType="default"
+                />
+                {showHelper && msg && msg.value === 'contactno' && (
+                  <Text style={styles.errorText}>
+                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                  </Text>
+                )}
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    placeholder="Password"
+                    style={styles.passwordInput}
+                    secureTextEntry={visible ? false : true}
+                    onChangeText={(e) => setPassword(e)}
+                    value={password}
+                    keyboardType="default"
+                  />
+                  <Icon
+                    name={visible ? "eye" : "eye-slash"}
+                    color="gray"
+                    size={26}
+                    onPress={() => setVisible(!visible)}
+                  />
+                </View>
+                <TextInput
+                  placeholder="Confirm password"
+                  style={styles.input}
+                  secureTextEntry
+                  onChangeText={(e) => setConfirmpass(e)}
+                  value={confirmpass}
+                  keyboardType="default"
+                />
+                {showHelper && msg && msg.value === 'password' && (
+                  <Text style={styles.errorText}>
+                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                  </Text>
+                )}
+                {showHelper && msg && msg.value === 'all' && (
+                  <Text style={styles.errorText}>
+                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                  </Text>
+                )}
+                <Text style={styles.termsText}>
+                  By joining us you agree to our{" "}
+                  <Text
+                    onPress={() => navigation.navigate('TermsandConditions')}
+                    style={styles.linkText}
+                  >
+                    Terms and Conditions
+                  </Text>{" "}
+                  and{" "}
+                  <Text
+                    onPress={() => navigation.navigate('PrivatePolicy')}
+                    style={styles.linkText}
+                  >
+                    Private Policy
+                  </Text>
+                </Text>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="#407BFF" />
+                ) : (
+                  <TouchableOpacity onPress={handleClick} style={styles.button}>
+                    <Text style={styles.buttonText}>Join us</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ) : (
+              <View style={styles.inputContainer}>
+                <TextInput
+                  placeholder="User type"
+                  style={styles.input}
+                  onChangeText={(e) => setFirstname(e)}
+                  value={firstname}
+                  inputMode="text"
+                />
+                <TextInput
+                  placeholder="Full Name"
+                  style={styles.input}
+                  onChangeText={(e) => setLastname(e)}
+                  value={lastname}
+                  inputMode="text"
+                />
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={email}
+                    onValueChange={(itemValue) => setEmail(itemValue)}
+                  >
+                    {Streams.map((item) => (
+                      <Picker.Item key={item} label={item} value={item} />
+                    ))}
+                  </Picker>
+                </View>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    placeholder="Password"
+                    style={styles.passwordInput}
+                    secureTextEntry={visible ? false : true}
+                    onChangeText={(e) => setPassword(e)}
+                    value={password}
+                    keyboardType="default"
+                  />
+                  <Icon
+                    name={visible ? "eye" : "eye-slash"}
+                    color="gray"
+                    size={26}
+                    onPress={() => setVisible(!visible)}
+                  />
+                </View>
+                <TextInput
+                  placeholder="Confirm password"
+                  style={styles.input}
+                  secureTextEntry
+                  onChangeText={(e) => setConfirmpass(e)}
+                  value={confirmpass}
+                  keyboardType="default"
+                />
+                {showHelper && msg && msg.value === 'all' && (
+                  <Text style={styles.errorText}>
+                    <Icon name="info-circle" size={14} color="red" /> {msg.msg}
+                  </Text>
+                )}
+                <Text style={styles.termsText}>
+                  By joining us you agree to our{" "}
+                  <Text
+                    onPress={() => navigation.navigate('TermsandConditions')}
+                    style={styles.linkText}
+                  >
+                    Terms and Conditions
+                  </Text>{" "}
+                  and{" "}
+                  <Text
+                    onPress={() => navigation.navigate('PrivatePolicy')}
+                    style={styles.linkText}
+                  >
+                    Private Policy
+                  </Text>
+                </Text>
+                {isLoading ? (
+                  <ActivityIndicator size="small" color="#407BFF" />
+                ) : (
+                  <TouchableOpacity onPress={handleHodLogin} style={styles.button}>
+                    <Text style={styles.buttonText}>Join us</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+          </MotiView>
         </KeyboardAvoidingView>
-        <Text style={{
-          color: 'gray',
-          fontSize: 16,
-          margin: 10,
-          marginBottom: 40
-        }}>Already have an account? <Text style={{ color: '#407BFF', fontWeight: 'bold' }} onPress={() => navigation.navigate('RecruiterLogin')}>Login</Text></Text>
+        <Text style={styles.signInText}>
+          Already have an account?{" "}
+          <Text style={styles.signInLink} onPress={() => navigation.navigate('RecruiterLogin')}>
+            Login
+          </Text>
+        </Text>
       </View>
     </ScrollView>
-  )
-}
+  );
+};
 
-export default RecruiterRegister
+export default RecruiterRegister;
 
 const styles = StyleSheet.create({
   container: {
@@ -525,7 +452,57 @@ const styles = StyleSheet.create({
     backgroundColor: 'whitesmoke',
     width: '100%',
   },
-  btn: {
+  heading: {
+    color: '#407BFF',
+    fontWeight: 'bold',
+    fontSize: 26,
+    textAlign: 'left',
+    marginTop: 80,
+    margin: 10,
+  },
+  subheading: {
+    color: 'gray',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  image: {
+    width: '100%',
+    height: 300,
+  },
+  inputContainer: {
+    alignItems: 'center',
+  },
+  input: {
+    height: 50,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    width: 350,
+    borderRadius: 25,
+    padding: 10,
+    backgroundColor: '#e5e5e5',
+    margin: 10,
+    fontSize: 16,
+  },
+  passwordContainer: {
+    backgroundColor: '#e5e5e5',
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10,
+    padding: 10,
+    borderRadius: 25,
+  },
+  passwordInput: {
+    height: 50,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    width: 300,
+    backgroundColor: '#e5e5e5',
+    fontSize: 16,
+    borderRadius: 25,
+  },
+  button: {
     width: 350,
     height: 50,
     backgroundColor: '#407BFF',
@@ -533,6 +510,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
-    borderRadius: 25
-  }
-})
+    borderRadius: 25,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  errorText: {
+    color: 'red',
+    margin: 10,
+    textAlign: 'left',
+  },
+  termsText: {
+    margin: 10,
+    textAlign: 'center',
+    color: 'gray',
+  },
+  linkText: {
+    color: '#407BFF',
+    fontWeight: 'bold',
+  },
+  signInText: {
+    color: 'gray',
+    fontSize: 16,
+    margin: 10,
+    marginBottom: 40,
+  },
+  signInLink: {
+    color: '#407BFF',
+    fontWeight: 'bold',
+  },
+  pickerContainer: {
+    height: 50,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    width: 350,
+    borderRadius: 25,
+    backgroundColor: '#e5e5e5',
+    margin: 10,
+    fontSize: 16,
+  },
+});
