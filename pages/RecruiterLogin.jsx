@@ -89,7 +89,6 @@ const RecruiterLogin = ({ navigation }) => {
         email,
         password
       };
-      console.log("are we here??");
 
       RecruiterLoginForm(reqbody)
         .then((res) => {
@@ -192,7 +191,30 @@ const RecruiterLogin = ({ navigation }) => {
               <Image source={require('../assets/achieve.png')} style={styles.image} />
             </MotiView>
             <View style={styles.formContainer}>
-              {email !== 'hod' ? (
+              <MotiView
+                from={{
+                  opacity: 0,
+                  translateX: -100,
+                }}
+                animate={{
+                  opacity: 1,
+                  translateX: 0,
+                }}
+                transition={{
+                  type: 'timing',
+                  duration: 1000,
+                }}
+                delay={1500}
+              >
+                <TextInput
+                  placeholder="Email"
+                  style={styles.input}
+                  onChangeText={(e) => setEmail(e)}
+                  value={email}
+                  keyboardType="email-address"
+                />
+              </MotiView>
+              {email === 'hod' ? (
                 <MotiView
                   from={{
                     opacity: 0,
@@ -206,28 +228,18 @@ const RecruiterLogin = ({ navigation }) => {
                     type: 'timing',
                     duration: 1000,
                   }}
-                  delay={1000}
                 >
-                  <View>
-                    <TextInput
-                      placeholder="Email"
-                      style={styles.input}
-                      onChangeText={(e) => setEmail(e)}
-                      value={email}
-                      keyboardType="email-address"
-                    />
-                    {email && email === 'admin' && (
-                      <TextInput
-                        placeholder="Email"
-                        style={styles.input}
-                        onChangeText={(e) => setEmail1(e)}
-                        value={email1}
-                        keyboardType="email-address"
-                      />
-                    )}
+                  <View style={styles.pickerContainer}>
+                    <Picker
+                      selectedValue={email1}
+                      onValueChange={(itemValue) => setEmail1(itemValue)}
+                      style={styles.picker}
+                    >
+                      {Streams.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                    </Picker>
                   </View>
                 </MotiView>
-              ) : (
+              ) : email === 'admin' && (
                 <MotiView
                   from={{
                     opacity: 0,
@@ -241,15 +253,15 @@ const RecruiterLogin = ({ navigation }) => {
                     type: 'timing',
                     duration: 1000,
                   }}
-                  delay={1500}
                 >
                   <TextInput
                     placeholder="Email"
                     style={styles.input}
-                    onChangeText={(e) => setEmail(e)}
-                    value={email}
+                    onChangeText={(e) => setEmail1(e)}
+                    value={email1}
                     keyboardType="email-address"
                   />
+
                 </MotiView>
               )}
               <MotiView
@@ -265,7 +277,7 @@ const RecruiterLogin = ({ navigation }) => {
                   type: 'timing',
                   duration: 1000,
                 }}
-                delay={1500}
+                delay={2500}
               >
                 <View style={styles.passwordContainer}>
                   <TextInput
@@ -298,7 +310,7 @@ const RecruiterLogin = ({ navigation }) => {
                   type: 'timing',
                   duration: 1000,
                 }}
-                delay={2000}
+                delay={3000}
               >
                 {isLoading ? (
                   <ActivityIndicator color="#407BFF" size="small" />
@@ -452,5 +464,16 @@ const styles = StyleSheet.create({
   signupLink: {
     color: '#407BFF',
     fontWeight: 'bold'
-  }
+  },
+  pickerContainer: {
+    flexDirection: 'row',
+    marginVertical: 10,
+    backgroundColor: '#e5e5e5',
+    borderRadius: 25,
+    width: 350
+  },
+  picker: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
 });
