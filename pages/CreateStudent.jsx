@@ -1,8 +1,5 @@
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, ClearText } from 'react-native'
 import React, { useState, useEffect } from 'react';
-import { RadioButton } from 'react-native-paper';
-import Checkbox from 'expo-checkbox';
-import Icon from 'react-native-vector-icons/Entypo';
 import { CreateStudentAPI, GetSubjects } from '../api';
 import { Picker } from '@react-native-picker/picker';
 import Toastable, { showToastable } from 'react-native-toastable';
@@ -29,14 +26,30 @@ const CreateStudent = () => {
     const [ivsem, setIVSem] = useState([]);
     const [vsem, setVSem] = useState([]);
     const [visem, setVISem] = useState([]);
+    const [batch, setBatch] = useState('2020 - 2023');
 
     const Streams = ['Science', 'Computer Science', 'Commerce', 'Arts'];
     const StreamsCollege = ['Science', 'Commerce', 'Arts'];
-    const Degree = ['Bachelore of Science', 'Bachelore of Computer Science', 'Bachelore of Commerce', 'Bachelore of Arts'];
+    const Degree = [
+        { label: 'Bachelore of Science', value: 'BSc' },
+        { label: 'Bachelore of Computer Application', value: 'BCA' },
+        { label: 'Bachelore of Vocational Course - IT', value: 'BVoc' },
+        { label: 'Bachelore of Commerce', value: 'BCom' },
+        { label: 'Bachelore of Business Administration', value: 'BBA' },
+        { label: 'Bachelore of Arts', value: 'BA' }
+    ];
     const Semester = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     const [id, setId] = useState(null);
     const Classes = [
         { value: 'III BCA A' }, { value: 'III BCA B' }, { value: 'II BCA A' }, { value: 'II BCA B' }, { value: 'I BCA A' }, { value: 'I BCA B' }
+    ]
+
+    const Batch = [
+        { value: '2019-2022', label: '2019-2022' },
+        { value: '2020-2023', label: '2020-2023' },
+        { value: '2021-2024', label: '2021-2024' },
+        { value: '2022-2025', label: '2022-2025' },
+        { value: '2023-2026', label: '2023-2026' }
     ]
 
     const getData = async () => {
@@ -47,13 +60,15 @@ const CreateStudent = () => {
         if (!id) {
             getData();
         }
-        GetSubjects('BCA', '2020-2023').then((res) => {
+
+        GetSubjects(degree, batch).then((res) => {
             if (res.status) {
                 setSubjects([res.data[0].subject]);
             } else {
                 setSubjects([]);
             }
         })
+
     }, [id])
 
 
@@ -73,7 +88,8 @@ const CreateStudent = () => {
             created_by: id,
             subject_marks: [
                 { I: isem }, { II: iisem }, { III: iiisem }, { IV: ivsem }, { V: vsem }, { VI: visem }
-            ]
+            ],
+            batch
         }
 
         CreateStudentAPI(reqbody).then((res) => {
@@ -126,7 +142,20 @@ const CreateStudent = () => {
                                     setDegree(itemValue)
                                 }}
                             >
-                                {Degree.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                                {Degree.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
+                            </Picker>
+                        </View>
+                    </View>
+                    <Text style={styles.label}>Batch</Text>
+                    <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
+                            <Picker
+                                selectedValue={batch}
+                                onValueChange={(itemValue) => {
+                                    setBatch(itemValue)
+                                }}
+                            >
+                                {Batch.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
                             </Picker>
                         </View>
                     </View>
@@ -199,7 +228,7 @@ const CreateStudent = () => {
                                             setISem(updatedArray);
                                         } else {
                                             // Create a new entry for subject and marks
-                                            const newEntry = { subject: item.subject, marks: e };
+                                            const newEntry = { subject: item.subject, marks: e, syllabus: item.syllabus, credits: item.credits, totalnoofhours: item.totalnoofhours };
                                             setISem(prevArray => [...prevArray, newEntry]);
                                         }
                                     }}
@@ -237,7 +266,7 @@ const CreateStudent = () => {
                                             setIISem(updatedArray);
                                         } else {
                                             // Create a new entry for subject and marks
-                                            const newEntry = { subject: item.subject, marks: e };
+                                            const newEntry = { subject: item.subject, marks: e, syllabus: item.syllabus, credits: item.credits, totalnoofhours: item.totalnoofhours };
                                             setIISem(prevArray => [...prevArray, newEntry]);
                                         }
                                     }}
@@ -275,7 +304,7 @@ const CreateStudent = () => {
                                             setIIISem(updatedArray);
                                         } else {
                                             // Create a new entry for subject and marks
-                                            const newEntry = { subject: item.subject, marks: e };
+                                            const newEntry = { subject: item.subject, marks: e, syllabus: item.syllabus, credits: item.credits, totalnoofhours: item.totalnoofhours };
                                             setIIISem(prevArray => [...prevArray, newEntry]);
                                         }
                                     }}
@@ -313,7 +342,7 @@ const CreateStudent = () => {
                                             setIVSem(updatedArray);
                                         } else {
                                             // Create a new entry for subject and marks
-                                            const newEntry = { subject: item.subject, marks: e };
+                                            const newEntry = { subject: item.subject, marks: e, syllabus: item.syllabus, credits: item.credits, totalnoofhours: item.totalnoofhours };
                                             setIVSem(prevArray => [...prevArray, newEntry]);
                                         }
                                     }}
@@ -351,7 +380,7 @@ const CreateStudent = () => {
                                             setVSem(updatedArray);
                                         } else {
                                             // Create a new entry for subject and marks
-                                            const newEntry = { subject: item.subject, marks: e };
+                                            const newEntry = { subject: item.subject, marks: e, syllabus: item.syllabus, credits: item.credits, totalnoofhours: item.totalnoofhours };
                                             setVSem(prevArray => [...prevArray, newEntry]);
                                         }
                                     }}
@@ -389,7 +418,7 @@ const CreateStudent = () => {
                                             setVISem(updatedArray);
                                         } else {
                                             // Create a new entry for subject and marks
-                                            const newEntry = { subject: item.subject, marks: e };
+                                            const newEntry = { subject: item.subject, marks: e, syllabus: item.syllabus, credits: item.credits, totalnoofhours: item.totalnoofhours };
                                             setVISem(prevArray => [...prevArray, newEntry]);
                                         }
                                     }}

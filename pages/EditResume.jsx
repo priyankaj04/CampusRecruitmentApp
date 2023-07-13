@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Entypo';
 import Iconz from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import { RadioButton } from 'react-native-paper';
-import { ResumeUpdation, ResumeDetailsByTalentID } from '../api';
+import { ResumeUpdation, ResumeDetailsByTalentID, GetStudentByEmail, TalentDetailsById } from '../api';
 import Checkbox from 'expo-checkbox';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -45,849 +45,244 @@ const EditResume = ({ navigation }) => {
 
 
   const ShowEducationCard = (props) => {
-
-    const [selectedLevel, setSelectedLevel] = useState('ug/pg');
-    const [college, setCollege] = useState('');
-    const [collegeD, setCollegeD] = useState('');
-    const [collegeP, setCollegeP] = useState('');
-    const [tenth, setTenth] = useState('');
-    const [sYear, setSYear] = useState(2023);
-    const [eYear, setEYear] = useState(2023);
-    const [sYearD, setSYearD] = useState(2023);
-    const [eYearD, setEYearD] = useState(2023);
-    const [sYearP, setSYearP] = useState(2023);
-    const [eYearP, setEYearP] = useState(2023);
-    const [degree, setDegree] = useState('');
-    const [stream, setStream] = useState('');
-    const [streamw, setStreamw] = useState('Science');
-    const [streamD, setStreamD] = useState('');
-    const [streamP, setStreamP] = useState('');
-    const [performanceS, setPerformanceS] = useState('');
-    const [performance, setPerformance] = useState('');
-    const [performanceST, setPerformanceST] = useState('');
-    const [performanceSTw, setPerformanceSTw] = useState('');
-    const [performanceT, setPerformanceT] = useState('');
-    const [performanceTw, setPerformanceTw] = useState('');
-    const [performanceSD, setPerformanceSD] = useState('');
-    const [performanceD, setPerformanceD] = useState('');
-    const [performanceSP, setPerformanceSP] = useState('');
-    const [performanceP, setPerformanceP] = useState('');
-    const [yearofcompletion, setYearofcompletion] = useState(2023);
-    const [yearofcompletionw, setYearofcompletionw] = useState(2023);
-    const [maticulationstatus, setMaticulationstatus] = useState('');
-    const [maticulationstatusw, setMaticulationstatusw] = useState('');
-    const [board, setBoard] = useState('');
-    const [boardw, setBoardw] = useState('');
-    const [schoolw, setSchoolw] = useState('');
-    const [school, setSchool] = useState('');
-    const [save, setSave] = useState(false);
-    const [savePro, setSavePro] = useState(false);
-
+    const [student, setStudent] = useState(null);
+    const [show, setShow] = useState(null);
 
     useEffect(() => {
-      if (resumeDetails.education && resumeDetails.education.length && resumeDetails.education.length > 0) {
-        resumeDetails.education.map((item) => {
-          console.log(item);
-          if (item.level == 'ug/pg') {
-            setCollege(item.college);
-            setSYear(item.startYear);
-            setEYear(item.endYear);
-            setDegree(item.degree);
-            setPerformance(item.performance);
-            setPerformanceS(item.performanceScale);
-            setStream(item.stream);
-          } else if (item.level == '10th') {
-            setMaticulationstatus(item.maticulationstatus);
-            setBoard(item.board);
-            setSchool(item.school);
-            setYearofcompletion(item.yearofcompletion);
-            setPerformanceT(item.performance)
-            setPerformanceST(item.performanceScale);
-          } else if (item.level == '12th') {
-            setMaticulationstatusw(item.maticulationstatus);
-            setBoardw(item.board);
-            setSchoolw(item.school);
-            setStreamw(item.stream);
-            setYearofcompletionw(item.yearofcompletion);
-            setPerformanceTw(item.performance)
-            setPerformanceSTw(item.performanceScale);
-          } else if (item.level === 'diploma') {
-            setCollegeD(item.college);
-            setSYearD(item.startYear);
-            setEYearD(item.endYear);
-            setPerformanceD(item.performance);
-            setPerformanceSD(item.performanceScale);
-            setStreamD(item.stream);
-          } else if (item.level === 'phd') {
-            setCollegeP(item.college);
-            setSYearP(item.startYear);
-            setEYearP(item.endYear);
-            setPerformanceP(item.performance);
-            setPerformanceSP(item.performanceScale);
-            setStreamP(item.stream);
-          }
-        })
-      }
-    }, [props.resumeDetails])
-
-    const performanceScale = [{
-      label: 'Percentage',
-      value: 'percentage'
-    }, {
-      label: 'CGPA (/10)',
-      value: 'cgpa(/10)'
-    }, {
-      label: 'CGPA (/9)',
-      value: 'cgpa(/9)'
-    }, {
-      label: 'CGPA (/8)',
-      value: 'cgpa(/8)'
-    }, {
-      label: 'CGPA (/7)',
-      value: 'cgpa(/7)'
-    }, {
-      label: 'CGPA (/5)',
-      value: 'cgpa(/5)'
-    }, {
-      label: 'CGPA (/4)',
-      value: 'cgpa(/4)'
-    }]
-
-    const startYear = [
-      { "label": "1978", "value": 1978 },
-      { "label": "1979", "value": 1979 },
-      { "label": "1980", "value": 1980 },
-      { "label": "1981", "value": 1981 },
-      { "label": "1982", "value": 1982 },
-      { "label": "1983", "value": 1983 },
-      { "label": "1984", "value": 1984 },
-      { "label": "1985", "value": 1985 },
-      { "label": "1986", "value": 1986 },
-      { "label": "1987", "value": 1987 },
-      { "label": "1988", "value": 1988 },
-      { "label": "1989", "value": 1989 },
-      { "label": "1990", "value": 1990 },
-      { "label": "1991", "value": 1991 },
-      { "label": "1992", "value": 1992 },
-      { "label": "1993", "value": 1993 },
-      { "label": "1994", "value": 1994 },
-      { "label": "1995", "value": 1995 },
-      { "label": "1996", "value": 1996 },
-      { "label": "1997", "value": 1997 },
-      { "label": "1998", "value": 1998 },
-      { "label": "1999", "value": 1999 },
-      { "label": "2000", "value": 2000 },
-      { "label": "2001", "value": 2001 },
-      { "label": "2002", "value": 2002 },
-      { "label": "2003", "value": 2003 },
-      { "label": "2004", "value": 2004 },
-      { "label": "2005", "value": 2005 },
-      { "label": "2006", "value": 2006 },
-      { "label": "2007", "value": 2007 },
-      { "label": "2008", "value": 2008 },
-      { "label": "2009", "value": 2009 },
-      { "label": "2010", "value": 2010 },
-      { "label": "2011", "value": 2011 },
-      { "label": "2012", "value": 2012 },
-      { "label": "2013", "value": 2013 },
-      { "label": "2014", "value": 2014 },
-      { "label": "2015", "value": 2015 },
-      { "label": "2016", "value": 2016 },
-      { "label": "2017", "value": 2017 },
-      { "label": "2018", "value": 2018 },
-      { "label": "2019", "value": 2019 },
-      { "label": "2020", "value": 2020 },
-      { "label": "2021", "value": 2021 },
-      { "label": "2022", "value": 2022 },
-      { "label": "2023", "value": 2023 }]
-
-    const endYear = [
-      { "label": "1978", "value": 1978 },
-      { "label": "1979", "value": 1979 },
-      { "label": "1980", "value": 1980 },
-      { "label": "1981", "value": 1981 },
-      { "label": "1982", "value": 1982 },
-      { "label": "1983", "value": 1983 },
-      { "label": "1984", "value": 1984 },
-      { "label": "1985", "value": 1985 },
-      { "label": "1986", "value": 1986 },
-      { "label": "1987", "value": 1987 },
-      { "label": "1988", "value": 1988 },
-      { "label": "1989", "value": 1989 },
-      { "label": "1990", "value": 1990 },
-      { "label": "1991", "value": 1991 },
-      { "label": "1992", "value": 1992 },
-      { "label": "1993", "value": 1993 },
-      { "label": "1994", "value": 1994 },
-      { "label": "1995", "value": 1995 },
-      { "label": "1996", "value": 1996 },
-      { "label": "1997", "value": 1997 },
-      { "label": "1998", "value": 1998 },
-      { "label": "1999", "value": 1999 },
-      { "label": "2000", "value": 2000 },
-      { "label": "2001", "value": 2001 },
-      { "label": "2002", "value": 2002 },
-      { "label": "2003", "value": 2003 },
-      { "label": "2004", "value": 2004 },
-      { "label": "2005", "value": 2005 },
-      { "label": "2006", "value": 2006 },
-      { "label": "2007", "value": 2007 },
-      { "label": "2008", "value": 2008 },
-      { "label": "2009", "value": 2009 },
-      { "label": "2010", "value": 2010 },
-      { "label": "2011", "value": 2011 },
-      { "label": "2012", "value": 2012 },
-      { "label": "2013", "value": 2013 },
-      { "label": "2014", "value": 2014 },
-      { "label": "2015", "value": 2015 },
-      { "label": "2016", "value": 2016 },
-      { "label": "2017", "value": 2017 },
-      { "label": "2018", "value": 2018 },
-      { "label": "2019", "value": 2019 },
-      { "label": "2020", "value": 2020 },
-      { "label": "2021", "value": 2021 },
-      { "label": "2022", "value": 2022 },
-      { "label": "2023", "value": 2023 },
-      { "label": "2024", "value": 2024 },
-      { "label": "2025", "value": 2025 },
-      { "label": "2026", "value": 2026 },
-      { "label": "2027", "value": 2027 },
-      { "label": "2028", "value": 2028 }]
-
-
-    const handleClick = () => {
-      let reqbody = {};
-      setSave(true);
-      if (!props.resumeDetails.education || !props.resumeDetails.education.length || props.resumeDetails.education.length === 0) {
-        if (selectedLevel === 'ug/pg') {
-          reqbody.education = [{
-            level: selectedLevel,
-            college,
-            startYear: sYear,
-            endYear: eYear,
-            degree: degree,
-            stream: stream,
-            performanceScale: performanceS,
-            performance: performance
-          }]
-        } else if (selectedLevel === '10th') {
-          reqbody.education = [{
-            level: selectedLevel,
-            maticulationstatus,
-            yearofCompletion: yearofcompletion,
-            board,
-            school,
-            performanceScale: performanceST,
-            performance: performanceT
-          }]
-        } else if (selectedLevel === '12th') {
-          reqbody.education = [{
-            level: selectedLevel,
-            maticulationstatus: maticulationstatusw,
-            yearofCompletion: yearofcompletionw,
-            board: boardw,
-            school: schoolw,
-            performanceScale: performanceSTw,
-            performance: performanceTw,
-            stream: streamw
-          }]
-        } else if (selectedLevel === 'diploma') {
-          reqbody.education = [{
-            level: selectedLevel,
-            college: collegeD,
-            startYear: sYearD,
-            endYear: eYearD,
-            stream: streamD,
-            performanceScale: performanceSD,
-            performance: performanceD
-          }]
-        }
-        else if (selectedLevel === 'phd') {
-          reqbody.education = [{
-            level: selectedLevel,
-            college: collegeP,
-            startYear: sYearP,
-            endYear: eYearP,
-            stream: streamP,
-            performanceScale: performanceSP,
-            performance: performanceP
-          }]
-        }
-      } else {
-
-        const newData = [...props.resumeDetails.education];
-        const existingIndex = newData.findIndex((item) => item.level === selectedLevel);
-
-
-        if (existingIndex !== -1) {
-
-          if (selectedLevel === 'ug/pg') {
-            newData[existingIndex].college = college
-            newData[existingIndex].startYear = sYear
-            newData[existingIndex].endYear = eYear
-            newData[existingIndex].degree = degree
-            newData[existingIndex].stream = stream
-            newData[existingIndex].performanceScale = performanceS
-            newData[existingIndex].performance = performance
-          } else if (selectedLevel === '10th') {
-            newData[existingIndex].level = selectedLevel;
-            newData[existingIndex].maticulationstatus = maticulationstatus
-            newData[existingIndex].yearofCompletion = yearofcompletion
-            newData[existingIndex].board = board
-            newData[existingIndex].school = school
-            newData[existingIndex].performanceScale = performanceST
-            newData[existingIndex].performance = performanceT
-          } else if (selectedLevel === '12th') {
-            newData[existingIndex].level = selectedLevel;
-            newData[existingIndex].maticulationstatus = maticulationstatusw
-            newData[existingIndex].yearofCompletion = yearofcompletionw
-            newData[existingIndex].board = boardw
-            newData[existingIndex].school = schoolw
-            newData[existingIndex].performanceScale = performanceSTw
-            newData[existingIndex].performance = performanceTw
-            newData[existingIndex].stream = streamw
-          } else if (selectedLevel === 'diploma') {
-            newData[existingIndex].level = selectedLevel
-            newData[existingIndex].college = collegeD
-            newData[existingIndex].startYear = sYearD
-            newData[existingIndex].endYear = eYearD
-            newData[existingIndex].stream = streamD
-            newData[existingIndex].performanceScale = performanceSD
-            newData[existingIndex].performance = performanceD
-          }
-          else if (selectedLevel === 'phd') {
-            newData[existingIndex].level = selectedLevel
-            newData[existingIndex].college = collegeP
-            newData[existingIndex].startYear = sYearP
-            newData[existingIndex].endYear = eYearP
-            newData[existingIndex].stream = streamP
-            newData[existingIndex].performanceScale = performanceSP
-            newData[existingIndex].performance = performanceP
-          }
-          reqbody.education = newData;
-        } else {
-          if (selectedLevel === 'ug/pg') {
-            newData.push({
-              level: selectedLevel,
-              college,
-              startYear: sYear,
-              endYear: eYear,
-              degree: degree,
-              stream: stream,
-              performanceScale: performanceS,
-              performance: performance
-            })
-          } else if (selectedLevel === '10th') {
-            newData.push({
-              level: selectedLevel,
-              maticulationstatus,
-              yearofCompletion: yearofcompletion,
-              board,
-              school,
-              performanceScale: performanceST,
-              performance: performanceT
-            })
-          } else if (selectedLevel === '12th') {
-            newData.push({
-              level: selectedLevel,
-              maticulationstatus: maticulationstatusw,
-              yearofCompletion: yearofcompletionw,
-              board: boardw,
-              school: schoolw,
-              performanceScale: performanceSTw,
-              performance: performanceTw
-            })
-          } else if (selectedLevel === 'diploma') {
-            newData.push({
-              level: selectedLevel,
-              college: collegeD,
-              startYear: sYearD,
-              endYear: eYearD,
-              stream: streamD,
-              performanceScale: performanceSD,
-              performance: performanceD
-            })
-          } else if (selectedLevel === 'phd') {
-            newData.push({
-              level: selectedLevel,
-              college: collegeP,
-              startYear: sYearP,
-              endYear: eYearP,
-              stream: streamP,
-              performanceScale: performanceSP,
-              performance: performanceP
-            })
-          }
-          reqbody.education = newData;
-        }
-      }
-
-      ResumeUpdation(talent_id, reqbody).then((res) => {
-        console.log(res);
+      TalentDetailsById(talent_id).then((res) => {
         if (res.status) {
-          //props.setShowEducation(false);
-          props.setFetch(!props.fetch)
+          GetStudentByEmail(res.data[0].email).then((res) => {
+            if (res.status) {
+              setStudent(res.data[0]);
+            }
+          })
         }
-        setSave(false);
       })
-    }
-
-    const handleErase = () => {
-      setSavePro(true);
-      let data = props.resumeDetails.education.filter((item) => item.level != selectedLevel);
-      let reqbody = {};
-      reqbody.education = data;
-      ResumeUpdation(talent_id, reqbody).then((res) => {
-        console.log(res);
-        if (res.status) {
-          //props.setShowEducation(false);
-          props.setFetch(!props.fetch)
-        }
-        setSavePro(false);
-      })
-    }
-
+    }, [])
 
     return (
       <View>
-        <Text style={styles.label}>Select Level</Text>
-        <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
-          <Picker
-            //ref={pickerRef}
-            selectedValue={selectedLevel}
-            style={{}}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedLevel(itemValue)
-            }>
-            <Picker.Item label="Graduation/Post graduation details" value="ug/pg" />
-            <Picker.Item label="X(secondary) details" value="10th" />
-            <Picker.Item label="XII(senior secondary) details" value="12th" />
-            <Picker.Item label="Diploma details" value="diploma" />
-            <Picker.Item label="PhD details" value="phd" />
-          </Picker>
+        {student && student.subject_marks && <View>
+          <Text>{student.degree} - </Text>
+          <Text>{student.semester} Semester - {student.cgpa} CGPA</Text>
+          {student.backlog_number && <Text>{student.backlog_number} backlogs - {student.backlog_subject}</Text>}
+          {
+            (student.semester == 'I' || student.semester == 'II' || student.semester == 'III' || student.semester == 'IV' || student.semester == 'V' || student.semester == 'VI') && <View>
+              <Text style={styles.header}>Marks Card</Text>
+              <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>I semester</Text>
+              {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].I && student.subject_marks[0].I.length && student.subject_marks[0].I.map((itemss, index) =>
+              (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                  <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                  <TouchableOpacity>
+                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                      <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                  </TouchableOpacity>
+                </View>
+                {show == itemss.subject &&
+                  <View>
+                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                    <Text>Credits - {itemss.credits}</Text>
+                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                      itemss.syllabus.map((it, ind) => (
+                        <View key={ind}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                            <Text>Chapter {ind + 1}: {it.unit}</Text>
+                            <Text>No of hours: {it.noofhours}</Text>
+                          </View>
+                          <Text>Topics : {it.topics}</Text>
+                        </View>
+                      ))}
+                  </View>
+                }
+              </View>
+              ))}
+            </View>
+          }
+          {
+            (student.semester == 'II' || student.semester == 'III' || student.semester == 'IV' || student.semester == 'V' || student.semester == 'VI') && <View>
+              <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>II semester</Text>
+              {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].II && student.subject_marks[0].II.length && student.subject_marks[0].II.map((itemss, index) =>
+              (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                  <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                  <TouchableOpacity>
+                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                      <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                  </TouchableOpacity>
+                </View>
+                {show == itemss.subject &&
+                  <View>
+                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                    <Text>Credits - {itemss.credits}</Text>
+                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                      itemss.syllabus.map((it, ind) => (
+                        <View key={ind}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                            <Text>Chapter {ind + 1}: {it.unit}</Text>
+                            <Text>No of hours: {it.noofhours}</Text>
+                          </View>
+                          <Text>Topics : {it.topics}</Text>
+                        </View>
+                      ))}
+                  </View>
+                }
+              </View>
+              )
+              )}
+            </View>
+          }
+          {
+            (student.semester == 'III' || student.semester == 'IV' || student.semester == 'V' || student.semester == 'VI') && <View>
+              <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>III semester</Text>
+              {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].III && student.subject_marks[0].III.length && student.subject_marks[0].III.map((itemss, index) =>
+              (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                  <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                  <TouchableOpacity>
+                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                      <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                  </TouchableOpacity>
+                </View>
+                {show == itemss.subject &&
+                  <View>
+                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                    <Text>Credits - {itemss.credits}</Text>
+                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                      itemss.syllabus.map((it, ind) => (
+                        <View key={ind}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                            <Text>Chapter {ind + 1}: {it.unit}</Text>
+                            <Text>No of hours: {it.noofhours}</Text>
+                          </View>
+                          <Text>Topics : {it.topics}</Text>
+                        </View>
+                      ))}
+                  </View>
+                }
+              </View>
+              )
+              )}
+            </View>
+          }
+          {
+            (student.semester == 'IV' || student.semester == 'V' || student.semester == 'VI') && <View>
+              <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>IV semester</Text>
+              {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].IV && student.subject_marks[0].IV.length && student.subject_marks[0].IV.map((itemss, index) =>
+              (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                  <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                  <TouchableOpacity>
+                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                      <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                  </TouchableOpacity>
+                </View>
+                {show == itemss.subject &&
+                  <View>
+                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                    <Text>Credits - {itemss.credits}</Text>
+                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                      itemss.syllabus.map((it, ind) => (
+                        <View key={ind}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                            <Text>Chapter {ind + 1}: {it.unit}</Text>
+                            <Text>No of hours: {it.noofhours}</Text>
+                          </View>
+                          <Text>Topics : {it.topics}</Text>
+                        </View>
+                      ))}
+                  </View>
+                }
+              </View>
+              )
+              )}
+            </View>
+          }
+          {
+            (student.semester == 'V' || student.semester == 'VI') && <View>
+              <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>V semester</Text>
+              {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].V && student.subject_marks[0].V.length && student.subject_marks[0].V.map((itemss, index) =>
+              (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                  <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                  <TouchableOpacity>
+                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                      <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                  </TouchableOpacity>
+                </View>
+                {show == itemss.subject &&
+                  <View>
+                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                    <Text>Credits - {itemss.credits}</Text>
+                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                      itemss.syllabus.map((it, ind) => (
+                        <View key={ind}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                            <Text>Chapter {ind + 1}: {it.unit}</Text>
+                            <Text>No of hours: {it.noofhours}</Text>
+                          </View>
+                          <Text>Topics : {it.topics}</Text>
+                        </View>
+                      ))}
+                  </View>
+                }
+              </View>
+              )
+              )}
+            </View>
+          }
+          {
+            (student.semester == 'VI') && <View>
+              <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>VI semester</Text>
+              {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].VI && student.subject_marks[0].VI.length && student.subject_marks[0].VI.map((itemss, index) =>
+              (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                  <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                  <TouchableOpacity>
+                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                      <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                  </TouchableOpacity>
+                </View>
+                {show == itemss.subject &&
+                  <View>
+                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                    <Text>Credits - {itemss.credits}</Text>
+                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                      itemss.syllabus.map((it, ind) => (
+                        <View key={ind}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                            <Text>Chapter {ind + 1}: {it.unit}</Text>
+                            <Text>No of hours: {it.noofhours}</Text>
+                          </View>
+                          <Text>Topics : {it.topics}</Text>
+                        </View>
+                      ))}
+                  </View>
+                }
+              </View>
+              )
+              )}
+            </View>
+          }
         </View>
-        {selectedLevel && selectedLevel === 'ug/pg' && <View>
-          <Text style={styles.label}>College</Text>
-          <TextInput
-            style={styles.textField}
-            value={college}
-            onChangeText={(e) => { setCollege(e) }}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Start Year</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={sDateRef}
-                  selectedValue={sYear}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setSYear(itemValue)
-                  }>
-                  {startYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.label}>End Year</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={eDateRef}
-                  selectedValue={eYear}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setEYear(itemValue)
-                  }>
-                  {endYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-          </View>
-          <Text style={styles.label}>Degree</Text>
-          <TextInput
-            style={styles.textField}
-            value={degree}
-            onChangeText={(e) => { setDegree(e) }}
-          />
-          <Text style={styles.label}>Stream</Text>
-          <TextInput
-            style={styles.textField}
-            value={stream}
-            onChangeText={(e) => { setStream(e) }}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Performance Scale</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={pScaleRef}
-                  selectedValue={performanceS}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setPerformanceS(itemValue)
-                  }>
-                  {performanceScale.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.label}>Performance</Text>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 165,
-                  padding: 8,
-                  backgroundColor: 'whitesmoke',
-                  fontSize: 16,
-                  marginTop: 0,
-                  borderRadius: 25,
-                  marginLeft: 10
-                }}
-                value={performance}
-                onChangeText={(e) => { setPerformance(e) }}
-              />
-            </View></View>
-        </View>}
 
-
-        {selectedLevel && selectedLevel === '10th' && <View>
-          <Text style={styles.label}>Matriculation Status</Text>
-          <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <RadioButton
-                value="pursuing"
-                label="Pursuing"
-                status={maticulationstatus === 'pursuing' ? 'checked' : 'unchecked'}
-                onPress={() => { setMaticulationstatus('pursuing'); }}
-              />
-              <Text style={{ textAlign: 'center' }}>Pursuing</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <RadioButton
-                value="completed"
-                label="Completed"
-                status={maticulationstatus === 'completed' ? 'checked' : 'unchecked'}
-                onPress={() => { setMaticulationstatus('completed') }}
-              />
-              <Text style={{ textAlign: 'center' }}>Completed</Text>
-            </View>
-          </View>
-          {maticulationstatus === 'completed' ? <Text style={styles.label}>Year of completion</Text> : <Text style={styles.label}>Expected year of completion</Text>}
-          <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
-            <Picker
-              //ref={sDateRef}
-              selectedValue={yearofcompletion}
-              onValueChange={(itemValue, itemIndex) =>
-                setYearofcompletion(itemValue)
-              }>
-              {endYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-            </Picker>
-          </View>
-          <Text style={styles.label}>Board</Text>
-          <TextInput
-            style={styles.textField}
-            value={board}
-            onChangeText={(e) => { setBoard(e) }}
-          />
-          <Text style={styles.label}>School</Text>
-          <TextInput
-            style={styles.textField}
-            value={school}
-            onChangeText={(e) => { setSchool(e) }}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Performance Scale</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={pScaleRef}
-                  selectedValue={performanceST}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setPerformanceST(itemValue)
-                  }>
-                  {performanceScale.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.label}>Performance</Text>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 165,
-                  padding: 8,
-                  backgroundColor: 'whitesmoke',
-                  fontSize: 16,
-                  marginTop: 0,
-                  borderRadius: 25,
-                  marginLeft: 10
-                }}
-                value={performanceT}
-                onChangeText={(e) => { setPerformanceT(e) }}
-              />
-            </View></View>
-        </View>}
-        {selectedLevel && selectedLevel === '12th' && <View>
-          <Text style={styles.label}>Matriculation Status</Text>
-          <View style={{ flexDirection: 'row', marginLeft: 10 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <RadioButton
-                value="pursuing"
-                label="Pursuing"
-                status={maticulationstatusw === 'pursuing' ? 'checked' : 'unchecked'}
-                onPress={() => { setMaticulationstatusw('pursuing'); }}
-              />
-              <Text style={{ textAlign: 'center' }}>Pursuing</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <RadioButton
-                value="completed"
-                label="Completed"
-                status={maticulationstatusw === 'completed' ? 'checked' : 'unchecked'}
-                onPress={() => { setMaticulationstatusw('completed') }}
-              />
-              <Text style={{ textAlign: 'center' }}>Completed</Text>
-            </View>
-          </View>
-          {maticulationstatusw === 'completed' ? <Text style={styles.label}>Year of completion</Text> : <Text style={styles.label}>Expected year of completion</Text>}
-          <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
-            <Picker
-              //ref={sDateRef}
-              selectedValue={yearofcompletionw}
-              onValueChange={(itemValue, itemIndex) =>
-                setYearofcompletionw(itemValue)
-              }>
-              {endYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-            </Picker>
-          </View>
-          <Text style={styles.label}>Board</Text>
-          <TextInput
-            style={styles.textField}
-            value={boardw}
-            onChangeText={(e) => { setBoardw(e) }}
-          />
-          <Text style={styles.label}>Stream</Text>
-          <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 360, marginLeft: 10 }}>
-            <Picker
-              //ref={sDateRef}
-              selectedValue={streamw}
-              onValueChange={(itemValue, itemIndex) =>
-                setStreamw(itemValue)
-              }>
-              <Picker.Item label="Science" value="Science" />
-              <Picker.Item label="Commerce" value="Commerce" />
-              <Picker.Item label="Arts" value="Arts" />
-            </Picker>
-          </View>
-          <Text style={styles.label}>School</Text>
-          <TextInput
-            style={styles.textField}
-            value={schoolw}
-            onChangeText={(e) => { setSchoolw(e) }}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Performance Scale</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={pScaleRef}
-                  selectedValue={performanceSTw}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setPerformanceSTw(itemValue)
-                  }>
-                  {performanceScale.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.label}>Performance</Text>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 165,
-                  padding: 8,
-                  backgroundColor: 'whitesmoke',
-                  fontSize: 16,
-                  marginTop: 0,
-                  borderRadius: 25,
-                  marginLeft: 10
-                }}
-                value={performanceTw}
-                onChangeText={(e) => { setPerformanceTw(e) }}
-              />
-            </View></View>
-        </View>}
-        {selectedLevel && (selectedLevel === 'diploma') && <View>
-          <Text style={styles.label}>College</Text>
-          <TextInput
-            style={styles.textField}
-            value={collegeD}
-            onChangeText={(e) => { setCollegeD(e) }}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Start Year</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={sDateRef}
-                  selectedValue={sYearD}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setSYearD(itemValue)
-                  }>
-                  {startYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.label}>End Year</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={eDateRef}
-                  selectedValue={eYearD}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setEYearD(itemValue)
-                  }>
-                  {endYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-          </View>
-          <Text style={styles.label}>Stream</Text>
-          <TextInput
-            style={styles.textField}
-            value={streamD}
-            onChangeText={(e) => { setStreamD(e) }}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Performance Scale</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={pScaleRef}
-                  selectedValue={performanceSD}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setPerformanceSD(itemValue)
-                  }>
-                  {performanceScale.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.label}>Performance</Text>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 165,
-                  padding: 8,
-                  backgroundColor: 'whitesmoke',
-                  fontSize: 16,
-                  marginTop: 0,
-                  borderRadius: 25,
-                  marginLeft: 10
-                }}
-                value={performanceD}
-                onChangeText={(e) => { setPerformanceD(e) }}
-              />
-            </View></View>
-        </View>}
-        {selectedLevel && (selectedLevel === 'phd') && <View>
-          <Text style={styles.label}>College</Text>
-          <TextInput
-            style={styles.textField}
-            value={collegeP}
-            onChangeText={(e) => { setCollegeP(e) }}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Start Year</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={sDateRef}
-                  selectedValue={sYearP}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setSYearP(itemValue)
-                  }>
-                  {startYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.label}>End Year</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={eDateRef}
-                  selectedValue={eYearP}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setEYearP(itemValue)
-                  }>
-                  {endYear.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-          </View>
-          <Text style={styles.label}>Stream</Text>
-          <TextInput
-            style={styles.textField}
-            value={streamP}
-            onChangeText={(e) => { setStreamP(e) }}
-          />
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <View>
-              <Text style={styles.label}>Performance Scale</Text>
-              <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 165, marginLeft: 10 }}>
-                <Picker
-                  //ref={pScaleRef}
-                  selectedValue={performanceSP}
-                  onValueChange={(itemValue, itemIndex) =>
-                    setPerformanceSP(itemValue)
-                  }>
-                  {performanceScale.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
-                </Picker>
-              </View>
-            </View>
-            <View>
-              <Text style={styles.label}>Performance</Text>
-              <TextInput
-                style={{
-                  height: 50,
-                  borderColor: 'transparent',
-                  borderWidth: 1,
-                  width: 165,
-                  padding: 8,
-                  backgroundColor: 'whitesmoke',
-                  fontSize: 16,
-                  marginTop: 0,
-                  borderRadius: 25,
-                  marginLeft: 10
-                }}
-                value={performanceP}
-                onChangeText={(e) => { setPerformanceP(e) }}
-              />
-            </View></View>
-        </View>}
-        {save ? <View style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-          <ActivityIndicator size="large" color="#407BFF" />
-        </View> : <TouchableOpacity style={styles.btn} onPress={() => handleClick()}>
-          <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>Save</Text>
-        </TouchableOpacity>
         }
-        {savePro ? <View style={{
-          justifyContent: 'center',
+        <View style={{
+          width: '95%',
+          margin: 10,
           alignItems: 'center',
+          padding: 5,
         }}>
-          <ActivityIndicator size="large" color="#407BFF" />
-        </View> : <TouchableOpacity onPress={() => handleErase()}>
-          <Text style={{ color: 'red', fontSize: 14, textAlign: 'center', fontWeight: 'bold' }}>Erase Data</Text>
-        </TouchableOpacity>
-        }
+          <Text style={{ fontStyle: 'italic', color: '#407BFF', fontSize: 12 }}>
+            <Icon name="info-with-circle" size={12} color='#407BFF' style={{ marginRight: 10 }} />
+            {' '}Any queries or changes in your marks details please reach out to us through Contact Us page.</Text>
+        </View>
       </View>
     )
   }
@@ -2050,6 +1445,27 @@ const EditResume = ({ navigation }) => {
           <Icon name="info-with-circle" size={12} color='#407BFF' style={{ marginRight: 10 }} />
           Whenever you apply to an internship or job, this is the resume that the employer will see,
           always make sure it is up to date.</Text>
+      </View>
+
+      <View style={{
+        backgroundColor: 'white',
+        borderRadius: 10,
+        margin: 10,
+        minHeight: 50,
+        padding: 10,
+      }}>
+        <View style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between'
+        }}>
+          <Text style={styles.header}>Education Details</Text>
+          {showEducation ? <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowEducation(false) }}>
+            <Icon name="minus" size={28} color='#407BFF' />
+          </TouchableOpacity> : <TouchableOpacity style={{ justifyContent: 'center' }} onPress={() => { setShowEducation(true) }}>
+            <Icon name="plus" size={28} color='#407BFF' />
+          </TouchableOpacity>}
+        </View>
+        {showEducation && <ShowEducationCard setShowEducation={setShowEducation} />}
       </View>
 
       <View style={{

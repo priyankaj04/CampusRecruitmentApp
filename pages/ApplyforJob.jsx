@@ -43,6 +43,7 @@ const ApplyforJob = ({ route, navigation }) => {
         }
         console.log(reqbody);
         ApplyingForApplication(reqbody).then((res) => {
+            console.log("adsdfsdf", res);
             if (res.status) {
                 navigation.goBack();
             }

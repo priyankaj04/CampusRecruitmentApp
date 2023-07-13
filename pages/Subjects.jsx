@@ -43,7 +43,6 @@ const Subjects = ({ navigation }) => {
                 setEdit(false);
             }
             GetSubjects(degree, year).then((res) => {
-                console.log(res);
                 if (res.status) {
                     console.log(res.data[0].subject);
                     console.log(res.data[0]);
@@ -65,13 +64,14 @@ const Subjects = ({ navigation }) => {
         }
     }, [dept]);
 
-    const Degrees = [
-        { value: 'BCA', label: 'BCA' },
-        { value: 'BSc', label: 'BSc' },
-        { value: 'BCom', label: 'BCom' },
-        { value: 'BA', label: 'BA' },
-        { value: 'BVoc', label: 'BVoc' }
-    ]
+    const Degree = [
+        { label: 'Bachelore of Science', value: 'BSc' },
+        { label: 'Bachelore of Computer Application', value: 'BCA' },
+        { label: 'Bachelore of Vocational Course - IT', value: 'BVoc' },
+        { label: 'Bachelore of Commerce', value: 'BCom' },
+        { label: 'Bachelore of Business Administration', value: 'BBA' },
+        { label: 'Bachelore of Arts', value: 'BA' }
+    ];
 
     const AcademicYear = [
         { value: '2019-2022', label: '2019-2022' },
@@ -113,7 +113,6 @@ const Subjects = ({ navigation }) => {
             setEdit(false);
         }
         GetSubjects(degree, year).then((res) => {
-            console.log(res);
             if (res.status) {
                 console.log(res.data[0].subject);
                 setISem(res.data[0].subject.isem)
@@ -168,7 +167,7 @@ const Subjects = ({ navigation }) => {
                             onChangePicker(year, itemValue);
                         }
                         }>
-                        {Degrees.map((item) => <Picker.Item key={item.value} label={item.value} value={item.value} />)}
+                        {Degree.map((item) => <Picker.Item key={item.value} label={item.value} value={item.value} />)}
                     </Picker>
                 </View>
                 <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 180, marginLeft: 5, marginTop: 10 }}>

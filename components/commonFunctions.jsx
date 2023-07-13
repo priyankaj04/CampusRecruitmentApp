@@ -159,13 +159,29 @@ export const EditStudentDetails = ({ item }) => {
     const [ivsem, setIVSem] = useState(item.subject_marks[3].IV);
     const [vsem, setVSem] = useState(item.subject_marks[4].V);
     const [visem, setVISem] = useState(item.subject_marks[5].VI);
+    const [batch, setBatch] = useState(item.batch);
 
     const Streams = ['Science', 'Computer Science', 'Commerce', 'Arts'];
     const StreamsCollege = ['Science', 'Commerce', 'Arts'];
-    const Degree = ['Bachelore of Science', 'Bachelore of Computer Application', 'Bachelore of Commerce', 'Bachelore of Arts'];
+    const Degree = [
+        { label: 'Bachelore of Science', value: 'BSc' },
+        { label: 'Bachelore of Computer Application', value: 'BCA' },
+        { label: 'Bachelore of Vocational Course - IT', value: 'BVoc' },
+        { label: 'Bachelore of Commerce', value: 'BCom' },
+        { label: 'Bachelore of Business Administration', value: 'BBA' },
+        { label: 'Bachelore of Arts', value: 'BA' }
+    ];
     const Semester = ['I', 'II', 'III', 'IV', 'V', 'VI'];
     const Classes = [
         { value: 'III BCA A' }, { value: 'III BCA B' }, { value: 'II BCA A' }, { value: 'II BCA B' }, { value: 'I BCA A' }, { value: 'I BCA B' }
+    ]
+
+    const Batch = [
+        { value: '2019-2022', label: '2019-2022' },
+        { value: '2020-2023', label: '2020-2023' },
+        { value: '2021-2024', label: '2021-2024' },
+        { value: '2022-2025', label: '2022-2025' },
+        { value: '2023-2026', label: '2023-2026' }
     ]
 
     const showDialog = () => {
@@ -196,19 +212,10 @@ export const EditStudentDetails = ({ item }) => {
                 { IV: ivsem },
                 { V: vsem },
                 { VI: visem }
-            ]
+            ],
+            batch
         }
-
-        console.log([
-            { I: isem },
-            { II: iisem },
-            { III: iiisem },
-            { IV: ivsem },
-            { V: vsem },
-            { VI: visem }
-        ])
         UpdateStudentDetailsById(reqbody, item.student_id).then((res) => {
-            console.log("response", res);
             if (res.status) {
                 setDialogVisible(false);
             }
@@ -252,7 +259,20 @@ export const EditStudentDetails = ({ item }) => {
                                         setDegree(itemValue)
                                     }
                                     }>
-                                    {Degree.map((item) => <Picker.Item key={item} label={item} value={item} />)}
+                                    {Degree.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
+                                </Picker>
+                            </View>
+                        </View>
+                        <Text style={styles.label}>Batch</Text>
+                        <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                            <View style={{ backgroundColor: 'whitesmoke', borderRadius: 25, width: 300, marginLeft: 10 }}>
+                                <Picker
+                                    selectedValue={batch}
+                                    onValueChange={(itemValue) => {
+                                        setBatch(itemValue)
+                                    }
+                                    }>
+                                    {Batch.map((item) => <Picker.Item key={item.value} label={item.label} value={item.value} />)}
                                 </Picker>
                             </View>
                         </View>
@@ -919,7 +939,7 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
         if (tid) {
             TalentDetailsById(tid).then((res) => {
                 if (res.status) {
-                    //console.log("jfad", res.data[0].saved)
+                    console.log("jfad", res.data[0].saved)
                     if (res.data[0].saved && res.data[0].saved.length > 0) {
                         let value = res.data[0].saved.indexOf(item.application_id);
                         if (value >= 0) {
@@ -937,12 +957,14 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
         if (tid) {
             TalentDetailsById(tid).then((res) => {
                 if (res.status) {
-                    let value = res.data[0].saved.indexOf(item.application_id);
-                    if (value >= 0) {
-                        setSaved(true);
+                    if (res.data[0].saved && res.data[0].saved.length > 0) {
+                        let value = res.data[0].saved.indexOf(item.application_id);
+                        if (value >= 0) {
+                            setSaved(true);
 
-                    } else {
-                        setSaved(false);
+                        } else {
+                            setSaved(false);
+                        }
                     }
                 }
             })
@@ -1278,6 +1300,7 @@ export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
     const [remarks, setRemarks] = useState('');
     const [interview, setInterview] = useState({});
     const [applicantsDetails, setApplicantsDetails] = useState({});
+    const [show, setShow] = useState('');
 
     useEffect(() => {
         if (item) {
@@ -1292,7 +1315,6 @@ export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
                     setTalent(res.data[0]);
                     GetStudentByEmail(res.data[0].email).then((res) => {
                         if (res.status) {
-                            //console.log(res.data[0])
                             setStudent(res.data[0]);
                         }
                     })
@@ -1475,6 +1497,219 @@ export const ViewTalentCard = ({ item, fetch, setFetch, navigation }) => {
                                 <Text>{student.tenth_details.school} - {student.tenth_details.yearofcompletion}</Text>
                                 <Text>{student.tenth_details.board} board - {student.tenth_details.percentage} </Text>
                             </View>
+                        }
+                        <Text style={styles.name} > ❖ Degree</Text>
+                        {
+                            student.subject_marks && <View>
+                                <Text>{student.degree} - </Text>
+                                <Text>{student.semester} Semester - {student.cgpa} CGPA</Text>
+                                {student.backlog_number && <Text>{student.backlog_number} backlogs - {student.backlog_subject}</Text>}
+                                {
+                                    (student.semester == 'I' || student.semester == 'II' || student.semester == 'III' || student.semester == 'IV' || student.semester == 'V' || student.semester == 'VI') && <View>
+                                        <Text style={styles.header}>Marks Card</Text>
+                                        <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>I semester</Text>
+                                        {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].I && student.subject_marks[0].I.length && student.subject_marks[0].I.map((itemss, index) =>
+                                        (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                                                <TouchableOpacity>
+                                                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                                                        <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                                                </TouchableOpacity>
+                                            </View>
+                                            {show == itemss.subject &&
+                                                <View>
+                                                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                                                    <Text>Credits - {itemss.credits}</Text>
+                                                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                                                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                                                        itemss.syllabus.map((it, ind) => (
+                                                            <View key={ind}>
+                                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                                    <Text>Chapter {ind + 1}: {it.unit}</Text>
+                                                                    <Text>No of hours: {it.noofhours}</Text>
+                                                                </View>
+                                                                <Text>Topics : {it.topics}</Text>
+                                                            </View>
+                                                        ))}
+                                                </View>
+                                            }
+                                        </View>
+                                        ))}
+                                    </View>
+                                }
+                                {
+                                    (student.semester == 'II' || student.semester == 'III' || student.semester == 'IV' || student.semester == 'V' || student.semester == 'VI') && <View>
+                                        <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>II semester</Text>
+                                        {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].II && student.subject_marks[0].II.length && student.subject_marks[0].II.map((itemss, index) =>
+                                        (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                                                <TouchableOpacity>
+                                                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                                                        <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                                                </TouchableOpacity>
+                                            </View>
+                                            {show == itemss.subject &&
+                                                <View>
+                                                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                                                    <Text>Credits - {itemss.credits}</Text>
+                                                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                                                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                                                        itemss.syllabus.map((it, ind) => (
+                                                            <View key={ind}>
+                                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                                    <Text>Chapter {ind + 1}: {it.unit}</Text>
+                                                                    <Text>No of hours: {it.noofhours}</Text>
+                                                                </View>
+                                                                <Text>Topics : {it.topics}</Text>
+                                                            </View>
+                                                        ))}
+                                                </View>
+                                            }
+                                        </View>
+                                        )
+                                        )}
+                                    </View>
+                                }
+                                {
+                                    (student.semester == 'III' || student.semester == 'IV' || student.semester == 'V' || student.semester == 'VI') && <View>
+                                        <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>III semester</Text>
+                                        {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].III && student.subject_marks[0].III.length && student.subject_marks[0].III.map((itemss, index) =>
+                                        (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                                                <TouchableOpacity>
+                                                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                                                        <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                                                </TouchableOpacity>
+                                            </View>
+                                            {show == itemss.subject &&
+                                                <View>
+                                                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                                                    <Text>Credits - {itemss.credits}</Text>
+                                                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                                                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                                                        itemss.syllabus.map((it, ind) => (
+                                                            <View key={ind}>
+                                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                                    <Text>Chapter {ind + 1}: {it.unit}</Text>
+                                                                    <Text>No of hours: {it.noofhours}</Text>
+                                                                </View>
+                                                                <Text>Topics : {it.topics}</Text>
+                                                            </View>
+                                                        ))}
+                                                </View>
+                                            }
+                                        </View>
+                                        )
+                                        )}
+                                    </View>
+                                }
+                                {
+                                    (student.semester == 'IV' || student.semester == 'V' || student.semester == 'VI') && <View>
+                                        <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>IV semester</Text>
+                                        {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].IV && student.subject_marks[0].IV.length && student.subject_marks[0].IV.map((itemss, index) =>
+                                        (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                                                <TouchableOpacity>
+                                                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                                                        <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                                                </TouchableOpacity>
+                                            </View>
+                                            {show == itemss.subject &&
+                                                <View>
+                                                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                                                    <Text>Credits - {itemss.credits}</Text>
+                                                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                                                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                                                        itemss.syllabus.map((it, ind) => (
+                                                            <View key={ind}>
+                                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                                    <Text>Chapter {ind + 1}: {it.unit}</Text>
+                                                                    <Text>No of hours: {it.noofhours}</Text>
+                                                                </View>
+                                                                <Text>Topics : {it.topics}</Text>
+                                                            </View>
+                                                        ))}
+                                                </View>
+                                            }
+                                        </View>
+                                        )
+                                        )}
+                                    </View>
+                                }
+                                {
+                                    (student.semester == 'V' || student.semester == 'VI') && <View>
+                                        <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>V semester</Text>
+                                        {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].V && student.subject_marks[0].V.length && student.subject_marks[0].V.map((itemss, index) =>
+                                        (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                                                <TouchableOpacity>
+                                                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                                                        <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                                                </TouchableOpacity>
+                                            </View>
+                                            {show == itemss.subject &&
+                                                <View>
+                                                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                                                    <Text>Credits - {itemss.credits}</Text>
+                                                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                                                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                                                        itemss.syllabus.map((it, ind) => (
+                                                            <View key={ind}>
+                                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                                    <Text>Chapter {ind + 1}: {it.unit}</Text>
+                                                                    <Text>No of hours: {it.noofhours}</Text>
+                                                                </View>
+                                                                <Text>Topics : {it.topics}</Text>
+                                                            </View>
+                                                        ))}
+                                                </View>
+                                            }
+                                        </View>
+                                        )
+                                        )}
+                                    </View>
+                                }
+                                {
+                                    (student.semester == 'VI') && <View>
+                                        <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>VI semester</Text>
+                                        {student.subject_marks && student.subject_marks[0] && student.subject_marks[0].VI && student.subject_marks[0].VI.length && student.subject_marks[0].VI.map((itemss, index) =>
+                                        (<View key={index} style={{ margin: 5, marginLeft: 20 }}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{itemss.subject} - {itemss.marks}</Text>
+                                                <TouchableOpacity>
+                                                    {show != itemss.subject ? <Text style={{ color: '#407BFF' }} onPress={() => { setShow(itemss.subject) }}>Subject Details</Text> :
+                                                        <Text style={{ color: 'red' }} onPress={() => { setShow('') }}>Close</Text>}
+                                                </TouchableOpacity>
+                                            </View>
+                                            {show == itemss.subject &&
+                                                <View>
+                                                    <Text>Total no of hours - {itemss.totalnoofhours}</Text>
+                                                    <Text>Credits - {itemss.credits}</Text>
+                                                    <Text style={{ color: '#407BFF' }}>Syllabus</Text>
+                                                    {itemss.syllabus && itemss.syllabus.length > 0 &&
+                                                        itemss.syllabus.map((it, ind) => (
+                                                            <View key={ind}>
+                                                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+                                                                    <Text>Chapter {ind + 1}: {it.unit}</Text>
+                                                                    <Text>No of hours: {it.noofhours}</Text>
+                                                                </View>
+                                                                <Text>Topics : {it.topics}</Text>
+                                                            </View>
+                                                        ))}
+                                                </View>
+                                            }
+                                        </View>
+                                        )
+                                        )}
+                                    </View>
+                                }
+                            </View>
+
                         }
                         {
                             resume.skill &&

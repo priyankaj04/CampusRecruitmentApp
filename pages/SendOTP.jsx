@@ -8,14 +8,10 @@ import { OTPInput } from "../components/commonFunctions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SendOTP = ({ route, navigation }) => {
-    
     const [getData, setGetdata] = useState([]);
-
     const getDataasync = async () => {
         console.log(await AsyncStorage.getAllKeys())
-        let value = await AsyncStorage.multiGet(['talent_id', 'email']);
         setGetdata(await AsyncStorage.multiGet(['talent_id', 'email']));
-        console.log(await AsyncStorage.multiGet(['talent_id', 'email']));
     }
 
     const [isLoading, setIsLoading] = useState(true);
@@ -75,7 +71,7 @@ const SendOTP = ({ route, navigation }) => {
                 </View>
                 <KeyboardAvoidingView>
                     <View style={{ marginTop: 20 }}>
-                        <Text style={{ textAlign: 'center' }} >OTP code sent to { getData && getData.length > 0 ? getData[1][1] : "your mail."}</Text>
+                        <Text style={{ textAlign: 'center' }} >OTP code sent to {getData && getData.length > 0 ? getData[1][1] : "your mail."}</Text>
                         <View style={{
                             flex: 1,
                             justifyContent: 'center',
