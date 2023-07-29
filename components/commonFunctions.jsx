@@ -758,6 +758,25 @@ export const ActionJobCard = ({ item, fetch, setFetch }) => {
     )
 }
 
+export const ActionJob = ({ item, fetch, setFetch }) => {
+    
+    return (
+        <View style={{ margin: 10, backgroundColor: 'whitesmoke', borderRadius: 10, padding: 10 }}>
+            <TouchableOpacity style={styles.cardJob}>
+                <Text style={{ fontSize: 18, color: '#407BFF', fontWeight: 'bold' }}>{item.job_title}</Text>
+                <Text style={{ fontSize: 14, color: 'gray' }}><Icon name="building-o" color="#407BFF" /> {item.company_name}</Text>
+                <View style={{ marginTop: 20 }}></View>
+                <Text><Icon name="suitcase" color="#407BFF" /> {Capitalize(item.opportunity_type)}</Text>
+                {item.job_type == 'Remote' ? <Text><Iconz name="home" color="#407BFF" /> Work from Home</Text> : <Text><Iconz name="location-outline" color="#407BFF" /> {item.location}</Text>}
+                <Text><Icon name="money" color="#407BFF" />{item.opportunity_type == 'internship' ? `${" "} ₹ ${item.stipend_amt}${item.stipend_per}` : `₹${item.ctc1} to ${item.ctc2} LPA`}</Text>
+                {item.job_start_date && <Text><Icon name="calendar" color="#407BFF" /> Duration - {item.ctc1} {item.ctc2}</Text>}
+                <Text><Iconz name="hourglass-outline" color="#407BFF" /> Apply by {item.due_date}</Text>
+                <Text><Iconz name="refresh" color="#407BFF" /> Posted {calculateTimeAgo(item.created_at)}</Text>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
 export const JobViewCard = ({ item, navigation }) => {
     const [dialogVisible, setDialogVisible] = useState(false);
     const [recruiterDetails, setRecruiterDetails] = useState({});
@@ -889,6 +908,7 @@ export const JobViewCard = ({ item, navigation }) => {
 
 
 export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }) => {
+    console.log("item", item);
     const [dialogVisible, setDialogVisible] = useState(false);
     const [recruiterDetails, setRecruiterDetails] = useState({});
     const [tid, setTid] = useState(null);
@@ -1037,7 +1057,7 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
 
     const handleNav = () => {
         setDialogVisible(false);
-        navigation.navigate('SelectSlot', { id: item.applicant_id })
+        navigation.navigate('SelectSlot', { id: item.application_id })
     }
 
     const handleApply = () => {
@@ -1095,7 +1115,8 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
                                     <Iconz name="refresh" color={applicantsDetails.status == 'under review' ? 'gray' : applicantsDetails.status == "shortlisted" ? 'green' : 'red'} />
                                     Your application is {applicantsDetails.status}
                                 </Text>
-                                {interview && <View>
+                                    {
+                                        Object.keys(interview).length > 0 && <View>
                                     <Text>Scheduled on {applicantsDetails.selected_slot_date} at {applicantsDetails.selected_slot_timings}</Text>
                                     <MeetLink url={interview.link} />
                                 </View>}
@@ -1203,7 +1224,7 @@ export const TalentJobViewCard = ({ item, navigation, load, setLoad, savedCard }
                     </ScrollView>
                     <Dialog.Button label="Close" style={{ color: '#407BFF', marginRight: 10 }} onPress={handleCancel} />
                     {!status && <Dialog.Button label="Apply" style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} onPress={handleApply} />}
-                    {status && !applicantsDetails.selected_slot_date && !applicantsDetails.selected_slot_timings && <Dialog.Button onPress={handleNav} style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} label="Select Slot for Interview" />}
+                    {Object.keys(interview).length > 0  && status && !applicantsDetails.selected_slot_date && !applicantsDetails.selected_slot_timings && <Dialog.Button onPress={handleNav} style={{ color: 'white', backgroundColor: '#407BFF', marginLeft: 10, borderRadius: 5 }} label="Select Slot for Interview" />}
                 </Dialog.Container>
             </View>
         </MotiView>

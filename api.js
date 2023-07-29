@@ -1,7 +1,5 @@
 //talent = TalentRegister(), TalentLogin(), TalentDetailsById()
-
-import axios from 'axios';
-const URL = 'http://192.168.0.101:8000';
+const URL = 'http://192.168.172.27:8000';
 
 //student registration 
 // reqbody = { firstname, lastname, email, password, register_no, enable, college}
@@ -1049,8 +1047,9 @@ export const GetSubjects = async (course, year) => {
         });
 }
 
-export const UpdateSlots = async (reqbody, id) => {
-    const url = URL + '/api/applicants/updateslot/' + id;
+export const UpdateSlots = async (reqbody, id, tid) => {
+    console.log("heherer", tid);
+    const url = URL + '/api/applicants/updateslot/' + id + '?tid='+tid;
     const fetchOptions = {
         method: "PUT",
         headers: {
@@ -1059,7 +1058,7 @@ export const UpdateSlots = async (reqbody, id) => {
         },
         body: JSON.stringify(reqbody)
     };
-    //console.log("slkdfdfdjfsldf",reqbody)
+    console.log("slkdfdfdjfsldf",url)
     return await fetch(url, fetchOptions)
         .then((response) => response.json())
         .catch((error) => {

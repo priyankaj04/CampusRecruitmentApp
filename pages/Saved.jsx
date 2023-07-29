@@ -42,7 +42,7 @@ const Saved = ({ navigation }) => {
         ) : (
           <View style={styles.emptyContainer}>
             <Image source={require('../assets/Nodata.png')} style={styles.emptyImage} />
-            <Text style={styles.emptyText}>No students created from this class yet.</Text>
+            <Text style={styles.emptyText}>You have not saved any application yet.</Text>
           </View>
         )}
       </View>

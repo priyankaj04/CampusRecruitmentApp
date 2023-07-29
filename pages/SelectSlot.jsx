@@ -3,10 +3,15 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { ApplicantsByAid, UpdateSlots, GetInterviewDetails, UpdateInterviewDetails } from '../api';
 import { Picker } from '@react-native-picker/picker';
 import { MotiView } from 'moti';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SelectSlot = ({ route, navigation }) => {
+
+    const getData = async () => {
+        setTid(await AsyncStorage.getItem('talent_id'));
+    };
     const applicant_id = route.params.id;
-    const [details, setDetails] = useState({});
+    const [tid, setTid] = useState(null)
     const [dates, setDates] = useState([]);
     const [times, setTimes] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
@@ -16,21 +21,22 @@ const SelectSlot = ({ route, navigation }) => {
     const [interview_id, setInterviewId] = useState(null);
 
     useEffect(() => {
-        ApplicantsByAid(applicant_id).then((res) => {
-            if (res.status) {
-                GetInterviewDetails(res.data[0].application_id, res.data[0].talent_id).then((resp) => {
-                    if (resp.status) {
-                        setInterviewId(resp.data[0].interview_id);
-                        setAllSlots(resp.data[0].slots);
-                        setDates([...new Set(resp.data[0].slots.filter(slot => !slot.is_booked).map(slot => slot.slot_date))]);
-                    } else {
-                        setAllSlots([]);
-                    }
-                });
-                setDetails(res.data[0]);
-            }
-        });
-    }, [fetch]);
+        if (!tid) {
+            getData();
+        } else {
+            GetInterviewDetails(applicant_id, tid).then((resp) => {
+                if (resp.status) {
+                    console.log("show me here", resp.data);
+                    setInterviewId(resp.data[0].interview_id);
+                    setAllSlots(resp.data[0].slots);
+                    setDates([...new Set(resp.data[0].slots.filter(slot => !slot.is_booked).map(slot => slot.slot_date))]);
+                } else {
+                    setAllSlots([]);
+                }
+            });
+
+        }
+    }, [tid, fetch]);
 
     const GetTimes = (date) => {
         const slotTimes = allSlots
@@ -55,14 +61,17 @@ const SelectSlot = ({ route, navigation }) => {
             slotdate: selectedDate,
             slottime: selectedTime
         };
-
+        console.log(tid);
         UpdateInterviewDetails(req, interview_id).then((res) => {
-            UpdateSlots(reqbody, applicant_id).then((res) => {
-                if (res.status) {
-                    setFetch(!fetch);
-                    navigation.goBack();
-                }
-            });
+            if (res.status) {
+                UpdateSlots(reqbody, applicant_id, tid).then((resp) => {
+                    console.log(resp);
+                    if (resp.status) {
+                        setFetch(!fetch);
+                        navigation.goBack();
+                    }
+                });
+            }
         });
     };
 

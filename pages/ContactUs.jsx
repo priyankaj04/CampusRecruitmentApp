@@ -66,7 +66,7 @@ const ContactUs = ({ route, navigation }) => {
     } else if (type === 'recruiter') {
       reqbody.id = id[1][1];
     }
-
+    console.log(reqbody);
     NewQuery(reqbody).then((res) => {
       if (res.status) {
         setQuery('');

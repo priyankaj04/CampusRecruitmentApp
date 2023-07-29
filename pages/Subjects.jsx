@@ -92,7 +92,7 @@ const Subjects = ({ navigation }) => {
                 visem
             }
         }
-
+        console.log("subjects", reqbody);
         UpdateSubjects(reqbody, degree, year).then((res) => {
             if (res.status) {
                 // console.log("Updated successfully");
@@ -1012,13 +1012,13 @@ const Subjects = ({ navigation }) => {
                         </View>
                     ))}
                 </KeyboardAvoidingView> : <View>
-                    
+
                 </View>
             }
             {
                 edit && <TouchableOpacity style={styles.btn1} onPress={() => { handleUpdate() }}>
                     <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 18 }}>UPDATE</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
             }
             <TouchableOpacity style={{
                 backgroundColor: 'white',

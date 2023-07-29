@@ -11,6 +11,7 @@ const SplashScreen = ({ navigation }) => {
   });
 
   const getData = async () => {
+    //await AsyncStorage.multiRemove(['talent_id', 'user_type']);
     setType(await AsyncStorage.getItem('user_type'));
     const value = await AsyncStorage.getItem('user_type');
     console.log(value);

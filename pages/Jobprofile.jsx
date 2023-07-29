@@ -40,12 +40,20 @@ const JobProfile = ({ navigation }) => {
                 <TalentJobViewCard key={index} item={item} navigation={navigation} />
               ))
             ) : (
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Image
-                  source={require('../assets/Nodata.png')}
-                  style={{ width: 200, height: 200 }}
-                />
-                <Text>You have not applied for any jobs yet.</Text>
+                <View style={{
+                marginTop: 250,
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <Image source={require('../assets/Nodata.png')} style={{
+                  width: 200,
+                  height: 200
+                }} />
+                <Text style={{
+                  fontSize: 16,
+                  color:'black'
+                }}>You have not applied for any jobs yet.</Text>
               </View>
             )}
           </View>

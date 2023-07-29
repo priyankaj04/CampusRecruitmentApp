@@ -1,8 +1,8 @@
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Image, KeyboardAvoidingView, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, KeyboardAvoidingView, ScrollView } from 'react-native';
 import { VerifyForgotEmail, ConfrimForgotOTP, ForgotpasswordEmail } from '../api';
-import { MotiView } from 'moti';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { MotiView } from 'moti';
 
 const ForgotPassword = ({ route, navigation }) => {
   const type = route.params.type;
@@ -11,217 +11,298 @@ const ForgotPassword = ({ route, navigation }) => {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [cpassword, setCpassword] = useState('');
-  const [verifyEmail, setVerifyEmail] = useState(false);
-  const [confirmOTP, setConfirmOTP] = useState(false);
+  const [verifyemail, setVerifyEmail] = useState(false);
+  const [confirmotp, setConfirmotp] = useState(false);
   const [showHelper, setShowHelper] = useState({});
-  const pinRefs = useRef([]);
+  const [pin, setPin] = useState(['', '', '', '', '', '']);
+  const pinRefs = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
+  const [show, setShow] = useState(false);
 
-  useEffect(() => {
-    pinRefs.current = Array(6).fill().map((_, index) => pinRefs.current[index] || React.createRef());
-  }, []);
+  const handleChangeEmail = (text) => {
+    setEmail(text);
+  }
 
-  const handleEmail = () => {
-    const reqBody = type === 'talent' ? { email } : { mobile };
+  const handleChangeMobile = (text) => {
+    setMobile(text);
+  }
 
-    VerifyForgotEmail(type, reqBody)
-      .then((res) => {
-        console.log(res);
-        if (res.status) {
-          setVerifyEmail(true);
-        } else {
-          setShowHelper({ label: 'email', message: res.message });
-        }
-      })
+  const handleVerifyEmail = () => {
+    let reqbody = {};
+    if (type === 'talent') {
+      reqbody = { email };
+    } else if (type === 'recruiter') {
+      reqbody = { mobile };
+    }
+    VerifyForgotEmail(type, reqbody).then((res) => {
+      console.log(res);
+      if (res.status) {
+        setVerifyEmail(true);
+      } else {
+        setShowHelper({ label: 'email', message: res.message })
+      }
+    })
       .catch((err) => {
         setShowHelper({ label: 'email', message: err });
       });
-  };
+  }
 
-  const handleOTP = () => {
-    const enteredOTP = pin.join('');
-
-    const reqBody = type === 'talent' ? { email, otp: enteredOTP } : { mobile, otp: enteredOTP };
-
-    ConfrimForgotOTP(type, reqBody)
-      .then((res) => {
-        if (res.status) {
-          setConfirmOTP(true);
-        } else {
-          setShowHelper({ label: 'otp', message: res.message });
-        }
-      })
+  const handleVerifyOTP = () => {
+    const otpValue = pin.join('');
+    let reqbody = {};
+    if (type === 'talent') {
+      reqbody = { email, otp: otpValue };
+    } else if (type === 'recruiter') {
+      reqbody = { mobile, otp: otpValue };
+    }
+    ConfrimForgotOTP(type, reqbody).then((res) => {
+      if (res.status) {
+        setConfirmotp(true);
+      } else {
+        setShowHelper({ label: 'otp', message: res.message });
+      }
+    })
       .catch((err) => {
         setShowHelper({ label: 'otp', message: err });
       });
-  };
+  }
 
-  const handlePassword = () => {
+  const handlePasswordReset = () => {
     if (password === cpassword) {
-      const reqBody = type === 'talent' ? { email, password } : { mobile, password };
-
-      ForgotpasswordEmail(type, reqBody)
-        .then((res) => {
-          console.log(res);
-          if (res.status) {
-            if (type === 'talent') {
-              navigation.navigate('Login');
-            } else if (type === 'recruiter') {
-              navigation.navigate('RecruiterLogin');
-            }
-          } else {
-            setShowHelper({ label: 'password', message: res.message });
+      let reqbody = {};
+      if (type === 'talent') {
+        reqbody = { email, password };
+      } else if (type === 'recruiter') {
+        reqbody = { mobile, password };
+      }
+      ForgotpasswordEmail(type, reqbody).then((res) => {
+        console.log(res);
+        if (res.status) {
+          if (type === 'talent') {
+            navigation.navigate('Login');
+          } else if (type === 'recruiter') {
+            navigation.navigate('RecruiterLogin');
           }
-        })
+        } else {
+          setShowHelper({ label: 'password', message: res.message });
+        }
+      })
         .catch((err) => {
           setShowHelper({ label: 'password', message: err });
         });
     } else {
       setShowHelper({ label: 'password', message: 'Passwords do not match' });
     }
-  };
+  }
 
-  const handlePinChange = (index, value) => {
+  const handleOTPChange = (index, text) => {
     const newPin = [...pin];
-    newPin[index] = value;
+    newPin[index] = text;
     setPin(newPin);
-
-    if (value !== '') {
-      const nextPinRef = pinRefs.current[index + 1];
-      nextPinRef && nextPinRef.current.focus();
+    if (text !== '' && index < 5) {
+      pinRefs[index + 1].current.focus();
     }
-  };
+  }
 
   return (
     <ScrollView>
       <View style={styles.container}>
-        <Text style={styles.title}>Don't worry! We are here to help you.</Text>
-        <TextInput
-          style={styles.textField}
-          value={type === 'talent' ? email : mobile}
-          onChangeText={(value) => (type === 'talent' ? setEmail(value) : setMobile(value))}
-          placeholder={type === 'talent' ? 'Enter registered email' : 'Enter registered mobile number'}
-        />
-        {!verifyEmail ? (
-          <TouchableOpacity style={styles.btn} onPress={handleEmail}>
+        <Text style={styles.heading}>Don't worry! We are here to help you.</Text>
+        {type === 'talent' ? (
+          <MotiView
+            from={{ translateX: -100 }}
+            animate={{ translateX: 0 }}
+            transition={{ type: 'timing', duration: 500 }}
+          >
+            <TextInput
+              style={styles.textField}
+              value={email}
+              onChangeText={handleChangeEmail}
+              placeholder="Enter registered email"
+            />
+          </MotiView>
+        ) : (
+          <MotiView
+            from={{ translateX: -100 }}
+            animate={{ translateX: 0 }}
+            transition={{ type: 'timing', duration: 500 }}
+          >
+            <TextInput
+              style={styles.textField}
+              value={mobile}
+              onChangeText={handleChangeMobile}
+              placeholder="Enter registered mobile number"
+            />
+          </MotiView>
+        )}
+        {!verifyemail && (
+          <TouchableOpacity style={styles.btn} onPress={handleVerifyEmail}>
             <Text style={styles.btnText}>Send OTP</Text>
           </TouchableOpacity>
-        ) : (
-          <View style={styles.pinContainer}>
-            {pin.map((digit, index) => (
-              <TextInput
-                key={index}
-                ref={pinRefs.current[index]}
-                style={styles.pinInput}
-                value={digit}
-                onChangeText={(value) => handlePinChange(index, value)}
-                keyboardType="number-pad"
-                maxLength={1}
-              />
-            ))}
+        )}
+        {verifyemail && !confirmotp && (
+          <View>
+            <MotiView
+              from={{ translateX: -100 }}
+              animate={{ translateX: 0 }}
+              transition={{ type: 'timing', duration: 500 }}
+            >
+              <View style={styles.otpContainer}>
+                {pin.map((value, index) => (
+                  <TextInput
+                    key={index}
+                    ref={pinRefs[index]}
+                    style={styles.otpInput}
+                    value={value}
+                    onChangeText={(text) => handleOTPChange(index, text)}
+                    keyboardType="number-pad"
+                    maxLength={1}
+                  />
+                ))}
+              </View>
+            </MotiView>
           </View>
         )}
-        {!confirmOTP && verifyEmail && (
-          <TouchableOpacity style={styles.btn} onPress={handleOTP}>
+        {!confirmotp && verifyemail && (
+          <TouchableOpacity style={styles.btn} onPress={handleVerifyOTP}>
             <Text style={styles.btnText}>Confirm OTP</Text>
           </TouchableOpacity>
         )}
-        {confirmOTP && (
+        {confirmotp && (
           <View>
-            <TextInput
-              placeholder="Password"
-              style={styles.passwordInput}
-              secureTextEntry
-              onChangeText={(value) => setPassword(value)}
-              value={password}
-            />
-            <TextInput
-              placeholder="Confirm Password"
-              style={styles.passwordInput}
-              secureTextEntry
-              onChangeText={(value) => setCpassword(value)}
-              value={cpassword}
-            />
-            <TouchableOpacity style={styles.btn} onPress={handlePassword}>
-              <Text style={styles.btnText}>Confirm Password</Text>
-            </TouchableOpacity>
+            <View style={styles.passwordContainer}>
+              <MotiView
+                from={{ translateX: -100 }}
+                animate={{ translateX: 0 }}
+                transition={{ type: 'timing', duration: 500 }}
+              >
+                <TextInput
+                  placeholder="Password"
+                  style={styles.passwordInput}
+                  secureTextEntry={!show}
+                  onChangeText={(text) => setPassword(text)}
+                  value={password}
+                  keyboardType="default"
+                />
+              </MotiView>
+              <Icon
+                name={show ? "eye" : "eye-slash"}
+                color="gray"
+                size={26}
+                onPress={() => setShow(!show)}
+              />
+            </View>
+            <MotiView
+              from={{ translateX: -100 }}
+              animate={{ translateX: 0 }}
+              transition={{ type: 'timing', duration: 500 }}
+            >
+              <TextInput
+                placeholder="Confirm Password"
+                style={styles.passwordInput}
+                secureTextEntry
+                onChangeText={(text) => setCpassword(text)}
+                value={cpassword}
+                inputMode="text"
+              />
+            </MotiView>
           </View>
         )}
-        {showHelper.label === 'email' && <Text style={styles.helperText}>{showHelper.message}</Text>}
-        {showHelper.label === 'otp' && <Text style={styles.helperText}>{showHelper.message}</Text>}
-        {showHelper.label === 'password' && <Text style={styles.helperText}>{showHelper.message}</Text>}
+        {confirmotp && verifyemail && (
+          <TouchableOpacity style={styles.btn} onPress={handlePasswordReset}>
+            <Text style={styles.btnText}>Confirm Password</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
-  );
-};
+  )
+}
+
+export default ForgotPassword;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
+    width: '95%',
+    margin: 10,
+    borderRadius: 25,
+    padding: 20,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 20,
   },
-  title: {
+  heading: {
+    textAlign: 'center',
     fontSize: 18,
     fontWeight: 'bold',
     color: '#407BFF',
-    marginBottom: 20,
-    textAlign: 'center',
+    marginVertical: 10,
   },
   textField: {
     height: 50,
-    width: '80%',
-    paddingHorizontal: 16,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    width: 365,
+    padding: 8,
     backgroundColor: 'whitesmoke',
     fontSize: 16,
+    marginTop: 0,
     borderRadius: 25,
-    marginBottom: 20,
+    marginLeft: 13,
   },
   btn: {
-    width: '60%',
+    width: 300,
     height: 50,
     backgroundColor: '#407BFF',
+    color: 'white',
     alignItems: 'center',
     justifyContent: 'center',
+    margin: 10,
+    marginTop: 20,
     borderRadius: 25,
-    marginBottom: 20,
+    shadowOffset: { width: 5, height: 5 },
+    shadowColor: 'black',
+    shadowOpacity: 0.8,
+    shadowRadius: 5,
+    elevation: 3,
+    marginLeft: 50,
   },
   btnText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 18,
   },
-  pinContainer: {
+  otpContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  otpInput: {
+    borderBottomWidth: 1,
+    width: 35,
+    borderBottomColor: '#407BFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'whitesmoke',
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 5,
+    fontSize: 20,
+  },
+  passwordContainer: {
+    backgroundColor: 'whitesmoke',
+    height: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
-  },
-  pinInput: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'whitesmoke',
-    fontSize: 24,
-    borderRadius: 8,
-    textAlign: 'center',
-    marginHorizontal: 8,
+    margin: 10,
+    padding: 10,
+    borderRadius: 25,
   },
   passwordInput: {
     height: 50,
-    width: '80%',
-    paddingHorizontal: 16,
+    borderColor: 'transparent',
+    borderWidth: 1,
+    width: 300,
     backgroundColor: 'whitesmoke',
     fontSize: 16,
     borderRadius: 25,
-    marginBottom: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  helperText: {
-    color: 'red',
-    marginBottom: 10,
   },
 });
-
-export default ForgotPassword;

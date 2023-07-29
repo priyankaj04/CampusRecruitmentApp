@@ -43,10 +43,11 @@ const ScheduleInterview = ({ route, navigation }) => {
       link: interview.link,
       description: interview.description,
       slot_time: interview.slot_time,
-      slots: ScheduleInterview()
+      slots: ScheduleInterviewSlots()
     };
 
     if (type === 'create') {
+      console.log("are we here??")
       ScheduleInterviewAPI(reqbody).then((res) => {
         console.log(res);
         if (res.status) {
@@ -77,6 +78,7 @@ const ScheduleInterview = ({ route, navigation }) => {
   };
 
   const datesting = (value) => {
+    //console.log("dates", value);
     const startDateString = value[0];
     const endDateString = value[1];
 
@@ -91,11 +93,12 @@ const ScheduleInterview = ({ route, navigation }) => {
       datesBetween.push(currentDate.format('DD/MM/YYYY'));
       currentDate.add(1, 'day');
     }
-
+    //console.log("returning dates between " + datesBetween);
     return datesBetween;
   };
 
-  const ScheduleInterview = () => {
+  const ScheduleInterviewSlots = () => {
+    //console.log("slot dates", interview.slot_dates);
     const dates = datesting(interview.slot_dates);
     const slotTimings = timeslots(interview.slot_time, interview.slot_timings);
 
@@ -111,9 +114,10 @@ const ScheduleInterview = ({ route, navigation }) => {
 
         combinedSlots.push(slotObject);
       });
+      //console.log("dfadfdfSDF", combinedSlots);
     });
 
-    console.log("dfadfdfSDF", combinedSlots);
+    //console.log("dfadfdfSDF", combinedSlots);
     return combinedSlots;
   };
 
@@ -166,9 +170,10 @@ const ScheduleInterview = ({ route, navigation }) => {
                 ...interview,
                 slot_dates: updatedHobbies
               };
+              console.log(updatedHobbies);
               setInterview(updatedObject);
             }}
-            placeholder='e.g. 25 July 2023'
+            placeholder='e.g. DD/MM/YYYY'
           />
           <Text style={styles.toText}>to</Text>
           <TextInput
@@ -185,9 +190,10 @@ const ScheduleInterview = ({ route, navigation }) => {
                 ...interview,
                 slot_dates: updatedHobbies
               };
+              console.log(updatedHobbies);
               setInterview(updatedObject);
             }}
-            placeholder='e.g. 25 July 2023'
+            placeholder='e.g. DD/MM/YYYY'
           />
         </View>
       </MotiView>
@@ -204,7 +210,6 @@ const ScheduleInterview = ({ route, navigation }) => {
             style={styles.halfText}
             value={interview.slot_time && interview.slot_time[0] ? interview.slot_time[0] : ''}
             onChangeText={(e) => {
-              console.log('sdlkfjalsf', e);
               const updatedHobbies = interview.slot_time ? [...interview.slot_time] : [];
               if (updatedHobbies.length > 0 && updatedHobbies[0] && updatedHobbies[0] !== '') {
                 updatedHobbies[0] = e;
@@ -217,7 +222,7 @@ const ScheduleInterview = ({ route, navigation }) => {
               };
               setInterview(updatedObject);
             }}
-            placeholder='e.g. 25 July 2023'
+            placeholder='e.g. 9:30 am'
           />
           <Text style={styles.toText}>to</Text>
           <TextInput
@@ -236,7 +241,7 @@ const ScheduleInterview = ({ route, navigation }) => {
               };
               setInterview(updatedObject);
             }}
-            placeholder='e.g. 25 July 2023'
+            placeholder='e.g. 4:00 pm'
           />
         </View>
       </MotiView>

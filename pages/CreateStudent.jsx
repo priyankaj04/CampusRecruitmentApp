@@ -92,6 +92,8 @@ const CreateStudent = () => {
             batch
         }
 
+        console.log("lskdjflskjdfsdf", reqbody);
+
         CreateStudentAPI(reqbody).then((res) => {
             if (res.status) {
                 showToastable({
@@ -108,6 +110,20 @@ const CreateStudent = () => {
             }
         })
     }
+
+    useEffect(() => {
+        if (degree && batch) {
+            console.log("are we here")
+            GetSubjects(degree, batch).then((res) => {
+                if (res.status) {
+                    console.log("subjects")
+                    setSubjects([res.data[0].subject]);
+                } else {
+                    setSubjects([]);
+                }
+            })
+        }
+    }, [degree, batch])
 
     return (
         <View>
@@ -203,7 +219,6 @@ const CreateStudent = () => {
                             <Text style={styles.header}>Marks Card</Text>
                             <Text style={{ color: '#407BFF', fontWeight: 'bold', margin: 10 }}>I semester</Text>
                             {subjects && subjects[0] && subjects[0].isem && subjects[0].isem.length && subjects[0].isem.map((item, index) => (<View key={index} style={{ flexDirection: 'row', alignItems: 'center', margin: 5, marginLeft: 20 }}>
-                                {console.log("isem", item)}
                                 <Text>{item.subject}</Text>
                                 <TextInput
                                     style={{

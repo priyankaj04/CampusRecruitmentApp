@@ -37,10 +37,11 @@ const ViewResume = ({ route, navigation }) => {
       TalentDetailsById(talent_id).then((res) => {
         if (res.status) {
           setTalentDetails(res.data[0]);
+          console.log("response: ", res.data[0]);
           GetStudentByEmail(res.data[0].email).then((resp) => {
             if (resp.status) {
               setEducation(resp.data[0]);
-              console.log("response: ", resp.data[0]);
+             
             }
           })
         }

@@ -69,14 +69,11 @@ const RecruiterRegister = ({ navigation }) => {
         if (res.status) {
           setIsLoading(false);
           setShowHelper(false);
-          SetData(res.data[0].admin_id).then((resp) => {
-            if (resp.status) {
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'IndexDashboard' }]
-              })
-              navigation.navigate("IndexDashboard", { screen: "Dashboard" });
-            }
+          SetData(res.data[0].admin_id).then(() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'IndexDashboard' }]
+            })
           })
         } else {
           setIsLoading(false);

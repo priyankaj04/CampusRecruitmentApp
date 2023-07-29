@@ -45,6 +45,7 @@ const RecruiterLogin = ({ navigation }) => {
       };
       AdminLoginForm(reqbody)
         .then((res) => {
+          console.log(res);
           if (res.status) {
             setIsLoading(false);
             setShowHelper(false);

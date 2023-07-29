@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ScrollView, Image, Pressable, ActivityIndicator
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { GetApplicationsForAdmin } from '../api';
-import { ActionJobCard } from '../components/commonFunctions';
+import { ActionJob } from '../components/commonFunctions';
 import { MotiView, MotiImage } from 'moti';
 
 const Dashboard = ({ navigation }) => {
@@ -49,10 +49,10 @@ const Dashboard = ({ navigation }) => {
       {loading ? (
         <ActivityIndicator style={styles.loadingIndicator} size="large" color="#407BFF" />
       ) : details.length > 0 ? (
-          <MotiView style={styles.scrollView} from={{ opacity: 0, translateX: 100 }} animate={{ opacity: 1, translateX: 0 }} transition={{ type: 'timing' }}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollContentContainer}>
+          <MotiView style={styles.scrollView} animate={{ opacity: 1, translateX: 0 }} transition={{ type: 'timing' }}>
+          <ScrollView contentContainerStyle={styles.scrollContentContainer}>
             {details.map((item, index) => (
-              <ActionJobCard key={index} item={item} fetch={fetch} setFetch={setFetch} />
+              <ActionJob key={index} item={item} fetch={fetch} setFetch={setFetch} />
             ))}
           </ScrollView>
         </MotiView>

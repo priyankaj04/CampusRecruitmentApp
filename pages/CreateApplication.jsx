@@ -32,22 +32,23 @@ const CreateApplication = ({ navigation }) => {
       RecruiterDetailsById(id).then((res) => {
         if (res.status) {
           setRecruiterdetails(res.data[0]);
-          console.log(res.data[0])
         }
       })
     }
   }, [id])
 
   const handleClick = () => {
-    if (!jobDetails.opportunity_type || !jobDetails.job_title || !jobDetails.skills || !jobDetails.job_type || !jobDetails.number_of_openings || !jobDetails.job_start_date
+    if (!jobDetails.opportunity_type || !jobDetails.job_title || !jobDetails.skills || !jobDetails.job_type || !jobDetails.number_of_openings
       || !jobDetails.job_description || !jobDetails.preference || !jobDetails.alternate_mobile || !jobDetails.eligibility || !jobDetails.due_date) {
       showToastable({
         message: "Fill all the fields to improve chances to attract more applicants.",
         duration: 3000,
         status: 'info'
       })
+      return;
     }
     jobDetails.company_name = recruiterdetails.company_name;
+    console.log(jobDetails, id);
     CreateJob(id, jobDetails).then((res) => {
       console.log("this is response", res);
       if (res.status) {
